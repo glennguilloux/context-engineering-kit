@@ -1,3 +1,8 @@
+---
+description: Create pull requests using GitHub CLI with proper templates and formatting
+argument-hint: None required - interactive guide for PR creation
+---
+
 # How to Create a Pull Request Using GitHub CLI
 
 This guide explains how to create pull requests using GitHub CLI in our project.

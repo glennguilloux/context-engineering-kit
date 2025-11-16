@@ -1,3 +1,8 @@
+---
+description: Iterative Five Whys root cause analysis drilling from symptoms to fundamentals
+argument-hint: Optional issue or symptom description
+---
+
 # Five Whys Analysis
 
 Apply Five Whys root cause analysis to investigate issues by iteratively asking "why" to drill from symptoms to root causes.

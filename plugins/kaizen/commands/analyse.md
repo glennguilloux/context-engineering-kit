@@ -1,3 +1,8 @@
+---
+description: Auto-selects best Kaizen method (Gemba Walk, Value Stream, or Muda) for target
+argument-hint: Optional target description (e.g., code, workflow, or inefficiencies)
+---
+
 # Smart Analysis
 
 Intelligently select and apply the most appropriate Kaizen analysis technique based on what you're analyzing.

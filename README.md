@@ -1,57 +1,59 @@
 # Context Engineering Kit
 
-Hand-crafted production ready Claude Code plugin marketplace focused on improving agent result quality.
+Hand-crafted collection of advanced context engineering techniques and patterns with minimal token footprint focused on improving agent result quality.
 
-Contains collection of plugins that allow to use proven techniques and patterns for context engineering with minimal efforts.
+Claude Code plugin marketplace is based on prompts that used by our company developers daily for long time, while adding plugins from benchmarked papers and high quality projects.
 
 ## Key Features
 
 - **Simple to Use** - Easy to install and use without any dependencies. Contain automatically used skills and self-explanatory commands.
 - **Token-Efficient** - Carefully crafted prompts and architecture, prefering commands over skills, to minimize populating context with unnecessary information.
-- **Quality-Focused** - Each plugin focused on meaningfully improving agent result over specific area. Developoed by experienced developers that need to get relaible results on production code.
-- **Granular** - Install only the plugins you need. Each plugin loads only its specific agents, commands, and skills.
-- **Well-targeted** - Marketplace contains minimal amount of plugins, without overlap and redundant skills. It is based on prompts that used by our company developers daily for long time, with combained plugins from high quality projects. If you looking for more general plugins, take a loog at [Based on section](#based-on)
+- **Quality-Focused** - Each plugin focused on meaningfully improving agent result over specific area.
+- **Granular** - Install only the plugins you need. Each plugin loads only its specific agents, commands, and skills. Each without overlap and redundant skills.
 - **Scientifically proven** - Plugins are based on proven techniques and patterns that were tested by well-trusted benchmarks and studies.
 
 ## Quick Start
 
 ### Step 1: Add the Marketplace
 
-Add this marketplace to Claude Code:
+Open Claude Code
 
 ```bash
-# Open Claude Code
 claude
+```
 
-# Add the Perplexity marketplace
+Add the Context Engineering Kit marketplace
+
+```bash
 /plugin marketplace add NeoLabHQ/context-engineering-kit
 ```
 
-This makes all plugins available for installation, but does not load any agents or tools into your context.
+This makes all plugins available for installation, but does not load any agents or skills into your context.
 
-### Step 2: Install Plugins
+### Step 2: Install Plugin
+
+Install any plugins, for example reflexion
 
 ```bash
-# Install any plugins
 /plugin install reflexion@NeoLabHQ/context-engineering-kit
 ```
 
 Each installed plugin loads only its specific agents, commands, and skills into Claude's context.
 
-### Step 3: Use Plugins
+### Step 3: Use Plugin
 
 ```bash
 # start claude code
 > claude "suggest how to improve codebase"
 
 # Reflect on previus response and improve it if needed
-> /reflextion:reflect
+> /reflexion:reflect
 
 # Identify issues and stretegies to solve them, and update CLAUDE.md with this knowledge
-> /reflextion:memorize
+> /reflexion:memorize
 ```
 
-## Full list of Plugins
+## Plugins List
 
 To view all available plugins:
 
@@ -74,11 +76,23 @@ To view all available plugins:
 
 ### Reflexion
 
-Collection of commands that force LLM to reflect on previus response and output. Based on papers like [Self-Refine](https://arxiv.org/abs/2305.12966) and [Reflexion](https://arxiv.org/abs/2303.11366). This techniques improve the output of large language models by introducing feedback and refinement loops.
+Collection of commands that force LLM to reflect on previous response and output.
+
+**How to install**
 
 ```bash
 /plugin install reflexion@NeoLabHQ/quality-agent
 ```
+
+**Commands**
+
+- `/reflexion:reflect` - Reflect on previous response and output, based on Self-refinement framework for iterative improvement with complexity triage and verification
+- `/reflexion:memorize` - Memorize insights from reflections and updates CLAUDE.md file with this knowledge. Curates insights from reflections and critiques into CLAUDE.md using Agentic Context Engineering
+- `/reflexion:critique` - Comprehensive multi-perspective review using specialized judges with debate and consensus building
+
+#### Based on papers
+
+Based on papers like [Self-Refine](https://arxiv.org/abs/2305.12966) and [Reflexion](https://arxiv.org/abs/2303.11366). This techniques improve the output of large language models by introducing feedback and refinement loops.
 
 They proven to **increase output quality to 8–21%** based on both automatic metrics and human preferences across seven diverse tasks, including dialogue generation, coding and mathematical reasoning, when compared to standard one-step model outputs.
 
@@ -91,15 +105,219 @@ Full list of included patterns and techniques:
 - [Debate / Multi-Agent Debate](https://arxiv.org/abs/2305.14325) - Multiple models propose and critique solutions
 - [Generate-Verify-Refine (GVR)](https://arxiv.org/abs/2305.02424) - Three-stage process: generate → verify → refine based on verification
 
-On top of that plugin based on [Agentic Context Engineering](https://arxiv.org/abs/2510.04618) paper that uses memeory updates after reflection, that **consistently outperform strong baselines by 10.6%** on agents.
+On top of that plugin based on [Agentic Context Engineering](https://arxiv.org/abs/2510.04618) paper that uses memory updates after reflection, that **consistently outperform strong baselines by 10.6%** on agents.
 
-Also inlcudes following techniques:
+Also includes following techniques:
 
 - [Chain-of-Verification (CoVe)](https://arxiv.org/abs/2305.13888) - model generates answer, then verification questions, then revises
 - [Tree of Thoughts (ToT)](https://arxiv.org/abs/2305.10601) - explores multiple reasoning paths with evaluation
 - [Process Reward Models (PRM)](https://arxiv.org/abs/2211.07633) - evaluate reasoning steps rather than just final answers
 
-## Based on <a name="based-on"></a>
+### Code Review
+
+Comprehensive code review commands using multiple specialized agents for thorough code quality evaluation.
+
+**How to install**
+
+```bash
+/plugin install code-review@NeoLabHQ/quality-agent
+```
+
+**Commands**
+
+- `/code-review:review-local-changes` - Comprehensive review of local uncommitted changes using specialized agents with code improvement suggestions
+- `/code-review:review-pr` - Comprehensive pull request review using specialized agents
+
+**Agents**
+
+This plugin uses multiple specialized agents for comprehensive code quality analysis:
+
+- **bug-hunter** - Identifies potential bugs, edge cases, and error-prone patterns
+- **code-quality-reviewer** - Evaluates code structure, readability, and maintainability
+- **contracts-reviewer** - Reviews interfaces, API contracts, and data models
+- **historical-context-reviewer** - Analyzes changes in relation to codebase history and patterns
+- **security-auditor** - Identifies security vulnerabilities and potential attack vectors
+- **test-coverage-reviewer** - Evaluates test coverage and suggests missing test cases
+
+### Git
+
+Commands for streamlined Git operations including commits and pull request creation.
+
+**How to install**
+
+```bash
+/plugin install git@NeoLabHQ/quality-agent
+```
+
+**Commands**
+
+- `/git:commit` - Create well-formatted commits with conventional commit messages and emoji
+- `/git:create-pr` - Create pull requests using GitHub CLI with proper templates and formatting
+- `/git:analyze-issue` - Analyze a GitHub issue and create a detailed technical specification
+- `/git:load-issues` - Load all open issues from GitHub and save them as markdown files
+
+### Test-Driven Development
+
+Commands and skills for test-driven development with anti-pattern detection.
+
+**How to install**
+
+```bash
+/plugin install tdd@NeoLabHQ/quality-agent
+```
+
+**Skills**
+
+- **test-driven-development** - Introduces TDD methodology, best practices, and skills for testing using subagents
+
+### Subagent-Driven Development
+
+Skills for subagent-driven development with quality gates between tasks.
+
+**How to install**
+
+```bash
+/plugin install sadd@NeoLabHQ/quality-agent
+```
+
+**Skills**
+
+- **subagent-driven-development** - Dispatches fresh subagent for each task with code review between tasks, enabling fast iteration with quality gates
+
+### Domain-Driven Development
+
+Commands for setting up domain-driven development best practices focused on code quality.
+
+**How to install**
+
+```bash
+/plugin install ddd@NeoLabHQ/quality-agent
+```
+
+**Commands**
+
+- `/ddd:setup-code-formating` - Sets up code formatting rules and style guidelines in CLAUDE.md
+
+**Skills**
+
+- **software-architecture** - Includes Clean Architecture, SOLID principles, and other design patterns
+
+### Spec-Driven Development
+
+Comprehensive specification-driven development workflow using specialized agents.
+
+**How to install**
+
+```bash
+/plugin install sdd@NeoLabHQ/quality-agent
+```
+
+**Commands**
+
+- `/sdd:00-setup` - Create or update the project constitution from interactive or provided principle inputs
+- `/sdd:01-specify` - Create or update the feature specification from a natural language feature description
+- `/sdd:02-plan` - Plan the feature development based on the feature specification
+- `/sdd:03-tasks` - Create detailed implementation tasks from feature plans with complexity analysis
+- `/sdd:04-implement` - Execute feature implementation following task list with TDD approach and quality review
+- `/sdd:05-document` - Document completed feature implementation with API guides, architecture updates, and lessons learned
+- `/sdd:brainstorm` - Refines rough ideas into fully-formed designs through collaborative questioning and exploration
+
+**Agents**
+
+- **code-architect** - Designs system architecture and technical solutions
+- **code-explorer** - Navigates and understands existing codebase structure
+- **code-reviewer** - Reviews implementations against specifications and quality standards
+
+### Kaizen
+
+Continuous improvement methodology inspired by Japanese philosophy and Agile practices.
+
+**How to install**
+
+```bash
+/plugin install kaizen@NeoLabHQ/quality-agent
+```
+
+**Commands**
+
+- `/kaizen:analyse` - Auto-selects best Kaizen method (Gemba Walk, Value Stream, or Muda) for target analysis
+- `/kaizen:analyse-problem` - Comprehensive A3 one-page problem analysis with root cause and action plan
+- `/kaizen:why` - Iterative Five Whys root cause analysis drilling from symptoms to fundamentals
+- `/kaizen:root-cause-tracing` - Systematically traces bugs backward through call stack to identify source of invalid data or incorrect behavior
+- `/kaizen:cause-and-effect` - Systematic Fishbone analysis exploring problem causes across six categories
+- `/kaizen:plan-do-check-act` - Iterative PDCA cycle for systematic experimentation and continuous improvement
+
+**Skills**
+
+- **kaizen** - Continuous improvement methodology with multiple analysis techniques
+
+### Customaize Agent
+
+Commands and skills for creating and refining Claude Code extensions.
+
+**How to install**
+
+```bash
+/plugin install customaize-agent@NeoLabHQ/quality-agent
+```
+
+**Commands**
+
+- `/customaize-agent:create-command` - Interactive assistant for creating new Claude commands with proper structure and patterns
+- `/customaize-agent:create-skill` - Guide for creating effective skills with test-driven approach
+- `/customaize-agent:create-hook` - Create and configure git hooks with intelligent project analysis and automated testing
+- `/customaize-agent:test-skill` - Verify skills work under pressure and resist rationalization using RED-GREEN-REFACTOR cycle
+- `/customaize-agent:apply-anthropic-skill-best-practices` - Comprehensive guide for skill development based on Anthropic's official best practices
+
+**Skills**
+
+- **prompt-engineering** - Well known prompt engineering techniques and patterns, includes Anthropic Best Practices and Agent Persuasion Principles
+
+### Docs
+
+Commands for project analysis and documentation management.
+
+**How to install**
+
+```bash
+/plugin install docs@NeoLabHQ/quality-agent
+```
+
+**Commands**
+
+- `/docs:update-docs` - Update implementation documentation after completing development phases
+
+### Tech Stack
+
+Commands for setting up language and framework-specific best practices.
+
+**How to install**
+
+```bash
+/plugin install tech-stack@NeoLabHQ/quality-agent
+```
+
+**Commands**
+
+- `/tech-stack:add-typescript-best-practices` - Setup TypeScript best practices and code style rules in CLAUDE.md
+
+### MCP
+
+Commands for integrating Model Context Protocol servers with your project.
+
+**How to install**
+
+```bash
+/plugin install mcp@NeoLabHQ/quality-agent
+```
+
+**Commands**
+
+- `/mcp:setup-context7-mcp` - Guide for setup Context7 MCP server to load documentation for specific technologies
+- `/mcp:setup-serena-mcp` - Guide for setup Serena MCP server for semantic code retrieval and editing capabilities
+- `/mcp:build-mcp` - Guide for creating high-quality MCP servers that enable LLMs to interact with external services
+
+## Based on Projects
 
 This project improves plugins collected across multiple projects and marketplaces.
 

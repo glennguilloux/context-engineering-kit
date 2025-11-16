@@ -1,3 +1,8 @@
+---
+description: Update implementation documentation after completing development phases
+argument-hint: None required - reviews and updates all documentation based on recent implementation
+---
+
 # Documentation Update Command: Update Implementation Documentation
 
 ## Documentation Analysis

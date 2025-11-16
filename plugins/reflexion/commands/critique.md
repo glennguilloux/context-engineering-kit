@@ -1,3 +1,8 @@
+---
+description: Comprehensive multi-perspective review using specialized judges with debate and consensus building
+argument-hint: Optional file paths, commits, or context to review (defaults to recent changes)
+---
+
 # Work Critique Command
 
 <task>
@@ -32,6 +37,7 @@ Before starting the review, understand what was done:
    - Any constraints or assumptions
 
 3. **Summarize scope for confirmation**:
+
    ```
    📋 Review Scope:
    - Original request: [summary]
@@ -48,6 +54,7 @@ Use the Task tool to spawn three specialized judge agents in parallel. Each judg
 #### Judge 1: Requirements Validator
 
 **Prompt for Agent:**
+
 ```
 You are a Requirements Validator conducting a thorough review of completed work.
 
@@ -103,6 +110,7 @@ Be specific, objective, and cite examples from the code.
 #### Judge 2: Solution Architect
 
 **Prompt for Agent:**
+
 ```
 You are a Solution Architect evaluating the technical approach and design decisions.
 
@@ -177,6 +185,7 @@ Be objective and consider the context of the project (size, team, constraints).
 #### Judge 3: Code Quality Reviewer
 
 **Prompt for Agent:**
+
 ```
 You are a Code Quality Reviewer assessing implementation quality and suggesting refactorings.
 

@@ -1,3 +1,8 @@
+---
+description: Execute feature implementation following task list with TDD approach and quality review
+argument-hint: Optional implementation preferences or specific tasks to prioritize
+---
+
 # Implement Feature
 
 Based on current git branch if it written in format `specs/<number-padded-to-3-digits>-<kebab-case-title>`, read feature specification from `specs/<number-padded-to-3-digits>-<kebab-case-title>/**.md` files. It was written during previus phases of SDD workflow (Discovery, Research, Planining, etc.).

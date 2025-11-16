@@ -1,3 +1,8 @@
+---
+description: Interactive assistant for creating new Claude commands with proper structure, patterns, and MCP tool integration
+argument-hint: Optional command name or description of command purpose
+---
+
 # Command Creator Assistant
 
 <task>

@@ -1,3 +1,8 @@
+---
+description: Document completed feature implementation with API guides, architecture updates, and lessons learned
+argument-hint: Optional documentation focus areas or specific sections to update
+---
+
 # Documentation Update Command: Update Implementation Documentation
 
 Based on current git branch if it written in format `specs/<number-padded-to-3-digits>-<kebab-case-title>`, read feature specification from `specs/<number-padded-to-3-digits>-<kebab-case-title>/**.md` files. It was written during previus phases of SDD workflow (Discovery, Research, Planining, etc.).

@@ -1,6 +1,6 @@
 ---
-name: apply-anthropic-skill-best-practices
-description: Quite usefull guide for skill development, but can be too verbose, which can decrease the effectiveness of the model if applied for simple skills.
+description: Comprehensive guide for skill development based on Anthropic's official best practices - use for complex skills requiring detailed structure
+argument-hint: Optional skill name or path to skill being reviewed
 ---
 
 # Anthropic's official skill authoring best practices

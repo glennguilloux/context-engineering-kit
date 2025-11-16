@@ -1,3 +1,8 @@
+---
+description: Iterative PDCA cycle for systematic experimentation and continuous improvement
+argument-hint: Optional improvement goal or problem to address
+---
+
 # Plan-Do-Check-Act (PDCA)
 
 Apply PDCA cycle for continuous improvement through iterative problem-solving and process optimization.

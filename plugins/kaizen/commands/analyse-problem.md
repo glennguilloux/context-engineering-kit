@@ -1,3 +1,8 @@
+---
+description: Comprehensive A3 one-page problem analysis with root cause and action plan
+argument-hint: Optional problem description to document
+---
+
 # A3 Problem Analysis
 
 Apply A3 problem-solving format for comprehensive, single-page problem documentation and resolution planning.

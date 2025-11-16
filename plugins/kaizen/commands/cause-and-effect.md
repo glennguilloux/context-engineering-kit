@@ -1,3 +1,8 @@
+---
+description: Systematic Fishbone analysis exploring problem causes across six categories
+argument-hint: Optional problem description to analyze
+---
+
 # Cause and Effect Analysis
 
 Apply Fishbone (Ishikawa) diagram analysis to systematically explore all potential causes of a problem across multiple categories.

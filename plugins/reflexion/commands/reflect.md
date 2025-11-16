@@ -1,4 +1,11 @@
+---
+description: Reflect on previus response and output, based on Self-refinement framework for iterative improvement with complexity triage and verification
+argument-hint: None required - automatically reviews recent work output
+---
+
 # Self-Refinement and Iterative Improvement Framework
+
+Reflect on previus response and output.
 
 ## TASK COMPLEXITY TRIAGE
 

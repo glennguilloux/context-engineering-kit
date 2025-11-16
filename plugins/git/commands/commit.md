@@ -1,3 +1,8 @@
+---
+description: Create well-formatted commits with conventional commit messages and emoji
+argument-hint: Optional flags like --no-verify to skip pre-commit checks
+---
+
 # Claude Command: Commit
 
 This command helps you create well-formatted commits with conventional commit messages and emoji.
