@@ -1,3 +1,8 @@
+<picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/CEK-header.png">
+    <img src="docs/assets/CEK-header.png" alt="Context Engineering Kit - advanced context engineering techniques" />
+</picture>
+
 # Context Engineering Kit
 
 Hand-crafted collection of advanced context engineering techniques and patterns with minimal token footprint focused on improving agent result quality.
@@ -53,6 +58,14 @@ Each installed plugin loads only its specific agents, commands, and skills into 
 > /reflexion:memorize
 ```
 
+## Update Marketplace
+
+To get the latest plugin listings and updates from the marketplace:
+
+```bash
+/plugin marketplace update NeoLabHQ/context-engineering-kit
+```
+
 ## Plugins List
 
 To view all available plugins:
@@ -81,7 +94,7 @@ Collection of commands that force LLM to reflect on previous response and output
 **How to install**
 
 ```bash
-/plugin install reflexion@NeoLabHQ/quality-agent
+/plugin install reflexion@NeoLabHQ/context-engineering-kit
 ```
 
 **Commands**
@@ -120,7 +133,7 @@ Comprehensive code review commands using multiple specialized agents for thoroug
 **How to install**
 
 ```bash
-/plugin install code-review@NeoLabHQ/quality-agent
+/plugin install code-review@NeoLabHQ/context-engineering-kit
 ```
 
 **Commands**
@@ -146,7 +159,7 @@ Commands for streamlined Git operations including commits and pull request creat
 **How to install**
 
 ```bash
-/plugin install git@NeoLabHQ/quality-agent
+/plugin install git@NeoLabHQ/context-engineering-kit
 ```
 
 **Commands**
@@ -163,7 +176,7 @@ Commands and skills for test-driven development with anti-pattern detection.
 **How to install**
 
 ```bash
-/plugin install tdd@NeoLabHQ/quality-agent
+/plugin install tdd@NeoLabHQ/context-engineering-kit
 ```
 
 **Skills**
@@ -177,7 +190,7 @@ Skills for subagent-driven development with quality gates between tasks.
 **How to install**
 
 ```bash
-/plugin install sadd@NeoLabHQ/quality-agent
+/plugin install sadd@NeoLabHQ/context-engineering-kit
 ```
 
 **Skills**
@@ -191,7 +204,7 @@ Commands for setting up domain-driven development best practices focused on code
 **How to install**
 
 ```bash
-/plugin install ddd@NeoLabHQ/quality-agent
+/plugin install ddd@NeoLabHQ/context-engineering-kit
 ```
 
 **Commands**
@@ -209,7 +222,7 @@ Comprehensive specification-driven development workflow using specialized agents
 **How to install**
 
 ```bash
-/plugin install sdd@NeoLabHQ/quality-agent
+/plugin install sdd@NeoLabHQ/context-engineering-kit
 ```
 
 #### Usage workflow
@@ -260,7 +273,7 @@ Continuous improvement methodology inspired by Japanese philosophy and Agile pra
 **How to install**
 
 ```bash
-/plugin install kaizen@NeoLabHQ/quality-agent
+/plugin install kaizen@NeoLabHQ/context-engineering-kit
 ```
 
 **Commands**
@@ -283,7 +296,7 @@ Commands and skills for creating and refining Claude Code extensions.
 **How to install**
 
 ```bash
-/plugin install customaize-agent@NeoLabHQ/quality-agent
+/plugin install customaize-agent@NeoLabHQ/context-engineering-kit
 ```
 
 **Commands**
@@ -292,6 +305,7 @@ Commands and skills for creating and refining Claude Code extensions.
 - `/customaize-agent:create-skill` - Guide for creating effective skills with test-driven approach
 - `/customaize-agent:create-hook` - Create and configure git hooks with intelligent project analysis and automated testing
 - `/customaize-agent:test-skill` - Verify skills work under pressure and resist rationalization using RED-GREEN-REFACTOR cycle
+- `/customaize-agent:test-prompt` - Test any prompt (commands, hooks, skills, subagent instructions) using RED-GREEN-REFACTOR cycle with subagents
 - `/customaize-agent:apply-anthropic-skill-best-practices` - Comprehensive guide for skill development based on Anthropic's official best practices
 
 **Skills**
@@ -305,7 +319,7 @@ Commands for project analysis and documentation management.
 **How to install**
 
 ```bash
-/plugin install docs@NeoLabHQ/quality-agent
+/plugin install docs@NeoLabHQ/context-engineering-kit
 ```
 
 **Commands**
@@ -319,7 +333,7 @@ Commands for setting up language and framework-specific best practices.
 **How to install**
 
 ```bash
-/plugin install tech-stack@NeoLabHQ/quality-agent
+/plugin install tech-stack@NeoLabHQ/context-engineering-kit
 ```
 
 **Commands**
@@ -333,7 +347,7 @@ Commands for integrating Model Context Protocol servers with your project.
 **How to install**
 
 ```bash
-/plugin install mcp@NeoLabHQ/quality-agent
+/plugin install mcp@NeoLabHQ/context-engineering-kit
 ```
 
 **Commands**
