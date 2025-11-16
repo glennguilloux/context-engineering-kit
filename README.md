@@ -67,7 +67,7 @@ To view all available plugins:
 - [Test-Driven Development](#test-driven-development) - Introduces commands for test-driven development, common anti-patterns and skills for testing using subagents.
 - [Subagent-Driven Development](#subagent-driven-development) - Introduces skills for subagent-driven development, dispatches fresh subagent for each task with code review between tasks, enabling fast iteration with quality gates.
 - [Domain-Driven Development](#domain-driven-development) - Introduces commands to update CLAUDE.md with best practices for domain-driven development, focused on code quality, and includes Clean Architecture, SOLID principles, and other design patterns.
-- [Spec-Driven Development](#spec-driven-development) - Introduces commands for specification-driven development, based on Github Spec Kit and OpenSpec. Uses specialized agents for effective context management and quality review.
+- [Spec-Driven Development](#spec-driven-development) - Introduces commands for specification-driven development, based on Github Spec Kit, OpenSpec and BMad Method. Uses specialized agents for effective context management and quality review.
 - [Kaizen](#kaizen) - Inspired by Japanese continuous improvement philosophy, Agile and Lean development practices. Introduces commands for analysis of root causes of issues and problems, including 5 Whys, Cause and Effect Analysis, and other techniques.
 - [Customaize Agent](#customaize-agent) - Commands and skills for writing and refining commands, hooks, and skills for Claude Code, includes Anthropic Best Practices and [Agent Persuasion Principles](https://arxiv.org/abs/2508.00614) that can be useful for sub-agent workflows.
 - [Docs](#docs) - Commands for analyzing projects, writing and refining documentation.
@@ -210,6 +210,31 @@ Comprehensive specification-driven development workflow using specialized agents
 
 ```bash
 /plugin install sdd@NeoLabHQ/quality-agent
+```
+
+#### Usage workflow
+
+```bash
+# start claude code
+claude 
+# setup project constitution
+/sdd:00-setup Use NestJS as backend framework, strictly follod SOLID principles and Clean Architecture.
+
+# Generate new feature specification
+/sdd:01-specify Add user authentication with OAuth
+
+# Plan feature development
+/sdd:02-plan 
+
+# Create detailed implementation tasks
+/sdd:03-tasks 
+
+# Execute feature implementation
+/sdd:04-implement 
+
+# Document completed feature implementation
+/sdd:05-document Focus on API documentation
+
 ```
 
 **Commands**
