@@ -1,12 +1,6 @@
-# Quality Agent Plugins
+# Context Engineering Kit Plugins
 
 This directory contains hand-crafted Claude Code plugins focused on improving agent result quality.
-
-## Plugin Categories
-
-- **code-quality/** - Plugins for code review, linting, and quality checks
-- **testing/** - Plugins for test generation and validation
-- **documentation/** - Plugins for documentation generation and maintenance
 
 ## Plugin Structure
 

@@ -1,23 +1,22 @@
-# Contributing to Quality Agent
+# Contributing to Context Engineering Kit
 
-Thank you for your interest in contributing to the Quality Agent marketplace!
+Thank you for your interest in contributing to the Context Engineering Kit marketplace!
 
 ## Philosophy
 
-Quality Agent is focused on:
-- **Quality over quantity** - Each plugin should meaningfully improve agent output
-- **Minimal token footprint** - Efficient prompts that don't bloat context
-- **Easy installation** - Simple, clear setup instructions
-- **Hand-crafted excellence** - Carefully designed, not auto-generated
+Context Engineering Kit is focused on:
+
+- **Quality over quantity** - Each plugin should meaningfully improve agent output, just generating as much commands as possible, do not acceptable.
+- **Minimal token footprint** - Use efficient and predictable approaches for loading information into context. Specifically:
+  - **Commands over skills** - Commands load on-demand, skills descrition are by default loaded into context and maybe not loaded by agent when needed. So use skills only when it clearly more suitable for the use case.
+  - **Specialized agents** - Use specialized agents with broad context, when they can be used instead of skill or command. It allow to orcestrator agent more predictable and stable, and decrease chances of context pollution and hallucinations for specialized agents.
+  - **Setup-commands** - Use setup commands to update CLAUDE.md file when some short context should be loadeed each time per project for agent. This insure that model really see important information, instead of chance, when using skills.
 
 ## Creating a Plugin
 
 ### 1. Choose the Right Category
 
-Place your plugin in the appropriate directory:
-- `plugins/code-quality/` - Code review, linting, style checks
-- `plugins/testing/` - Test generation, coverage, validation
-- `plugins/documentation/` - Docs generation, README updates
+Place your prompt files in the appropriate `plugins/<plugin>` directory or create new one if needed.
 
 ### 2. Plugin Structure
 
@@ -70,18 +69,18 @@ Create `plugin.json` with:
 Your `README.md` should include:
 
 1. **Clear purpose** - What problem does it solve?
-2. **Installation** - Copy-paste ready instructions
+2. **Installation** - Copy-paste ready instructions, for example `setup` commands if it exists.
 3. **Usage examples** - Show real use cases
-4. **Token impact** - Honest about context usage
-5. **Limitations** - What it doesn't do
+4. **How it works** - High level overview of how the plugin works, and how it can be used in real projects.
 
 ### 5. Quality Guidelines
 
 - **Prompts should be concise** - Every token counts
-- **Test thoroughly** - Verify it works as documented
-- **Provide examples** - Show real usage scenarios
+- **Test thoroughly** - Verify it works as documented - you can use `customaize-agent` plugin to test your plugin.
 - **Be specific** - Avoid vague or overly general instructions
-- **Focus on quality** - Better to do one thing well than many things poorly
+- **Focus on quality** - Better to do one thing well than many things poorly.
+- **Use MUST and SHOULD tags** - Use MUST and SHOULD tags to describe the requirements for the plugin to agent.
+- **Use examples** - Use examples to show agent how to behave in different scenarios.
 
 ## Submission Process
 
@@ -89,7 +88,7 @@ Your `README.md` should include:
 2. Create a new branch: `git checkout -b plugin/your-plugin-name`
 3. Add your plugin with all required files
 4. Test your plugin thoroughly
-5. Update the main catalog in `PLUGINS.md`
+5. Update the main catalog in `.claude-plugin/marketplace.json`
 6. Submit a pull request
 
 ## Pull Request Template
@@ -100,15 +99,7 @@ Your PR should include:
 - [ ] `plugin.json` is valid and complete
 - [ ] `README.md` includes all required sections
 - [ ] Tested with Claude Code
-- [ ] Token usage is documented
-- [ ] Added to `PLUGINS.md` catalog
-
-## Code of Conduct
-
-- Be respectful and constructive
-- Focus on quality over quantity
-- Help others improve their plugins
-- Share knowledge and best practices
+- [ ] Added to `.claude-plugin/marketplace.json` catalog
 
 ## Questions?
 
