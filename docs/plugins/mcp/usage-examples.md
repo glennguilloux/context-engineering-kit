@@ -79,6 +79,70 @@ Setting up documentation for: react, @reduxjs/toolkit, express, postgresql, type
 
 ---
 
+### Setting Up Codebase Visualization with Codemap
+
+**Scenario**: You want to visualize your codebase structure, track changes, and enable AI-assisted navigation hooks.
+
+```bash
+# Set up Codemap CLI for codebase visualization
+> /mcp:setup-codemap-cli
+```
+
+**Expected Flow**:
+
+1. Command checks if Codemap is already installed via `codemap --version`
+2. If not installed, detects your OS and provides installation instructions
+3. Fetches latest Codemap documentation from GitHub
+4. Guides through installation (Homebrew for macOS/Linux, Scoop for Windows)
+5. Verifies installation with test commands
+6. Updates CLAUDE.md with usage instructions and hook configuration
+7. Adds `.codemap/` to .gitignore
+
+**Setup Interaction**:
+
+```
+Checking Codemap installation...
+- codemap: Not found
+
+Detected OS: Linux
+
+Installation instructions:
+  brew tap JordanCoin/tap && brew install codemap
+
+Run the above command and then continue.
+```
+
+**After Successful Setup**:
+
+```
+Codemap CLI is now installed!
+
+Testing:
+- codemap --version: 0.1.0
+- codemap .: Working
+
+Updated CLAUDE.md with Codemap usage instructions.
+Updated .gitignore with .codemap/ directory.
+```
+
+**Using Codemap**:
+
+```bash
+# Visualize project structure
+> codemap .
+
+# See what changed vs main branch
+> codemap --diff --ref master
+
+# Understand dependencies
+> codemap --deps .
+
+# Filter by file type
+> codemap --only ts,tsx .
+```
+
+---
+
 ### Setting Up Semantic Code Analysis for a Large Codebase
 
 **Scenario**: You're working on a large monorepo and need better code navigation than grep can provide.
@@ -497,4 +561,22 @@ Try:
 # Semantic analysis aids root cause investigation
 > /mcp:setup-serena-mcp
 > /kaizen:why "Why is the authentication failing?"
+
+# Codemap visualizes codebase for root cause tracing
+> /mcp:setup-codemap-cli
+> /kaizen:root-cause-tracing
+```
+
+### With Feature Development Workflow
+
+```bash
+# Set up complete MCP tooling for a new project
+> /mcp:setup-context7-mcp react, typescript, prisma
+> /mcp:setup-serena-mcp
+> /mcp:setup-codemap-cli
+
+# Now Claude has:
+# - Up-to-date documentation access (Context7)
+# - Semantic code navigation (Serena)
+# - Codebase visualization and change tracking (Codemap)
 ```

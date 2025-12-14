@@ -10,11 +10,12 @@ Simplify integration of MCP servers into your development workflow.
 
 The MCP (Model Context Protocol) plugin helps you integrate MCP servers into your development environment. MCP is an open protocol that enables AI assistants to interact with external services, databases, and tools through a standardized interface.
 
-This plugin provides three key commands:
+This plugin provides four key commands:
 
 1. **Context7 MCP Setup** - Access up-to-date documentation for any library or framework
 2. **Serena MCP Setup** - Enable semantic code analysis and symbol-based operations
-3. **Build MCP** - Create custom MCP servers for any service or API
+3. **Codemap CLI Setup** - Enable intelligent codebase visualization and navigation
+4. **Build MCP** - Create custom MCP servers for any service or API
 
 Each command guide through the MCP setup processes and updates your project's CLAUDE.md file to ensure consistent MCP usage across your team.
 
@@ -31,6 +32,9 @@ Open Claude Code in your project directory and run the following commands to set
 
 # Enable semantic code analysis
 > /mcp:setup-serena-mcp
+
+# Set up codebase visualization
+> /mcp:setup-codemap-cli
 ```
 
 [Usage Examples](./usage-examples.md)
@@ -183,6 +187,96 @@ Key usage points:
 - Re-index the project after major structural changes
 - Combine with Context7 for documentation + code understanding
 - Prefer symbol-based navigation over grep for code exploration
+
+---
+
+### /mcp:setup-codemap-cli - Codebase Visualization
+
+Set up Codemap CLI for intelligent codebase visualization and navigation, providing tree views, dependency analysis, and change tracking.
+
+- Purpose - Enable comprehensive codebase understanding and navigation
+- Output - Working Codemap installation with CLAUDE.md configuration
+
+```bash
+/mcp:setup-codemap-cli [OS type or configuration preferences]
+```
+
+#### What is Codemap?
+
+Codemap is a CLI tool that provides intelligent codebase visualization and navigation. It generates tree views, tracks changes, analyzes dependencies, and integrates with Claude Code through hooks.
+
+Benefits:
+- Visualize project structure with smart filtering
+- Track changes vs main branch at a glance
+- Analyze file dependencies and import relationships
+- Integrate with Claude Code through session hooks
+- Generate city skyline visualizations of codebase
+
+#### Arguments
+
+Optional OS type or configuration preferences. The command auto-detects your operating system and provides appropriate installation instructions.
+
+Examples:
+- (no arguments) - Auto-detect OS and install
+- `macos` - macOS-specific instructions
+- `windows` - Windows-specific instructions
+
+#### How It Works
+
+1. **Installation Check**: Verifies if Codemap is already installed via `codemap --version`
+2. **Documentation Loading**: Fetches latest Codemap documentation from GitHub
+3. **Installation Guidance**: Provides OS-specific installation commands (Homebrew for macOS/Linux, Scoop for Windows)
+4. **Verification**: Tests installation with basic commands
+5. **CLAUDE.md Update**: Adds Codemap usage instructions and hook configuration
+6. **.gitignore Update**: Adds `.codemap/` directory to ignore list
+
+#### Usage Examples
+
+```bash
+# Standard setup with auto-detection
+> /mcp:setup-codemap-cli
+
+# Specify your OS
+> /mcp:setup-codemap-cli macos
+> /mcp:setup-codemap-cli windows
+```
+
+After setup, your CLAUDE.md will include:
+
+```markdown
+## Use Codemap CLI for Codebase Navigation
+
+Codemap CLI is available for intelligent codebase visualization and navigation.
+
+### Required Usage
+
+IMPORTANT: Agent MUST run `codemap hook session-start` after first user input.
+
+- **Working State**: Use `codemap --diff --ref master` to research changes.
+
+### Quick Start
+
+codemap .                    # Project tree
+codemap --only md .          # Just Markdown files
+codemap --diff --ref master  # What changed vs master
+codemap --deps .             # Dependency flow
+
+### Available Hooks
+
+| Command | Description |
+|---------|-------------|
+| `codemap hook session-start` | Full tree, hubs, branch diff |
+| `codemap hook pre-edit` | Who imports file being edited |
+| `codemap hook post-edit` | Impact of changes |
+```
+
+#### Best Practices
+
+- Run at project start to establish codebase understanding
+- Use hooks to maintain context during long coding sessions
+- Combine `--diff` with `--ref` to compare against your main branch
+- Use `--deps` to understand module relationships before refactoring
+- Exclude generated files and assets with `--exclude` for cleaner output
 
 ---
 
