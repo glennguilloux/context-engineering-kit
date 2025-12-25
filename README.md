@@ -50,7 +50,7 @@ Each installed plugin loads only its specific agents, commands, and skills into 
 ### Step 3: Use Plugin
 
 ```bash
-# Use it after completing any task
+# Include in your prompt "reflect" word
 > claude "implement user authentication, then reflect"
 
 # Claude implements user authentication, then automatically runs /reflexion:reflect

@@ -31,7 +31,7 @@ On top of that, the plugin is based on the [Agentic Context Engineering](https:/
 # Install the plugin
 /plugin install reflexion@NeoLabHQ/context-engineering-kit
 
-# Use it after completing any task
+# Include in your prompt "reflect" word
 > claude "implement user authentication, then reflect"
 
 # Claude implements user authentication, then automatically runs /reflexion:reflect
