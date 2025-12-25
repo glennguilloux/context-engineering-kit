@@ -118,7 +118,7 @@ describe('onStopHandler', () => {
 
       const result = await stop(payload, sessionData)
 
-      expect(result).toEqual({ debug: '⚠️ No relevant session data found, skipping reflection' })
+      expect(result).toEqual({ debug: '⚠️ Not enough session data found, skipping reflection' })
     })
 
     it('should skip reflection when session has only non-relevant hooks', async () => {
@@ -133,7 +133,7 @@ describe('onStopHandler', () => {
 
       const result = await stop(payload, sessionData)
 
-      expect(result).toEqual({ debug: '⚠️ No relevant session data found, skipping reflection' })
+      expect(result).toEqual({ debug: '⚠️ Not enough session data found, skipping reflection' })
     })
   })
 

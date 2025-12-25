@@ -14,8 +14,8 @@ export const stop: StopHandler = async (payload, sessionData) => {
       // All other hooks are irrelevant to prevent cycles
       .filter(entry => entry.hookType === 'UserPromptSubmit' || entry.hookType === 'Stop')
 
-    if (invocations.length === 0) {
-      return {debug: '⚠️ No relevant session data found, skipping reflection'}
+    if (invocations.length < 2) {
+      return {debug: '⚠️ Not enough session data found, skipping reflection'}
     }
 
     // Last hook before current stop triggered
