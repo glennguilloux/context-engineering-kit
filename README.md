@@ -50,10 +50,10 @@ Each installed plugin loads only its specific agents, commands, and skills into 
 ### Step 3: Use Plugin
 
 ```bash
-# Include in your prompt "reflect" word
-> claude "implement user authentication, then reflect"
+> claude "implement user authentication"
+# Claude implements user authentication, then you can ask it to reflect on implementation
 
-# Claude implements user authentication, then automatically runs /reflexion:reflect
+> /reflexion:reflect
 # It analyses results and suggests improvements
 # If issues are obvious, it will fix them immediately
 # If they are minor, it will suggest improvements that you can respond to
@@ -64,15 +64,15 @@ Each installed plugin loads only its specific agents, commands, and skills into 
 > /reflexion:memorize
 ```
 
-Alternatively, you can use the `/reflexion:reflect` command directly:
+Alternatively, you can use the `reflect` word in intial prompt:
 
 ```bash
-> claude "fix the bug"
-# Claude fixes the bug
-
-> /reflexion:reflect
-# It will reflect on the bug fix and try to resolve found issues.
+> claude "implement user authentication, then reflect"
+# Claude implements user authentication, 
+# then hook automatically runs /reflexion:reflect
 ```
+
+In order to use this hook, need to have `bun` installed. But for overral command in not required.
 
 ## Documentation
 

@@ -30,30 +30,32 @@ On top of that, the plugin is based on the [Agentic Context Engineering](https:/
 ```bash
 # Install the plugin
 /plugin install reflexion@NeoLabHQ/context-engineering-kit
+```
 
-# Include in your prompt "reflect" word
-> claude "implement user authentication, then reflect"
+```bash
+> claude "implement user authentication"
+# Claude implements user authentication, then you can ask it to reflect on implementation
 
-# Claude implements user authentication, then automatically runs /reflexion:reflect
+> /reflexion:reflect
 # It analyses results and suggests improvements
 # If issues are obvious, it will fix them immediately
 # If they are minor, it will suggest improvements that you can respond to
 > fix the issues
 
-# If you would like it to avoid issues that were found during reflection to appear again, 
+# If you would like it to avoid issues that were found during reflection to appear again,
 # ask claude to extract resolution strategies and save the insights to project memory
 > /reflexion:memorize
 ```
 
-Alternatively, you can use the `/reflexion:reflect` command directly:
+Alternatively, you can use the `reflect` word in initial prompt:
 
 ```bash
-> claude "fix the bug"
-# Claude fixes the bug
-
-> /reflexion:reflect
-# It will reflect on the bug fix and try to resolve found issues.
+> claude "implement user authentication, then reflect"
+# Claude implements user authentication,
+# then hook automatically runs /reflexion:reflect
 ```
+
+In order to use this hook, need to have `bun` installed. But for overall command it is not required.
 
 [Usage Examples](./usage-examples.md)
 
