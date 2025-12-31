@@ -52,7 +52,6 @@ Execute tasks through competitive generation, multi-judge evaluation, and eviden
 - Purpose - Generate multiple solutions competitively, evaluate with independent judges, synthesize best elements
 - Pattern - Generate-Critique-Synthesize (GCS) with self-critique, verification loops, and adaptive strategy selection
 - Output - Superior solution combining best elements from all candidates
-- Cost - Variable (6-7 agents depending on strategy: 3 generators + 3 judges + 0-1 synthesizer/polish agent)
 - Quality - Enhanced with Constitutional AI self-critique, Chain of Verification, and intelligent strategy selection
 - Efficiency - 15-20% average cost savings through adaptive strategy (polish clear winners, redesign failures)
 
@@ -82,6 +81,19 @@ Phase 3: Evidence-Based Synthesis        │                       │
          Synthesizer ─────────────────────┴───────────────────────┴─→ Final Solution
 ```
 
+#### Usage
+
+```bash
+# Basic usage
+/do-competitively <task-description>
+
+# With explicit output specification
+/do-competitively "Create authentication middleware" --output "src/middleware/auth.ts"
+
+# With specific evaluation criteria
+/do-competitively "Design user schema" --criteria "scalability,security,developer-experience"
+```
+
 #### When to Use
 
 Use this command when:
@@ -98,19 +110,6 @@ Do NOT use when:
 - Time-sensitive changes
 - Trivial bug fixes or typos
 - Tasks with only one viable approach
-
-#### Usage
-
-```bash
-# Basic usage
-/do-competitively <task-description>
-
-# With explicit output specification
-/do-competitively "Create authentication middleware" --output "src/middleware/auth.ts"
-
-# With specific evaluation criteria
-/do-competitively "Design user schema" --criteria "scalability,security,developer-experience"
-```
 
 #### Quality Enhancement Techniques
 
@@ -142,15 +141,258 @@ The competitive execution pattern combines insights from:
 - A/B Testing - Compare alternatives with clear metrics
 - Ensemble Methods - Combining multiple models improves performance
 
+### tree-of-thoughts - Tree of Thoughts with Adaptive Strategy
 
+Execute complex reasoning tasks through systematic exploration of solution space, pruning unpromising branches, expanding viable approaches, and synthesizing the best solution.
+
+- Purpose - Explore multiple solution paths before committing to full implementation
+- Pattern - Tree of Thoughts (ToT) with adaptive strategy selection
+- Output - Superior solution combining systematic exploration with evidence-based synthesis
+- Quality - Enhanced with probability estimates, multi-stage evaluation, and adaptive strategy
+- Efficiency - 15-20% average cost savings through adaptive strategy (polish clear winners, redesign failures)
+
+#### Pattern: Tree of Thoughts (ToT)
+
+This command implements a six-phase systematic reasoning pattern with adaptive strategy selection:
+
+```
+Phase 1: Exploration (Propose Approaches)
+         ┌─ Agent A → Proposals with probabilities ─┐
+Task ───┼─ Agent B → Proposals with probabilities ─┼─┐
+         └─ Agent C → Proposals with probabilities ─┘ │
+                                                       │
+Phase 2: Pruning (Vote for Best 3)                    │
+         ┌─ Judge 1 → Votes + Rationale ─┐            │
+         ├─ Judge 2 → Votes + Rationale ─┼────────────┤
+         └─ Judge 3 → Votes + Rationale ─┘            │
+                 │                                     │
+                 ├─→ Select Top 3 Proposals            │
+                 │                                     │
+Phase 3: Expansion (Develop Full Solutions)           │
+         ┌─ Agent A → Solution A ─┐                   │
+         ├─ Agent B → Solution B ─┼───────────────────┤
+         └─ Agent C → Solution C ─┘                   │
+                                                       │
+Phase 4: Evaluation (Judge Full Solutions)            │
+         ┌─ Judge 1 → Report 1 ─┐                     │
+         ├─ Judge 2 → Report 2 ─┼─────────────────────┤
+         └─ Judge 3 → Report 3 ─┘                     │
+                                                       │
+Phase 4.5: Adaptive Strategy Selection                │
+         Analyze Consensus ───────────────────────────┤
+                ├─ Clear Winner? → SELECT_AND_POLISH  │
+                ├─ All Flawed (<3.0)? → REDESIGN      │
+                └─ Split Decision? → FULL_SYNTHESIS   │
+                                         │             │
+Phase 5: Synthesis (Only if FULL_SYNTHESIS)           │
+         Synthesizer ────────────────────┴─────────────┴─→ Final Solution
+```
+
+#### Usage
+
+```bash
+# Basic usage
+/tree-of-thoughts <task-description>
+
+# With explicit output specification
+/tree-of-thoughts "Design authentication middleware" --output "specs/auth.md"
+
+# With specific evaluation criteria
+/tree-of-thoughts "Design caching strategy" --criteria "performance,memory-efficiency,simplicity"
+```
+
+#### When to Use
+
+✅ **Use ToT when:**
+- Solution space is large and poorly understood
+- Wrong approach chosen early would waste significant effort
+- Task has multiple valid approaches with different trade-offs
+- Quality is more important than speed
+- You need to explore before committing
+
+❌ **Don't use ToT when:**
+- Solution approach is obvious
+- Task is simple or well-defined
+- Speed matters more than exploration
+- Only one reasonable approach exists
+
+#### Quality Enhancement Techniques
+
+| Phase | Technique | Benefit |
+|-------|-----------|---------|
+| **Phase 1** | Probabilistic Sampling | Explorers generate approaches with probability estimates, encouraging diversity |
+| **Phase 2** | Multi-Judge Pruning | Independent judges vote on top 3 proposals, reducing groupthink |
+| **Phase 3** | Feedback-Aware Expansion | Expanders address concerns raised during pruning |
+| **Phase 4** | Chain of Verification | Judges verify evaluations with structured questions, reducing bias |
+| **Phase 4.5** | Adaptive Strategy Selection | Orchestrator parses structured outputs to select optimal strategy |
+| **Phase 5** | Evidence-Based Synthesis | Combines proven best elements rather than creating new solutions |
+
+#### Theoretical Foundation
+
+Based on:
+- **Tree of Thoughts** (Yao et al., 2023) - Systematic exploration and pruning
+- **Self-Consistency** (Wang et al., 2023) - Multiple reasoning paths
+- **Constitutional AI** (Bai et al., 2022) - Critique and refinement
+- **LLM-as-Judge** (Zheng et al., 2023) - Multi-perspective evaluation
+- **Chain-of-Verification** (Dhuliawala et al., 2023) - Structured verification reduces bias
+
+### judge-with-debate - Multi-Agent Debate Evaluation
+
+Evaluate solutions through iterative multi-judge debate where independent judges analyze, challenge each other's assessments, and refine evaluations until reaching consensus or maximum rounds.
+
+- Purpose - Rigorous evaluation through adversarial critique and evidence-based argumentation
+- Pattern - Independent Analysis → Iterative Debate → Consensus or Disagreement Report
+- Output - Consensus evaluation report with averaged scores and debate summary, or disagreement report flagging unresolved issues
+- Quality - Enhanced through multi-perspective analysis, evidence-based argumentation, and iterative refinement
+- Efficiency - Early termination when consensus reached or judges stop converging
+
+## Pattern: Debate-Based Evaluation
+
+This command implements iterative multi-judge debate with filesystem-based communication:
+
+```
+Phase 1: Independent Analysis
+         ┌─ Judge 1 → report.1.md ─┐
+Solution ┼─ Judge 2 → report.2.md ─┼─┐
+         └─ Judge 3 → report.3.md ─┘ │
+                                     │
+Phase 2: Debate Round (iterative)   │
+    Each judge reads others' reports │
+         ↓                           │
+    Argue + Defend + Challenge       │
+         ↓                           │
+    Revise if convinced ─────────────┤
+         ↓                           │
+    Check consensus (≤0.5 overall,   │
+                     ≤1.0 per-criterion)
+         ├─ Yes → Consensus Report   │
+         └─ No → Next Round ─────────┘
+                (max 3 rounds)
+```
+
+#### Usage
+
+```bash
+# Basic usage
+/judge-with-debate --solution "src/api/users.ts" --task "REST API implementation"
+
+# With specific criteria
+/judge-with-debate \
+  --solution "src/api/users.ts" \
+  --task "Implement REST API for user management" \
+  --criteria "correctness:30,design:25,security:20,performance:15,docs:10" \
+  --output "evaluation/"
+
+# Evaluating design documents
+/judge-with-debate \
+  --solution "specs/architecture.md" \
+  --task "System architecture design" \
+  --criteria "completeness:30,feasibility:25,scalability:20,clarity:15,maintainability:10"
+```
+
+#### When to Use
+
+✅ **Use debate when:**
+- High-stakes decisions requiring rigorous evaluation
+- Subjective criteria where perspectives differ legitimately
+- Complex solutions with many evaluation dimensions
+- Quality is more important than speed/cost
+- Initial judge assessments show significant disagreement
+- You need defensible, evidence-based evaluation
+
+❌ **Skip debate when:**
+- Objective pass/fail criteria (use simple validation)
+- Trivial solutions (single judge sufficient)
+- Time/cost constraints prohibit multiple rounds
+- Clear rubrics leave little room for interpretation
+- Evaluation criteria are purely mechanical (linting, formatting)
+
+#### Quality Enhancement Techniques
+
+| Phase | Technique | Benefit |
+|-------|-----------|---------|
+| **Phase 1** | Chain of Verification | Judges generate verification questions and self-critique before submitting initial assessment |
+| **Phase 1** | Evidence Requirement | All scores must be supported by specific quotes from solution |
+| **Phase 2** | Filesystem Communication | Judges read each other's reports directly, orchestrator never mediates (prevents context overflow) |
+| **Phase 2** | Structured Argumentation | Judges must defend positions AND challenge others with counter-evidence |
+| **Phase 2** | Explicit Revision | Judges must document what changed their mind or why they maintained their position |
+| **Consensus** | Adaptive Termination | Stops early if consensus reached, max rounds hit, or judges stop converging |
+
+#### Process Flow
+
+**Step 1: Independent Analysis**
+- 3 judges analyze solution in parallel
+- Each writes comprehensive report to `report.[1|2|3].md`
+- Includes per-criterion scores, evidence, overall assessment
+
+**Step 2: Check Consensus**
+- Extract all scores from reports
+- Consensus if: overall scores within 0.5 AND all criterion scores within 1.0
+- If achieved → generate consensus report and complete
+
+**Step 3: Debate Round** (if no consensus, max 3 rounds)
+- Each judge reads their own report + others' reports from filesystem
+- Identifies disagreements (>1 point gap on any criterion)
+- Defends their ratings with evidence
+- Challenges others' ratings with counter-evidence
+- Revises scores if convinced by others' arguments
+- Appends "Debate Round N" section to their own report
+
+**Step 4: Repeat** until consensus, max rounds, or lack of convergence
+
+**Step 5: Final Report**
+- If consensus: averaged scores, strengths/weaknesses, debate summary
+- If no consensus: disagreement report with flag for human review
+
+#### Theoretical Foundation
+
+Based on:
+- **Multi-Agent Debate** (Du et al., 2023) - Adversarial critique improves reasoning accuracy
+- **LLM-as-a-Judge** (Zheng et al., 2023) - Pairwise comparison and structured evaluation
+- **Chain-of-Verification** (Dhuliawala et al., 2023) - Self-verification reduces bias
+- **Deliberative Democracy** - Argumentation and evidence-based consensus building
+
+**Key Insight**: Debate forces judges to explicitly defend positions with evidence and consider counter-arguments, reducing individual bias and improving calibration.
 
 ### judge - Single-Agent Work Evaluation
 
-Evaluate completed work using LLM-as-Judge with structured rubrics and evidence-based scoring.
+Evaluate completed work using LLM-as-Judge with structured rubrics, context isolation, and evidence-based scoring.
 
-- Purpose - Assess quality of work produced earlier in conversation
-- Output - Evaluation report with scores, evidence, improvements
-- Pattern - Single judge with multi-dimensional rubric
+- Purpose - Assess quality of work produced earlier in conversation with isolated context
+- Pattern - Context Extraction → Judge Sub-Agent → Validation → Report
+- Output - Evaluation report with weighted scores, evidence citations, and actionable improvements
+- Quality - Enhanced with Chain-of-Thought scoring, self-verification, and bias mitigation
+- Efficiency - Single focused judge for fast evaluation without multi-agent overhead
+
+#### Pattern: LLM-as-Judge with Context Isolation
+
+This command implements a three-phase evaluation pattern:
+
+```
+Phase 1: Context Extraction
+         Review conversation history
+         Identify work to evaluate
+         Extract: Original task, output, files, constraints
+                     │
+Phase 2: Judge Sub-Agent (Fresh Context)
+         ┌─────────────────────────────────────────┐
+         │ Judge receives ONLY extracted context   │
+         │ (prevents confirmation bias)            │
+         │                                         │
+         │ For each criterion:                     │
+         │   1. Review evidence                    │
+         │   2. Write justification                │
+         │   3. Assign score (1-5)                 │
+         │   4. Self-verify with questions         │
+         │   5. Adjust if needed                   │
+         └─────────────────────────────────────────┘
+                     │
+Phase 3: Validation & Report
+         Verify scores in valid range (1-5)
+         Check justification has evidence
+         Confirm weighted total calculation
+         Present verdict with recommendations
+```
 
 #### Usage
 
@@ -159,7 +401,71 @@ Evaluate completed work using LLM-as-Judge with structured rubrics and evidence-
 
 # Evaluate completed work
 /judge
+
+# Evaluate with specific focus
+/judge code quality and test coverage
+
+# Evaluate security considerations
+/judge security implications
+
+# Evaluate requirements alignment
+/judge requirements fulfillment
+
+# Evaluate documentation completeness
+/judge documentation
 ```
+
+#### When to Use
+
+✅ **Use single judge when:**
+- Quick quality check needed
+- Work is straightforward with clear criteria
+- Speed/cost matters more than multi-perspective analysis
+- Evaluation is formative (guiding improvements), not summative
+- Low-to-medium stakes decisions
+
+❌ **Use judge-with-debate instead when:**
+- High-stakes decisions requiring rigorous evaluation
+- Subjective criteria where perspectives differ legitimately
+- Complex solutions with many evaluation dimensions
+- You need defensible, consensus-based evaluation
+
+#### Default Evaluation Criteria
+
+| Criterion | Weight | What It Measures |
+|-----------|--------|------------------|
+| Instruction Following | 0.30 | Does output fulfill original request? All requirements addressed? |
+| Output Completeness | 0.25 | All components covered? Appropriate depth? No gaps? |
+| Solution Quality | 0.25 | Sound approach? Best practices? No correctness issues? |
+| Reasoning Quality | 0.10 | Clear decision-making? Appropriate methods used? |
+| Response Coherence | 0.10 | Well-structured? Easy to understand? Professional? |
+
+#### Scoring Interpretation
+
+| Score Range | Verdict | Recommendation |
+|-------------|---------|----------------|
+| 4.50 - 5.00 | EXCELLENT | Ready as-is |
+| 4.00 - 4.49 | GOOD | Minor improvements optional |
+| 3.50 - 3.99 | ACCEPTABLE | Improvements recommended |
+| 3.00 - 3.49 | NEEDS IMPROVEMENT | Address issues before use |
+| 1.00 - 2.99 | INSUFFICIENT | Significant rework needed |
+
+#### Quality Enhancement Techniques
+
+| Technique | Benefit |
+|-----------|---------|
+| Context Isolation | Judge receives only extracted context, preventing confirmation bias from session state |
+| Chain-of-Thought Scoring | Justification BEFORE score improves reliability by 15-25% |
+| Evidence Requirement | Every score requires specific citations (file paths, line numbers, quotes) |
+| Self-Verification | Judge generates verification questions and documents adjustments |
+| Bias Mitigation | Explicit warnings against length bias, verbosity bias, and authority bias |
+
+#### Theoretical Foundation
+
+Based on:
+- **LLM-as-a-Judge** (Zheng et al., 2023) - Structured evaluation rubrics with calibrated scoring
+- **Chain-of-Thought** (Wei et al., 2022) - Reasoning before conclusion improves accuracy
+- **Constitutional AI** (Bai et al., 2022) - Self-critique and verification loops
 
 ## Skills Overview
 
