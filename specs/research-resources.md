@@ -51,3 +51,6 @@ claude --agents '{
 [][Hookify](https://github.com/anthropics/claude-code/tree/main/plugins/hookify) - advanced hook configuration, that using python skills.
 [][Ralph](https://github.com/anthropics/claude-code/tree/main/plugins/ralph-wiggum) - continus iteration plugin and orcestrator verision https://github.com/mikeyobrien/ralph-orchestrator
 [][Security Reminder](https://github.com/anthropics/claude-code/tree/main/plugins/security-guidance/hooks) - hook that reminds about security best practices.
+[] Add git workspaces usage for competitive model writing
+[] Research how git notes can be used during code writing and review
+[] Research how to add RAG style pipline with vector search to prepent relevant code to context window before code writing

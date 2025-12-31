@@ -59,6 +59,19 @@ Interactive assistant for creating new Claude commands with proper structure, pa
 
 Optional command name or description of the command's purpose (e.g., "validate API documentation", "deploy to staging").
 
+#### Usage Examples
+
+```bash
+# Create an API validation command
+> /customaize-agent:create-command validate API documentation
+
+# Create a deployment command
+> /customaize-agent:create-command deploy feature to staging
+
+# Start without a specific idea
+> /customaize-agent:create-command
+```
+
 #### How It Works
 
 1. **Pattern Research**: Examines existing commands in the target category
@@ -90,19 +103,6 @@ Optional command name or description of the command's purpose (e.g., "validate A
    - Human review sections
    - Documentation references
 
-#### Usage Examples
-
-```bash
-# Create an API validation command
-> /customaize-agent:create-command validate API documentation
-
-# Create a deployment command
-> /customaize-agent:create-command deploy feature to staging
-
-# Start without a specific idea
-> /customaize-agent:create-command
-```
-
 #### Best Practices
 
 - Research first - Let the assistant examine existing commands before creating new ones
@@ -110,6 +110,77 @@ Optional command name or description of the command's purpose (e.g., "validate A
 - Choose location carefully - Project commands for codebase-specific workflows, user commands for general utilities
 - Include MCP tools - Use MCP tool patterns instead of CLI commands where applicable
 - Add human review sections - Flag decisions that need verification
+
+---
+
+### /customaize-agent:create-workflow-command - Workflow Command Builder
+
+Create commands that orchestrate multi-step workflows by dispatching sub-agents with task-specific instructions stored in separate files. Solves the **context bloat problem** by keeping orchestrator commands lean.
+
+- Purpose - Build workflow commands that dispatch sub-agents with file-based task prompts
+- Output - Complete workflow structure: orchestrator command, task files, and optional custom agents
+
+```bash
+/customaize-agent:create-workflow-command [workflow-name] [description]
+```
+
+#### Arguments
+
+Optional workflow name (kebab-case) and description of what the workflow accomplishes.
+
+#### Usage Examples
+
+```bash
+# Create a feature implementation workflow
+> /customaize-agent:create-workflow-command feature-implementation "Research, plan, and implement features"
+
+# Create a code review workflow
+> /customaize-agent:create-workflow-command code-review "Multi-phase code analysis and feedback"
+
+# Start interactive workflow creation
+> /customaize-agent:create-workflow-command
+```
+
+#### How It Works
+
+1. **Gather Requirements**: Collects workflow details
+   - Workflow name and description
+   - List of discrete steps with goals and tools
+   - Execution mode (sequential or parallel)
+   - Agent type preferences
+
+2. **Create Directory Structure**: Sets up the workflow layout
+
+```
+plugins/<plugin-name>/
+├── commands/
+│   └── <workflow>.md          # Lean orchestrator (~50-100 tokens per step)
+├── agents/                     # Optional: reusable executor agents
+│   └── step-executor.md       # Custom agent with specific tools/behavior
+└── tasks/                      # All task instructions directly here
+    ├── step-1-<name>.md       # Full instructions (~500+ tokens each)
+    ├── step-2-<name>.md
+    ├── step-3-<name>.md
+    └── common-context.md      # Shared context across workflows
+```
+
+1. **Create Task Files**: Generates self-contained task instructions
+   - Context and goal for each step
+   - Input/output specifications
+   - Constraints and success criteria
+
+2. **Create Orchestrator Command**: Builds lean dispatch logic
+   - Uses `${CLAUDE_PLUGIN_ROOT}/tasks/` paths for portability
+   - Passes minimal context between steps (summaries, not full data)
+   - Supports sequential, parallel, and stateful (resume) patterns
+
+#### Execution Patterns
+
+| Pattern | Use Case | Description |
+|---------|----------|-------------|
+| **Sequential** | Dependent steps | Each step uses previous step's output |
+| **Parallel** | Independent analysis | Multiple agents run simultaneously |
+| **Stateful (Resume)** | Shared context | Continue same agent across steps |
 
 ---
 
@@ -127,6 +198,19 @@ Guide for creating effective skills using a TDD-based approach. This command tre
 #### Arguments
 
 Optional skill name (e.g., "image-editor", "pdf-processing", "code-review").
+
+#### Usage Examples
+
+```bash
+# Create an image editing skill
+> /customaize-agent:create-skill image-editor
+
+# Create a database query skill
+> /customaize-agent:create-skill bigquery-analysis
+
+# Start the skill creation workflow
+> /customaize-agent:create-skill
+```
 
 #### How It Works
 
@@ -157,19 +241,6 @@ Optional skill name (e.g., "image-editor", "pdf-processing", "code-review").
    - GREEN: Write skill addressing those failures
    - REFACTOR: Close loopholes, iterate until bulletproof
 
-#### Usage Examples
-
-```bash
-# Create an image editing skill
-> /customaize-agent:create-skill image-editor
-
-# Create a database query skill
-> /customaize-agent:create-skill bigquery-analysis
-
-# Start the skill creation workflow
-> /customaize-agent:create-skill
-```
-
 #### Best Practices
 
 - Start with concrete examples - Understand real use cases before writing
@@ -194,6 +265,19 @@ Analyze the project, suggest practical hooks, and create them with proper testin
 #### Arguments
 
 Optional hook type or description of desired behavior (e.g., "type-check on save", "prevent secrets in commits").
+
+#### Usage Examples
+
+```bash
+# Create a TypeScript type-checking hook
+> /customaize-agent:create-hook type-check TypeScript files
+
+# Create a security scanning hook
+> /customaize-agent:create-hook prevent commits with secrets
+
+# Let the assistant analyze and suggest hooks
+> /customaize-agent:create-hook
+```
 
 #### How It Works
 
@@ -232,19 +316,6 @@ Optional hook type or description of desired behavior (e.g., "type-check on save
 | **Validation** | PreToolUse | Enforce requirements before operations |
 | **Development** | PostToolUse | Automated improvements, documentation |
 
-#### Usage Examples
-
-```bash
-# Create a TypeScript type-checking hook
-> /customaize-agent:create-hook type-check TypeScript files
-
-# Create a security scanning hook
-> /customaize-agent:create-hook prevent commits with secrets
-
-# Let the assistant analyze and suggest hooks
-> /customaize-agent:create-hook
-```
-
 #### Best Practices
 
 - Test both paths - Always verify both success and failure scenarios
@@ -264,6 +335,19 @@ Verify skills work under pressure and resist rationalization using the RED-GREEN
 
 ```bash
 /customaize-agent:test-skill ["skill path or name"]
+```
+
+#### Usage Examples
+
+```bash
+# Test a TDD enforcement skill
+> /customaize-agent:test-skill tdd
+
+# Test a custom skill by path
+> /customaize-agent:test-skill ~/.claude/skills/code-review/
+
+# Start testing workflow
+> /customaize-agent:test-skill
 ```
 
 #### Arguments
@@ -301,19 +385,6 @@ Optional path to skill being tested or skill name.
 | **Social** | Looking dogmatic, seeming inflexible |
 | **Pragmatic** | "Being pragmatic vs dogmatic" |
 
-#### Usage Examples
-
-```bash
-# Test a TDD enforcement skill
-> /customaize-agent:test-skill tdd
-
-# Test a custom skill by path
-> /customaize-agent:test-skill ~/.claude/skills/code-review/
-
-# Start testing workflow
-> /customaize-agent:test-skill
-```
-
 #### Best Practices
 
 - Combine 3+ pressures - Single pressure tests are too weak
@@ -333,6 +404,19 @@ Test any prompt (commands, hooks, skills, subagent instructions) using the RED-G
 
 ```bash
 /customaize-agent:test-prompt ["prompt path or content"]
+```
+
+#### Usage Examples
+
+```bash
+# Test a command before deployment
+> /customaize-agent:test-prompt .claude/commands/deploy.md
+
+# Test inline prompt content
+> /customaize-agent:test-prompt "Review this code for security issues"
+
+# Start interactive testing workflow
+> /customaize-agent:test-prompt
 ```
 
 #### Arguments
@@ -378,19 +462,6 @@ Optional path to prompt file or inline prompt content to test.
 | **Reference** | Accurate and accessible? | API documentation |
 | **Subagent** | Task accomplished reliably? | Code review prompt |
 
-#### Usage Examples
-
-```bash
-# Test a command before deployment
-> /customaize-agent:test-prompt .claude/commands/deploy.md
-
-# Test inline prompt content
-> /customaize-agent:test-prompt "Review this code for security issues"
-
-# Start interactive testing workflow
-> /customaize-agent:test-prompt
-```
-
 #### Best Practices
 
 - Use fresh subagents - Always via Task tool for isolated testing
@@ -415,6 +486,19 @@ Comprehensive guide for skill development based on Anthropic's official best pra
 #### Arguments
 
 Optional skill name or path to skill being reviewed.
+
+#### Usage Examples
+
+```bash
+# Optimize an existing skill
+> /customaize-agent:apply-anthropic-skill-best-practices pdf-processing
+
+# Review a skill by path
+> /customaize-agent:apply-anthropic-skill-best-practices ~/.claude/skills/bigquery/
+
+# Start optimization workflow
+> /customaize-agent:apply-anthropic-skill-best-practices
+```
 
 #### How It Works
 
@@ -454,19 +538,6 @@ Optional skill name or path to skill being reviewed.
 | **CSO (Claude Search Optimization)** | Rich descriptions with triggers, keywords, and symptoms |
 | **Degrees of Freedom** | Match specificity to task fragility |
 | **Conciseness** | Only add context Claude doesn't already have |
-
-#### Usage Examples
-
-```bash
-# Optimize an existing skill
-> /customaize-agent:apply-anthropic-skill-best-practices pdf-processing
-
-# Review a skill by path
-> /customaize-agent:apply-anthropic-skill-best-practices ~/.claude/skills/bigquery/
-
-# Start optimization workflow
-> /customaize-agent:apply-anthropic-skill-best-practices
-```
 
 #### Best Practices
 
@@ -556,8 +627,7 @@ Use when testing prompt effectiveness, validating context engineering choices, o
 | Reasoning Quality | 0.15 | Logical soundness |
 | Response Coherence | 0.10 | Structure and clarity |
 
-
-## Foundation
+## Theoretical Foundation
 
 The Customaize Agent plugin is based on:
 
@@ -568,4 +638,3 @@ The Customaize Agent plugin is based on:
 ### Agent Skills for Context Engineering
 
 - [Agent Skills for Context Engineering project](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering) by Murat Can Koylan.
-
