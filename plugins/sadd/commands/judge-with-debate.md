@@ -234,17 +234,21 @@ After each debate round, check for consensus:
 
 **Step 2: Check for Consensus**
 
+Let's work through this systematically to ensure accurate consensus detection.
+
 Read all three reports and extract:
 - Each judge's overall weighted score
 - Each judge's score for every criterion
 
-Check consensus:
-1. Calculate difference between highest and lowest overall scores
+Check consensus step by step:
+1. First, extract all overall scores from each report and list them explicitly
+2. Calculate the difference between the highest and lowest overall scores
    - If difference ≤ 0.5 points → overall consensus achieved
    - If difference > 0.5 points → no consensus yet
-2. For each criterion, calculate difference between highest and lowest scores
-   - If any criterion has difference > 1.0 point → no consensus
-3. Consensus achieved only if BOTH conditions met:
+3. Next, for each criterion, list all three judges' scores side by side
+4. For each criterion, calculate the difference between highest and lowest scores
+   - If any criterion has difference > 1.0 point → no consensus on that criterion
+5. Finally, verify consensus is achieved only if BOTH conditions are met:
    - Overall scores within 0.5 points
    - All criterion scores within 1.0 point
 
@@ -268,27 +272,39 @@ Check consensus:
 
 **Step 5: Reply with Report**
 
-1. Read all final reports
-2. Reply to user report that contain:
+Let's synthesize the evaluation results step by step.
+
+1. Read all final reports carefully
+2. Before generating the report, analyze the following:
+   - What is the consensus status (achieved or not)?
+   - What were the key points of agreement across all judges?
+   - What were the main areas of disagreement, if any?
+   - How did the debate rounds change the evaluations?
+3. Reply to user with a report that contains:
    - If there is consensus:
      - Consensus scores (average of all judges)
      - Consensus strengths/weaknesses
      - Number of rounds to reach consensus
-     - Final recommendation
+     - Final recommendation with clear justification
    - If there is no consensus:
        - All judges' final scores showing disagreements
        - Specific criteria where consensus wasn't reached
+       - Analysis of why consensus couldn't be reached
        - Flag for human review
-3. Command complete
+4. Command complete
 
 ### Phase 3: Consensus Report
 
-If consensus achieved, reply final synthesis:
+If consensus achieved, synthesize the final report by working through each section methodically:
 
 ```markdown
 # Consensus Evaluation Report
 
+Let's compile the final consensus by analyzing each component systematically.
+
 ## Consensus Scores
+
+First, let's consolidate all judges' final scores:
 
 | Criterion | Judge 1 | Judge 2 | Judge 3 | Final |
 |-----------|---------|---------|---------|-------|
@@ -298,18 +314,20 @@ If consensus achieved, reply final synthesis:
 **Consensus Overall Score**: {avg}/5.0
 
 ## Consensus Strengths
-[Points all judges agreed were strengths]
+[Review each judge's identified strengths and extract the common themes that all judges agreed upon]
 
 ## Consensus Weaknesses
-[Points all judges agreed were weaknesses]
+[Review each judge's identified weaknesses and extract the common themes that all judges agreed upon]
 
 ## Debate Summary
+Let's trace how consensus was reached:
 - Rounds to consensus: {N}
-- Initial disagreements: {list}
-- How resolved: {summary}
+- Initial disagreements: {list with specific criteria and score gaps}
+- How resolved: {for each disagreement, explain what evidence or argument led to resolution}
 
 ## Final Recommendation
-{Pass/Fail/Needs Revision with justification}
+Based on the consensus scores and the key strengths/weaknesses identified:
+{Pass/Fail/Needs Revision with clear justification tied to the evidence}
 ```
 
 <output>

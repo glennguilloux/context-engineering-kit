@@ -17,11 +17,6 @@ This command implements the Generate-Critique-Synthesize (GCS) pattern with adap
 - Verification loops in evaluation (Chain-of-Verification)
 - Adaptive strategy: polish clear winners, synthesize split decisions, redesign failures
 - Average 15-20% cost savings through intelligent strategy selection
-
-**Related resources:**
-- `/judge` - Single-agent evaluation of completed work
-- `subagent-driven-development` skill - Sequential/parallel task execution
-- `multi-agent-patterns` skill - Architecture patterns for multi-agent systems
 </context>
 
 ## Pattern: Generate-Critique-Synthesize (GCS)
@@ -100,12 +95,14 @@ Launch **3 independent agents in parallel** (recommended: Opus for quality):
 </output>
 
 Instructions:
-1. Analyze the task carefully
-2. Consider multiple approaches
-3. Choose the approach you think is best
+Let's approach this systematically to produce the best possible solution.
+
+1. First, analyze the task carefully - what is being asked and what are the key requirements?
+2. Consider multiple approaches - what are the different ways to solve this?
+3. Think through the tradeoffs step by step and choose the approach you believe is best
 4. Implement it completely
-5. Generate 5 verification questions about critical aspects.
-6. Answer own questions:
+5. Generate 5 verification questions about critical aspects
+6. Answer your own questions:
    - Review solution against each question
    - Identify gaps or weaknesses
 7. Revise solution:
@@ -272,12 +269,16 @@ Judge consensus: {why_it_won}
 </output>
 
 Instructions:
+Let's work through this step by step to polish the winning solution effectively.
+
 1. Take the winning solution as your base (do NOT rewrite it)
-2. Apply improvements based on judge feedback:
+2. First, carefully review all judge feedback to understand what needs improvement
+3. Apply improvements based on judge feedback:
    - Fix identified weaknesses
    - Add missing elements judges noted
-3. Cherry-pick 1-2 specific elements from runners-up if judges praised them
-4. Document changes made:
+4. Next, examine the runner-up solutions for standout elements
+5. Cherry-pick 1-2 specific elements from runners-up if judges praised them
+6. Document changes made:
    - What was changed and why
    - What was added from other solutions
 
@@ -289,12 +290,70 @@ CRITICAL: Preserve the winning solution's core approach. Make targeted improveme
 **When:** All solutions scored <3.0/5.0 (fundamental issues across the board)
 
 **Process:**
-1. Launch new agent to analyze the failure modes and lessons learned. Ask him to do:
+1. Launch new agent to analyze the failure modes and lessons learned. Ask the agent to:
+   - Think through step by step: what went wrong with each solution?
    - Analyze common failure modes across all solutions
    - Extract lessons learned (what NOT to do)
-   - Identify why all approaches failed
-   - Generate new task decomposition or constraints
-2. **Return to Phase 1**, provide to new implementation agents the new lesons learned and new constraints.
+   - Identify the root causes of why all approaches failed
+   - Generate new task decomposition or constraints based on these insights
+2. **Return to Phase 1**, provide to new implementation agents the lessons learned and new constraints.
+
+**Prompt template for new implementation:**
+
+```markdown
+You are analyzing why all solutions failed to meet quality standards. And implement new solution based on it.
+
+<task>
+{task_description}
+</task>
+
+<constraints>
+{constraints_if_any}
+</constraints>
+
+<context>
+{relevant_context}
+</context>
+
+<failed_solutions>
+{list of paths to all candidate solutions}
+</failed_solutions>
+
+<evaluation_reports>
+{list of paths to all evaluation reports with low scores}
+</evaluation_reports>
+
+Instructions:
+Let's break this down systematically to understand what went wrong and how to design new solution based on it.
+
+1. First, analyze the task carefully - what is being asked and what are the key requirements?
+2. Read through each solution and its evaluation report
+3. For each solution, think step by step about:
+   - What was the core approach?
+   - What specific issues did judges identify?
+   - Why did this approach fail to meet the quality threshold?
+4. Identify common failure patterns across all solutions:
+   - Are there shared misconceptions?
+   - Are there missing requirements that all solutions overlooked?
+   - Are there fundamental constraints that weren't considered?
+5. Extract lessons learned:
+   - What approaches should be avoided?
+   - What constraints must be addressed?
+6. Generate improved guidance for the next iteration:
+   - New constraints to add
+   - Specific approaches to try - what are the different ways to solve this?
+   - Key requirements to emphasize
+7. Think through the tradeoffs step by step and choose the approach you believe is best
+8. Implement it completely
+9. Generate 5 verification questions about critical aspects
+10. Answer your own questions:
+   - Review solution against each question
+   - Identify gaps or weaknesses
+11. Revise solution:
+   - Fix identified issues
+12. Explain what was changed and why
+
+```
 
 #### Strategy 3: FULL_SYNTHESIS (Default)
 
@@ -345,15 +404,20 @@ You are synthesizing the best solution from competitive implementations and eval
 </output>
 
 Instructions:
-1. Read all solutions and evaluation reports carefully
-2. Identify consensus strengths (what multiple judges praised)
-3. Identify consensus weaknesses (what multiple judges criticized)
+Let's think through this synthesis step by step to create the best possible combined solution.
+
+1. First, read all solutions and evaluation reports carefully
+2. Map out the consensus:
+   - What strengths did multiple judges praise in each solution?
+   - What weaknesses did multiple judges criticize in each solution?
+3. For each major component or section, think through:
+   - Which solution handles this best and why?
+   - Could a hybrid approach work better?
 4. Create the best possible solution by:
    - Copying text directly when one solution is clearly superior
    - Combining approaches when a hybrid would be better
    - Fixing all identified issues
    - Preserving the best elements from each
-
 5. Explain your synthesis decisions:
    - What you took from each solution
    - Why you made those choices

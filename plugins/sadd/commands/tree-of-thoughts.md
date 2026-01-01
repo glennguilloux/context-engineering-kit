@@ -108,19 +108,44 @@ Launch **3 independent agents in parallel** (recommended: Sonnet for speed):
 </output>
 
 Instructions:
-1. Generate 6 distinct high-level approaches to this task
-2. For each approach, provide:
+
+Let's approach this systematically by first understanding what we're solving, then exploring the solution space.
+
+**Step 1: Decompose the problem**
+Before generating approaches, break down the task:
+- What is the core problem being solved?
+- What are the key constraints and requirements?
+- What subproblems must any solution address?
+- What are the evaluation criteria for success?
+
+**Step 2: Map the solution space**
+Identify the major dimensions along which solutions can vary:
+- Architecture patterns (e.g., monolithic vs distributed)
+- Implementation strategies (e.g., eager vs lazy)
+- Trade-off axes (e.g., performance vs simplicity)
+
+**Step 3: Generate 6 distinct high-level approaches**
+
+**Sampling guidance:**
+Please sample approaches at random from the [full distribution / tails of the distribution]
+- For first 3 approaches aim for high probability, over 0.80
+- For last 3 approaches aim for diversity - explore different regions of the solution space, such that the probability of each response is less than 0.10
+
+For each approach, provide:
    - Name and one-sentence summary
    - Detailed description (2-3 paragraphs)
    - Key design decisions and rationale
    - Trade-offs (what you gain vs what you sacrifice)
-   - Probability (0.0-1.0): 
+   - Probability (0.0-1.0)
    - Complexity estimate (low/medium/high)
    - Potential risks and failure modes
 
-Please sample at random from the [full distribution / tails of the distribution]
-- For first 3 approaches aim for high probability, over 0.80
-- For last 3 approaches aim for diversity - explore different regions of the solution space, such that the probability of each response is less than 0.10
+**Step 4: Verify diversity**
+Before finalizing, check:
+- Are approaches genuinely different, not minor variations?
+- Do they span different regions of the solution space?
+- Have you covered both conventional and unconventional options?
+
 
 CRITICAL:
 - Do NOT implement full solutions yet - only high-level approaches
@@ -252,16 +277,62 @@ solution.[*].md where [*] is your unique identifier (a, b, or c)
 </output>
 
 Instructions:
-1. Read the selected proposal thoroughly
-2. Develop a complete solution implementing the proposed approach
-   - Address all concerns raised by judges during pruning
-4. Generate 3-5 verification questions about critical aspects.
-5. Answer own questions:
-   - Review solution against each question
-   - Identify gaps or weaknesses
-6. Revise solution:
-   - Fix identified issues
-7. Explain what was changed and why
+
+Let's work through this systematically to ensure we build a complete, high-quality solution.
+
+**Step 1: Understand the proposal deeply**
+Before implementing, analyze:
+- What is the core insight or approach of this proposal?
+- What are the key design decisions already made?
+- What gaps need to be filled for a complete solution?
+
+**Step 2: Address judge feedback**
+For each concern raised by judges:
+- What specific change or addition addresses this concern?
+- How does this change integrate with the proposal's approach?
+
+**Step 3: Decompose into implementation subproblems**
+Break the solution into logical parts:
+- What are the main components or sections?
+- What must be defined first for other parts to build upon?
+- What are the dependencies between parts?
+
+**Step 4: Implement each subproblem**
+For each component, work through:
+- Core functionality and behavior
+- Edge cases and error handling
+- Integration points with other components
+
+**Step 5: Self-verification**
+Generate 3-5 verification questions about critical aspects, then answer them:
+- Review solution against each question
+- Identify gaps or weaknesses
+- Fix identified issues
+
+**Step 6: Document changes**
+Explain what was changed from the original proposal and why.
+
+<example>
+**Example of good expansion thinking:**
+
+Proposal: "Use event-driven architecture with message queue"
+
+Step 1 Analysis:
+- Core insight: Decouple components via async messaging
+- Key decisions: Events as primary communication, eventual consistency
+- Gaps: Need to define event schemas, queue technology, error handling
+
+Step 2 - Addressing judge concern "What about message ordering?":
+- Add partition keys for ordered processing within entity scope
+- Document ordering guarantees and limitations
+
+Step 3 - Subproblems:
+1. Event schema definitions (foundational - others depend on this)
+2. Producer interfaces (depends on schemas)
+3. Consumer handlers (depends on schemas)
+4. Error handling and dead letter queues (depends on both)
+5. Integration patterns (builds on all above)
+</example>
 
 CRITICAL:
 - Stay faithful to the selected proposal's core approach
@@ -435,14 +506,46 @@ Judge consensus: {why_it_won}
 </output>
 
 Instructions:
-1. Take the winning solution as your base (do NOT rewrite it)
-2. Apply improvements based on judge feedback:
-   - Fix identified weaknesses
-   - Add missing elements judges noted
-3. Cherry-pick 1-2 specific elements from runners-up if judges praised them
-4. Document changes made:
-   - What was changed and why
-   - What was added from other solutions
+
+Let's approach this polishing task methodically to improve without disrupting what works.
+
+**Step 1: Understand why this solution won**
+Analyze the winning solution:
+- What are its core strengths that judges praised?
+- What makes its approach superior to alternatives?
+- Which parts should remain untouched?
+
+**Step 2: Catalog improvement opportunities**
+From judge feedback, identify:
+- Specific weaknesses mentioned (list each one)
+- Missing elements judges noted
+- Areas where runner-ups were praised
+
+**Step 3: Prioritize changes by impact**
+For each improvement opportunity:
+- High impact: Directly addresses judge criticism
+- Medium impact: Adds praised element from runner-up
+- Low impact: Nice-to-have refinement
+
+Focus on high-impact changes first.
+
+**Step 4: Apply improvements surgically**
+For each change:
+- Locate the specific section to modify
+- Make the minimal change needed to address the issue
+- Verify the change integrates cleanly with surrounding content
+
+**Step 5: Cherry-pick from runners-up**
+Review runner-up solutions for:
+- 1-2 specific elements that judges praised
+- Elements that complement (not conflict with) the winning approach
+- Only incorporate if clearly superior to winning solution's version
+
+**Step 6: Document all changes**
+Record:
+- What was changed and why (with reference to judge feedback)
+- What was added from other solutions (cite source)
+- What was intentionally left unchanged
 
 CRITICAL: Preserve the winning solution's core approach. Make targeted improvements only.
 ```
@@ -452,14 +555,73 @@ CRITICAL: Preserve the winning solution's core approach. Make targeted improveme
 **When:** All solutions scored <3.0/5.0 (fundamental issues across the board)
 
 **Process:**
-1. Launch new agent to analyze the failure modes and lessons learned. Ask it to:
-   - Analyze common failure modes across all solutions
-   - Extract lessons learned (what NOT to do)
-   - Identify why all approaches failed
-   - Generate new task decomposition or constraints
-2. **Return to Phase 3** (Expansion), provide to new implementation agents the lessons learned and new constraints.
+1. Launch new agent to analyze the failure modes and lessons learned
+2. **Return to Phase 3** (Expansion), provide to new implementation agents the lessons learned and new constraints
 
 **Note:** If redesign fails twice, escalate to user for guidance.
+
+**Prompt template for new implementation:**
+
+```markdown
+You are analyzing why all solutions failed to meet quality standards, to inform a redesign. And implement new solution based on it.
+
+
+<task>
+{task_description}
+</task>
+
+<constraints>
+{constraints_if_any}
+</constraints>
+
+<context>
+{relevant_context}
+</context>
+
+<failed_solutions>
+{list of paths to all solution files}
+Average scores: A={avg_a}/5.0, B={avg_b}/5.0, C={avg_c}/5.0
+</failed_solutions>
+
+<evaluation_reports>
+{list of paths to all evaluation reports}
+All solutions scored below 3.0/5.0 threshold.
+</evaluation_reports>
+
+<output>
+.specs/research/{solution-name}-{date}.redesign-analysis.md
+</output>
+
+Instructions:
+Let's break this down systematically to understand what went wrong and how to design new solution based on it.
+
+1. First, analyze the task carefully - what is being asked and what are the key requirements?
+2. Read through each solution and its evaluation report
+3. For each solution, think step by step about:
+   - What was the core approach?
+   - What specific issues did judges identify?
+   - Why did this approach fail to meet the quality threshold?
+4. Identify common failure patterns across all solutions:
+   - Are there shared misconceptions?
+   - Are there missing requirements that all solutions overlooked?
+   - Are there fundamental constraints that weren't considered?
+5. Extract lessons learned:
+   - What approaches should be avoided?
+   - What constraints must be addressed?
+6. Generate improved guidance for the next iteration:
+   - New constraints to add
+   - Specific approaches to try - what are the different ways to solve this?
+   - Key requirements to emphasize
+7. Think through the tradeoffs step by step and choose the approach you believe is best
+8. Implement it completely
+9. Generate 5 verification questions about critical aspects
+10. Answer your own questions:
+   - Review solution against each question
+   - Identify gaps or weaknesses
+11. Revise solution:
+   - Fix identified issues
+12. Explain what was changed and why
+```
 
 #### Strategy 3: FULL_SYNTHESIS (Default)
 
@@ -515,20 +677,73 @@ You are synthesizing the best solution from explored, pruned, and evaluated impl
 </output>
 
 Instructions:
-1. Read all solutions and evaluation reports carefully
-2. Identify consensus strengths (what multiple judges praised)
-3. Identify consensus weaknesses (what multiple judges criticized)
-4. Note where solutions took complementary approaches
-5. Create the best possible solution by:
-   - Copying text directly when one solution is clearly superior
-   - Combining approaches when a hybrid would be better
-   - Fixing all identified issues
-   - Preserving the best elements from each
-6. Document your synthesis decisions:
-   - What you took from each solution (with specific citations)
-   - Why you made those choices (reference judge feedback)
-   - How you addressed identified weaknesses
-   - Any novel combinations or improvements
+
+Let's approach this synthesis systematically by first analyzing, then decomposing, then building.
+
+**Step 1: Build the evidence base**
+Before synthesizing, gather evidence from judge reports:
+- What did multiple judges praise? (consensus strengths)
+- What did multiple judges criticize? (consensus weaknesses)
+- Where did judges disagree? (areas needing careful analysis)
+
+**Step 2: Decompose into synthesis subproblems**
+Break the solution into logical sections or components. For each component:
+- Which solution handles this best? (cite evidence)
+- Are there complementary elements from multiple solutions?
+- What issues were identified that need fixing?
+
+**Step 3: Solve each subproblem**
+For each component/section, determine the synthesis strategy:
+
+*Strategy A - Clear winner:* If one solution is clearly superior for this component:
+- Copy that section directly
+- Document: "Taken from Solution X because [judge evidence]"
+
+*Strategy B - Complementary combination:* If solutions have complementary strengths:
+- Identify what each contributes
+- Combine carefully, ensuring consistency
+- Document: "Combined X from Solution A with Y from Solution B because [rationale]"
+
+*Strategy C - All flawed:* If all solutions have issues in this area:
+- Start with the best version
+- Apply fixes based on judge criticism
+- Document: "Based on Solution X, modified to address [specific issues]"
+
+**Step 4: Integrate and verify consistency**
+After synthesizing all components:
+- Check that combined elements work together
+- Resolve any contradictions between borrowed sections
+- Ensure consistent terminology and style
+
+**Step 5: Document synthesis decisions**
+Create a synthesis log:
+- What you took from each solution (with specific citations)
+- Why you made those choices (reference judge feedback)
+- How you addressed identified weaknesses
+- Any novel combinations or improvements
+
+<example>
+**Example synthesis decision for an API design:**
+
+Component: Authentication flow
+- Solution A: JWT with refresh tokens (praised for security by 2/3 judges)
+- Solution B: Session-based (praised for simplicity by 1 judge, criticized for scalability)
+- Solution C: OAuth2 only (criticized as over-engineered for use case)
+
+Decision: Take Solution A's authentication flow directly.
+Evidence: Judges 1 and 3 both noted "JWT approach provides good balance of security and statelessness"
+Modification: None needed - this section was rated highest across judges.
+</example>
+
+**Step 6: Revise your solution**
+- Generate 5 verification questions about critical aspects
+- Answer your own questions:
+   - Review solution against each question
+   - Identify gaps or weaknesses
+- Revise solution:
+   - Fix identified issues
+- Explain what was changed and why
+
 
 CRITICAL:
 - Do not create something entirely new - synthesize the best from what exists

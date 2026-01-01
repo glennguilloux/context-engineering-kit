@@ -1,10 +1,14 @@
-# Thought-Based Reasoning Techniques for LLMs
+---
+name: thought-based-reasoning
+description: Use when tackling complex reasoning tasks requiring step-by-step logic, multi-step arithmetic, commonsense reasoning, symbolic manipulation, or problems where simple prompting fails - provides comprehensive guide to Chain-of-Thought and related prompting techniques (Zero-shot CoT, Self-Consistency, Tree of Thoughts, Least-to-Most, ReAct, PAL, Reflexion) with templates, decision matrices, and research-backed patterns
+---
 
-A comprehensive guide to Chain-of-Thought and related prompting techniques that elicit step-by-step reasoning in Large Language Models.
+# Thought-Based Reasoning Techniques for LLMs
 
 ## Overview
 
-"Thinking steps" in prompts are formally known as **Chain-of-Thought (CoT)** prompting and its variants. These techniques encourage LLMs to generate intermediate reasoning steps before arriving at a final answer, significantly improving performance on complex reasoning tasks.
+Chain-of-Thought (CoT) prompting and its variants encourage LLMs to generate intermediate reasoning steps before arriving at a final answer, significantly improving performance on complex reasoning tasks. These techniques transform how models approach problems by making implicit reasoning explicit.
+
 
 ## Quick Reference
 
@@ -21,21 +25,23 @@ A comprehensive guide to Chain-of-Thought and related prompting techniques that 
 
 ---
 
-## 1. Chain-of-Thought (CoT) Prompting
+## Core Techniques
+
+### 1. Chain-of-Thought (CoT) Prompting
 
 **Paper**: "Chain of Thought Prompting Elicits Reasoning in Large Language Models" (Wei et al., 2022)
 **Citations**: 14,255+
 
-### When to Use
+#### When to Use
 - Multi-step arithmetic or math word problems
 - Commonsense reasoning requiring logical deduction
 - Symbolic reasoning tasks
 - When you have good exemplars showing reasoning
 
-### How It Works
+#### How It Works
 Provide few-shot examples that include intermediate reasoning steps, not just question-answer pairs. The model learns to generate similar step-by-step reasoning.
 
-### Prompt Template
+#### Prompt Template
 
 ```
 Q: Roger has 5 tennis balls. He buys 2 more cans of tennis balls. Each can has 3 tennis balls. How many tennis balls does he have now?
@@ -48,33 +54,33 @@ Q: [YOUR QUESTION HERE]
 A:
 ```
 
-### Strengths
+#### Strengths
 - Significant accuracy improvements on reasoning tasks
 - Interpretable intermediate steps
 - Works well with large models (>100B parameters)
 
-### Limitations
+#### Limitations
 - Requires crafting good exemplars
 - Less effective on smaller models
 - Can still make calculation errors
 
 ---
 
-## 2. Zero-shot Chain-of-Thought
+### 2. Zero-shot Chain-of-Thought
 
 **Paper**: "Large Language Models are Zero-Shot Reasoners" (Kojima et al., 2022)
 **Citations**: 5,985+
 
-### When to Use
+#### When to Use
 - No exemplars available
 - Quick reasoning needed
 - General-purpose reasoning across task types
 - Prototyping before creating few-shot examples
 
-### How It Works
+#### How It Works
 Simply append "Let's think step by step" (or similar phrase) to the prompt. This triggers the model to generate reasoning steps without any examples.
 
-### Prompt Template
+#### Prompt Template
 
 ```
 Q: A juggler can juggle 16 balls. Half of the balls are golf balls, and half of the golf balls are blue. How many blue golf balls are there?
@@ -88,7 +94,7 @@ Let's think step by step.
 - "Let's approach this systematically."
 - "First, let me understand the problem..."
 
-### Two-Stage Approach (More Robust)
+#### Two-Stage Approach (More Robust)
 
 **Stage 1 - Reasoning Extraction**:
 ```
@@ -102,33 +108,33 @@ A: Let's think step by step.
 Therefore, the answer is
 ```
 
-### Strengths
+#### Strengths
 - No exemplar crafting required
 - Generalizes across task types
 - Simple to implement
 
-### Limitations
+#### Limitations
 - Less effective than few-shot CoT
 - Can produce verbose or irrelevant reasoning
 - Sensitive to exact phrasing
 
 ---
 
-## 3. Self-Consistency
+### 3. Self-Consistency
 
 **Paper**: "Self-Consistency Improves Chain of Thought Reasoning in Language Models" (Wang et al., 2022)
 **Citations**: 5,379+
 
-### When to Use
+#### When to Use
 - High-stakes decisions requiring confidence
 - Problems with multiple valid reasoning paths
 - When you need to reduce variance in outputs
 - Verification of reasoning correctness
 
-### How It Works
+#### How It Works
 Sample multiple diverse reasoning paths, then select the most consistent answer via majority voting. The intuition: correct answers can be reached through multiple reasoning paths.
 
-### Prompt Template
+#### Prompt Template
 
 ```
 [Use any CoT prompt - zero-shot or few-shot]
@@ -140,7 +146,7 @@ Sample multiple diverse reasoning paths, then select the most consistent answer 
 [Return the most frequent answer (majority vote)]
 ```
 
-### Implementation Example
+#### Implementation Example
 
 ```python
 def self_consistency(prompt, n_samples=5, temperature=0.7):
@@ -154,33 +160,33 @@ def self_consistency(prompt, n_samples=5, temperature=0.7):
     return Counter(answers).most_common(1)[0][0]
 ```
 
-### Strengths
+#### Strengths
 - Significant accuracy boost over single-path CoT
 - Provides confidence measure (agreement level)
 - Task-agnostic improvement
 
-### Limitations
+#### Limitations
 - Higher computational cost (N times more generations)
 - Requires extractable discrete answers
 - Diminishing returns beyond ~10-20 samples
 
 ---
 
-## 4. Tree of Thoughts (ToT)
+### 4. Tree of Thoughts (ToT)
 
 **Paper**: "Tree of Thoughts: Deliberate Problem Solving with Large Language Models" (Yao et al., 2023)
 **Citations**: 3,026+
 
-### When to Use
+#### When to Use
 - Complex problems requiring exploration/backtracking
 - Tasks where initial decisions are pivotal
 - Creative problem-solving (writing, puzzles)
 - When CoT alone achieves <50% accuracy
 
-### How It Works
+#### How It Works
 Generalize CoT to a tree structure where each node is a "thought" (coherent language unit). Uses search algorithms (BFS/DFS) with self-evaluation to explore and select promising reasoning paths.
 
-### Prompt Template
+#### Prompt Template
 
 **Thought Generation**:
 ```
@@ -227,7 +233,7 @@ def tree_of_thoughts(problem, max_depth=3, beam_width=3):
     return None
 ```
 
-### Example: Game of 24
+#### Example: Game of 24
 
 ```
 Problem: Use 4, 9, 10, 13 to get 24 (use +, -, *, / and each number once)
@@ -242,35 +248,35 @@ Thought 3: 4 + 9 = 13 (Now have: 10, 13, 13)
 Evaluation: "impossible" - no way to get 24 from these
 ```
 
-### Strengths
+#### Strengths
 - Dramatically improves performance on hard tasks (4% → 74% on Game of 24)
 - Enables backtracking and exploration
 - Self-evaluation catches errors early
 
-### Limitations
+#### Limitations
 - Significantly higher computational cost
 - Requires task-specific thought decomposition
 - Complex to implement
 
 ---
 
-## 5. Least-to-Most Prompting
+### 5. Least-to-Most Prompting
 
 **Paper**: "Least-to-Most Prompting Enables Complex Reasoning in Large Language Models" (Zhou et al., 2022)
 **Citations**: 1,466+
 
-### When to Use
+#### When to Use
 - Problems harder than your exemplars
 - Compositional generalization tasks
 - Multi-step problems with clear subproblems
 - Symbol manipulation and SCAN-like tasks
 
-### How It Works
+#### How It Works
 Two-stage process:
 1. **Decomposition**: Break complex problem into simpler subproblems
 2. **Sequential Solving**: Solve subproblems in order, using previous answers
 
-### Prompt Template
+#### Prompt Template
 
 **Stage 1: Decomposition**
 ```
@@ -293,33 +299,33 @@ A: Four years ago, Mohamed was 60 - 4 = 56 years old. Kody was half as old, so K
 The answer is 32.
 ```
 
-### Strengths
+#### Strengths
 - Excellent at generalizing to harder problems
 - Works well on compositional tasks
 - Explicit problem decomposition aids interpretability
 
-### Limitations
+#### Limitations
 - Requires two-stage prompting
 - Decomposition step can fail on novel structures
 - More complex setup than single-stage CoT
 
 ---
 
-## 6. ReAct (Reasoning + Acting)
+### 6. ReAct (Reasoning + Acting)
 
 **Paper**: "ReAct: Synergizing Reasoning and Acting in Language Models" (Yao et al., 2022)
 **Citations**: 5,012+
 
-### When to Use
+#### When to Use
 - Tasks requiring external information (search, APIs)
 - Interactive decision-making environments
 - Multi-hop question answering
 - When pure reasoning leads to hallucination
 
-### How It Works
+#### How It Works
 Interleave reasoning traces ("Thought") with actions ("Action") and observations ("Observation"). Reasoning helps plan actions; actions provide new information for reasoning.
 
-### Prompt Template
+#### Prompt Template
 
 ```
 Question: What is the elevation range for the area that the eastern sector of the Colorado orogeny extends into?
@@ -344,38 +350,38 @@ Thought 5: The elevation range is 1,800 to 7,000 ft.
 Action 5: Finish[1,800 to 7,000 ft]
 ```
 
-### Action Types
+#### Action Types
 - `Search[query]` - Search for information
 - `Lookup[keyword]` - Look up keyword in current context
 - `Finish[answer]` - Return final answer
 
-### Strengths
+#### Strengths
 - Reduces hallucination by grounding in external knowledge
 - Interpretable action traces
 - Handles exceptions through adaptive reasoning
 
-### Limitations
+#### Limitations
 - Requires integration with external tools
 - More complex orchestration
 - Action space must be defined
 
 ---
 
-## 7. PAL (Program-Aided Language Models)
+### 7. PAL (Program-Aided Language Models)
 
 **Paper**: "PAL: Program-aided Language Models" (Gao et al., 2022)
 **Citations**: 608+
 
-### When to Use
+#### When to Use
 - Mathematical/arithmetic reasoning
 - Problems requiring precise computation
 - Symbolic manipulation
 - When CoT makes calculation errors
 
-### How It Works
+#### How It Works
 Generate code (typically Python) instead of natural language reasoning. Execute the code to get the answer. The LLM handles decomposition; the interpreter handles computation.
 
-### Prompt Template
+#### Prompt Template
 
 ```
 Q: Roger has 5 tennis balls. He buys 2 more cans of tennis balls. Each can has 3 tennis balls. How many tennis balls does he have now?
@@ -403,35 +409,35 @@ def solution():
     return loaves_left
 ```
 
-### Strengths
+#### Strengths
 - Eliminates arithmetic errors
 - Clear variable naming aids interpretability
 - Leverages code execution for verification
 
-### Limitations
+#### Limitations
 - Requires code interpreter
 - Not suitable for non-computational reasoning
 - Model must generate syntactically correct code
 
 ---
 
-## 8. Auto-CoT
+### 8. Auto-CoT
 
 **Paper**: "Automatic Chain of Thought Prompting in Large Language Models" (Zhang et al., 2022)
 **Citations**: 838+
 
-### When to Use
+#### When to Use
 - No manually crafted exemplars available
 - Want to automate few-shot CoT setup
 - Scaling CoT to many tasks
 - When zero-shot CoT isn't sufficient
 
-### How It Works
+#### How It Works
 1. Cluster questions by diversity
 2. Use Zero-shot CoT to generate reasoning chains for representative questions
 3. Use these auto-generated chains as few-shot exemplars
 
-### Prompt Template
+#### Prompt Template
 
 **Step 1: Generate diverse demonstrations**
 ```python
@@ -460,33 +466,33 @@ Q: [New question]
 A: Let's think step by step.
 ```
 
-### Strengths
+#### Strengths
 - No manual exemplar creation
 - Diversity sampling improves robustness
 - Matches manual CoT performance
 
-### Limitations
+#### Limitations
 - Quality depends on zero-shot CoT quality
 - Clustering requires similarity metric
 - Some generated chains contain errors
 
 ---
 
-## 9. Reflexion
+### 9. Reflexion
 
 **Paper**: "Reflexion: Language Agents with Verbal Reinforcement Learning" (Shinn et al., 2023)
 **Citations**: 2,179+
 
-### When to Use
+#### When to Use
 - Iterative improvement over multiple attempts
 - Learning from errors without fine-tuning
 - Complex coding or decision-making tasks
 - When single-pass reasoning is insufficient
 
-### How It Works
+#### How It Works
 After task failure, the agent generates a verbal "reflection" analyzing what went wrong. This reflection is stored in memory and used in subsequent attempts to avoid repeating mistakes.
 
-### Prompt Template
+#### Prompt Template
 
 **Initial Attempt**:
 ```
@@ -522,7 +528,7 @@ Thought: [IMPROVED REASONING]
 Action: [BETTER ACTION]
 ```
 
-### Example: Code Generation
+#### Example: Code Generation
 
 ```
 Task: Write a function to find the longest palindromic substring.
@@ -539,12 +545,12 @@ Attempt 2: [IMPROVED CODE USING REFLECTION]
 Test Result: Passed all tests
 ```
 
-### Strengths
+#### Strengths
 - Learns from errors without weight updates
 - Achieves 91% on HumanEval (surpassing GPT-4's 80%)
 - Builds episodic memory of insights
 
-### Limitations
+#### Limitations
 - Requires multiple attempts
 - Memory management for long sessions
 - Quality of reflection affects improvement
@@ -613,6 +619,21 @@ Techniques are often complementary:
 - Include diverse exemplars covering edge cases
 - Format consistently across examples
 - Add verification steps ("Let me verify...")
+
+---
+
+## Common Mistakes
+
+| Mistake | Why It's Wrong | Fix |
+|---------|---------------|-----|
+| Using CoT for simple lookups | Adds unnecessary tokens and latency | Reserve for multi-step reasoning |
+| Too few samples in Self-Consistency | Majority voting needs adequate samples | Use 5-10 samples minimum |
+| Generic "think step by step" without checking output | Model may produce irrelevant reasoning | Validate reasoning quality, not just presence |
+| Mixing techniques without understanding trade-offs | Computational cost without benefit | Understand when each technique adds value |
+| Using PAL without code interpreter | Code generation is useless without execution | Ensure execution environment available |
+| Not testing exemplar quality in few-shot CoT | Poor exemplars lead to poor reasoning | Validate exemplars solve problems correctly |
+| Applying Tree of Thoughts to linear problems | Massive overhead for no benefit | Use ToT only when exploration needed |
+
 
 ---
 
