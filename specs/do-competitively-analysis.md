@@ -121,7 +121,7 @@ After generating initial solution, each agent:
 **Prompt addition:**
 
 "Before submitting your solution, critique it:
-1. Generate 3-5 verification questions about critical aspects
+1. Generate 5 verification questions about critical aspects
 2. Answer each question by examining your solution
 3. Revise your solution to address any gaps
 4. Document your revisions in a 'Self-Critique' section"

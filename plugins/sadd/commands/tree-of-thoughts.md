@@ -11,11 +11,6 @@ Execute complex reasoning tasks through systematic exploration of solution space
 
 <context>
 This command implements the Tree of Thoughts (ToT) pattern for tasks requiring exploration of multiple solution paths before committing to full implementation. It combines creative sampling, multi-perspective evaluation, adaptive strategy selection, and evidence-based synthesis to produce superior outcomes.
-
-**Related resources:**
-- `/do-competitively` - Competitive generation without systematic exploration
-- `multi-agent-patterns` skill - Architecture patterns for multi-agent systems
-- `agent-evaluation` skill - Evaluation methodologies and LLM-as-Judge patterns
 </context>
 
 ## Pattern: Tree of Thoughts (ToT)
@@ -57,6 +52,26 @@ Phase 5: Synthesis (Only if FULL_SYNTHESIS)                    │
 
 ## Process
 
+### Setup: Create Directory Structure
+
+Before starting, ensure the directory structure exists:
+
+```bash
+mkdir -p .specs/research .specs/reports
+```
+
+**Naming conventions:**
+- Proposals: `.specs/research/{solution-name}-{YYYY-MM-DD}.proposals.[a|b|c].md`
+- Pruning: `.specs/research/{solution-name}-{YYYY-MM-DD}.pruning.[1|2|3].md`
+- Selection: `.specs/research/{solution-name}-{YYYY-MM-DD}.selection.md`
+- Evaluation: `.specs/reports/{solution-name}-{YYYY-MM-DD}.[1|2|3].md`
+
+Where:
+- `{solution-name}` - Derived from output path (e.g., `users-api` from output `specs/api/users.md`)
+- `{YYYY-MM-DD}` - Current date
+
+**Note:** Solutions remain in their specified output locations; only research and evaluation files go to `.specs/`
+
 ### Phase 1: Exploration (Propose Approaches)
 
 Launch **3 independent agents in parallel** (recommended: Sonnet for speed):
@@ -69,7 +84,7 @@ Launch **3 independent agents in parallel** (recommended: Sonnet for speed):
    - **Probability estimate** (0.0-1.0) 
    - **Estimated complexity** (low/medium/high)
    - **Potential risks** and failure modes
-4. Proposals saved to `proposals.a.md`, `proposals.b.md`, `proposals.c.md`
+4. Proposals saved to `.specs/research/{solution-name}-{date}.proposals.[a|b|c].md`
 
 **Key principle:** Systematic exploration through probabilistic sampling from the full distribution of possible approaches.
 
@@ -89,7 +104,7 @@ Launch **3 independent agents in parallel** (recommended: Sonnet for speed):
 </context>
 
 <output>
-proposals.[*].md where [*] is your unique identifier (a, b, or c)
+{.specs/research/{solution-name}-{date}.proposals.[a|b|c].md - each agent gets unique letter identifier}
 </output>
 
 Instructions:
@@ -116,7 +131,7 @@ CRITICAL:
 
 Launch **3 independent judges in parallel** (recommended: Sonnet for efficiency):
 
-1. Each judge receives **ALL proposal files** (proposals.a.md, proposals.b.md, proposals.c.md)
+1. Each judge receives **ALL proposal files** (from `.specs/research/`)
 2. Judges evaluate each proposal against **pruning criteria**:
    - **Feasibility** (1-5): Can this be implemented with available resources?
    - **Alignment** (1-5): How well does it address the task requirements?
@@ -126,7 +141,7 @@ Launch **3 independent judges in parallel** (recommended: Sonnet for efficiency)
    - **Scores for each proposal** (with evidence)
    - **Vote for top 3 proposals** to expand
    - **Rationale** for selections
-4. Votes saved to `pruning.1.md`, `pruning.2.md`, `pruning.3.md`
+4. Votes saved to `.specs/research/{solution-name}-{date}.pruning.[1|2|3].md`
 
 **Key principle:** Independent evaluation with explicit criteria reduces groupthink and catches different strengths/weaknesses.
 
@@ -145,7 +160,7 @@ Read all proposals carefully before evaluating.
 </proposals>
 
 <output>
-pruning.[*].md where [*] is your unique identifier (1, 2, or 3)
+{.specs/research/{solution-name}-{date}.pruning.[1|2|3].md - each judge gets unique number identifier}
 </output>
 
 Evaluation criteria (with weights):
@@ -192,7 +207,7 @@ After judges complete voting:
    - 3rd choice = 1 point
 2. **Select top 3** proposals by total points
 3. **Handle ties** by comparing average scores across criteria
-4. **Document selection** in `selection.md`:
+4. **Document selection** in `.specs/research/{solution-name}-{date}.selection.md`:
    - Vote tallies
    - Selected proposals
    - Consensus rationale
@@ -269,7 +284,7 @@ Launch **3 independent judges in parallel** (recommended: Opus for rigor):
    - **Comparative analysis** (which solution excels where)
    - **Evidence-based ratings** (with specific quotes/examples)
    - **Final vote** (which solution they prefer and why)
-4. Reports saved to `evaluation.1.md`, `evaluation.2.md`, `evaluation.3.md`
+4. Reports saved to `.specs/reports/{solution-name}-{date}.[1|2|3].md`
 
 **Key principle:** Multiple independent evaluations with explicit evidence reduce bias and catch different quality aspects.
 
@@ -288,7 +303,7 @@ Read all solutions carefully before evaluating.
 </solutions>
 
 <output>
-Write full report to this file: evaluation.[*].md where [*] is your unique identifier (1, 2, or 3)
+Write full report to: .specs/reports/{solution-name}-{date}.[1|2|3].md - each judge gets unique number identifier
 
 CRITICAL: You must reply with this exact structured header format:
 
@@ -459,9 +474,9 @@ CRITICAL: Preserve the winning solution's core approach. Make targeted improveme
 Launch **1 synthesis agent** (recommended: Opus for quality):
 
 1. Agent receives:
-   - **All solutions** (solution.a.md, solution.b.md, solution.c.md)
-   - **All evaluation reports** (evaluation.1.md, evaluation.2.md, evaluation.3.md)
-   - **Selection rationale** from pruning phase
+   - **All solutions** (from specified output location)
+   - **All evaluation reports** (from `.specs/reports/`)
+   - **Selection rationale** from pruning phase (from `.specs/research/`)
 2. Agent analyzes:
    - **Consensus strengths** (what multiple judges praised)
    - **Consensus weaknesses** (what multiple judges criticized)
@@ -527,20 +542,18 @@ The command produces different outputs depending on the adaptive strategy select
 
 ### Outputs (All Strategies)
 
-1. **Exploration outputs:**
-   - `proposals.a.md`, `proposals.b.md`, `proposals.c.md` - High-level approaches with probabilities
+1. **Research directory:** `.specs/research/` (created if not exists)
+   - Proposals: `.specs/research/{solution-name}-{date}.proposals.[a|b|c].md` - High-level approaches with probabilities
+   - Pruning: `.specs/research/{solution-name}-{date}.pruning.[1|2|3].md` - Judge evaluations and votes
+   - Selection: `.specs/research/{solution-name}-{date}.selection.md` - Vote tallies and selected proposals
 
-2. **Pruning outputs:**
-   - `pruning.1.md`, `pruning.2.md`, `pruning.3.md` - Judge evaluations and votes
-   - `selection.md` - Vote tallies and selected proposals
+2. **Expansion outputs:**
+   - `solution.a.md`, `solution.b.md`, `solution.c.md` - Full implementations (in specified output location)
 
-3. **Expansion outputs:**
-   - `solution.a.md`, `solution.b.md`, `solution.c.md` - Full implementations
+3. **Reports directory:** `.specs/reports/` (created if not exists)
+   - Evaluation: `.specs/reports/{solution-name}-{date}.[1|2|3].md` - Final judge reports
 
-4. **Evaluation outputs:**
-   - `evaluation.1.md`, `evaluation.2.md`, `evaluation.3.md` - Final judge reports
-
-5. **Resulting solution:** `{output_path}`
+4. **Resulting solution:** `{output_path}`
 
 ### Strategy-Specific Outputs
 
@@ -604,38 +617,38 @@ The command produces different outputs depending on the adaptive strategy select
   --criteria "RESTfulness,security,scalability,developer-experience"
 ```
 
-**Phase 1 outputs (proposals):**
-- `proposals.a.md` - 3 approaches: Resource-based (0.35), Action-based (0.25), HATEOAS (0.15)
-- `proposals.b.md` - 3 approaches: GraphQL-first (0.20), REST+GraphQL hybrid (0.30), Pure REST (0.40)
-- `proposals.c.md` - 3 approaches: Microservices (0.25), Monolithic (0.45), Hybrid (0.20)
+**Phase 1 outputs** (assuming date 2025-01-15):
+- `.specs/research/users-api-2025-01-15.proposals.a.md` - 3 approaches: Resource-based (0.35), Action-based (0.25), HATEOAS (0.15)
+- `.specs/research/users-api-2025-01-15.proposals.b.md` - 3 approaches: GraphQL-first (0.20), REST+GraphQL hybrid (0.30), Pure REST (0.40)
+- `.specs/research/users-api-2025-01-15.proposals.c.md` - 3 approaches: Microservices (0.25), Monolithic (0.45), Hybrid (0.20)
 
-**Phase 2 outputs (pruning):**
-- `pruning.1.md` - Top 3: Resource-based REST, Pure REST, Monolithic
-- `pruning.2.md` - Top 3: Pure REST, Hybrid (services), Resource-based REST
-- `pruning.3.md` - Top 3: Resource-based REST, REST+GraphQL hybrid, Pure REST
-- `selection.md` - Selected: Resource-based REST (8 pts), Pure REST (7 pts), Monolithic (4 pts)
+**Phase 2 outputs:**
+- `.specs/research/users-api-2025-01-15.pruning.1.md` - Top 3: Resource-based REST, Pure REST, Monolithic
+- `.specs/research/users-api-2025-01-15.pruning.2.md` - Top 3: Pure REST, Hybrid (services), Resource-based REST
+- `.specs/research/users-api-2025-01-15.pruning.3.md` - Top 3: Resource-based REST, REST+GraphQL hybrid, Pure REST
+- `.specs/research/users-api-2025-01-15.selection.md` - Selected: Resource-based REST (8 pts), Pure REST (7 pts), Monolithic (4 pts)
 
-**Phase 3 outputs (expansion):**
-- `solution.a.md` - Full resource-based design with nested routes
-- `solution.b.md` - Flat REST design with simple endpoints
-- `solution.c.md` - Monolithic API with service-oriented internals
+**Phase 3 outputs:**
+- `specs/api/users.a.md` - Full resource-based design with nested routes
+- `specs/api/users.b.md` - Flat REST design with simple endpoints
+- `specs/api/users.c.md` - Monolithic API with service-oriented internals
 
-**Phase 4 outputs (evaluation):**
-- `evaluation.1.md`:
+**Phase 4 outputs:**
+- `.specs/reports/users-api-2025-01-15.1.md`:
   ```
   VOTE: Solution A
   SCORES: A=4.2/5.0, B=3.8/5.0, C=3.4/5.0
   ```
   "Prefers A for RESTfulness, criticizes C complexity"
 
-- `evaluation.2.md`:
+- `.specs/reports/users-api-2025-01-15.2.md`:
   ```
   VOTE: Solution B
   SCORES: A=3.9/5.0, B=4.1/5.0, C=3.5/5.0
   ```
   "Prefers B for simplicity, criticizes A deep nesting"
 
-- `evaluation.3.md`:
+- `.specs/reports/users-api-2025-01-15.3.md`:
   ```
   VOTE: Solution A
   SCORES: A=4.3/5.0, B=3.6/5.0, C=3.2/5.0

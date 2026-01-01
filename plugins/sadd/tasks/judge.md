@@ -120,7 +120,7 @@ Overall Score = Sum of (criterion_score × criterion_weight)
 - **PASS**: Overall score >= threshold
 - **FAIL**: Overall score < threshold
 
-## Output Format
+## Report Format
 
 ```markdown
 # Evaluation Report
@@ -145,11 +145,13 @@ Overall Score = Sum of (criterion_score × criterion_weight)
 ## Detailed Analysis
 
 ### [Criterion 1 Name] (Weight: 0.XX)
-**Evidence**: [Specific quotes/references]
 **Practical Check**: [If applicable - what you verified with tools]
 **Analysis**: [Explain how evidence maps to rubric level]
 **Score**: X/5
 **Improvement**: [Specific suggestion if score < 5]
+
+#### Evidences
+[Specific quotes/references]
 
 ### [Criterion 2 Name] (Weight: 0.XX)
 [Repeat pattern...]

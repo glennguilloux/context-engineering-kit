@@ -11,12 +11,6 @@ Evaluate solutions through multi-agent debate where independent judges analyze, 
 
 <context>
 This command implements the Multi-Agent Debate pattern for high-quality evaluation where multiple perspectives and rigorous argumentation improve assessment accuracy. Unlike single-pass evaluation, debate forces judges to defend their positions with evidence and consider counter-arguments.
-
-**Related resources:**
-- `/judge` - Single-round multi-judge evaluation
-- `/do-competitively` - Competitive generation with evaluation
-- `agent-evaluation` skill - LLM-as-Judge techniques and bias mitigation
-- `multi-agent-patterns` skill - Multi-agent coordination patterns
 </context>
 
 ## Pattern: Debate-Based Evaluation
@@ -24,10 +18,13 @@ This command implements the Multi-Agent Debate pattern for high-quality evaluati
 This command implements iterative multi-judge debate:
 
 ```
+Phase 0: Setup
+         mkdir -p .specs/reports
+                  │
 Phase 1: Independent Analysis
-         ┌─ Judge 1 → report.1.md ─┐
-Solution ┼─ Judge 2 → report.2.md ─┼─┐
-         └─ Judge 3 → report.3.md ─┘ │
+         ┌─ Judge 1 → {name}.1.md ─┐
+Solution ┼─ Judge 2 → {name}.2.md ─┼─┐
+         └─ Judge 3 → {name}.3.md ─┘ │
                                      │
 Phase 2: Debate Round (iterative)   │
     Each judge reads others' reports │
@@ -43,6 +40,21 @@ Phase 2: Debate Round (iterative)   │
 
 ## Process
 
+### Setup: Create Reports Directory
+
+Before starting evaluation, ensure the reports directory exists:
+
+```bash
+mkdir -p .specs/reports
+```
+
+**Report naming convention:** `.specs/reports/{solution-name}-{YYYY-MM-DD}.[1|2|3].md`
+
+Where:
+- `{solution-name}` - Derived from solution filename (e.g., `users-api` from `src/api/users.ts`)
+- `{YYYY-MM-DD}` - Current date
+- `[1|2|3]` - Judge number
+
 ### Phase 1: Independent Analysis
 
 Launch **3 independent judge agents in parallel** (recommended: Opus for rigor):
@@ -51,7 +63,7 @@ Launch **3 independent judge agents in parallel** (recommended: Opus for rigor):
    - Path to solution(s) being evaluated
    - Evaluation criteria with weights
    - Clear rubric for scoring
-2. Each produces **independent assessment** saved to `report.[1|2|3].md`
+2. Each produces **independent assessment** saved to `.specs/reports/{solution-name}-{date}.[1|2|3].md`
 3. Reports must include:
    - Per-criterion scores with evidence
    - Specific quotes/examples supporting ratings
@@ -78,7 +90,7 @@ You are Judge {N} evaluating a solution independently.
 </evaluation_criteria>
 
 <output_file>
-report.{N}.md
+.specs/reports/{solution-name}-{date}.{N}.md
 </output_file>
 
 Read ${CLAUDE_PLUGIN_ROOT}/tasks/judge.md for evaluation methodology and execute using following criteria.
@@ -91,31 +103,14 @@ Instructions:
    - Justify with concrete examples
 3. Calculate weighted overall score
 4. Write comprehensive report to {output_file}
-5. Generate verification 4-6 questions about your evaluation.
+5. Generate verification 5 questions about your evaluation.
 6. Answer verification questions:
    - Re-examine solutions for each question
    - Find counter-evidence if it exists
    - Check for systematic bias (length, confidence, etc.)
 7. Revise your report file and update it accordingly.
 
-Report Structure:
-# Judge {N} - Initial Assessment
-
-## Criterion: {Name} (weight: {W}%)
-**Score**: {X}/5
-**Evidence**: [specific quotes]
-**Justification**: [why this score]
-
-[Repeat for all criteria]
-
-## Overall Assessment
-**Weighted Score**: {total}/5.0
-**Strengths**: [bullet points with evidence]
-**Weaknesses**: [bullet points with evidence]
-**Recommendation**: [Pass/Fail/Needs revision]
-
-## Evidences
-[specific quotes]
+Add to report begining `Done by Judge {N}`
 ```
 
 ### Phase 2: Debate Rounds (Iterative)
@@ -125,8 +120,8 @@ For each debate round (max 3 rounds):
 Launch **3 debate agents in parallel**:
 
 1. Each judge agent receives:
-   - Path to their own previous report (`report.[1|2|3].md`)
-   - Paths to other judges' reports (`report.[1|2|3].md`)
+   - Path to their own previous report (`.specs/reports/{solution-name}-{date}.[1|2|3].md`)
+   - Paths to other judges' reports (`.specs/reports/{solution-name}-{date}.[1|2|3].md`)
    - The original solution
 2. Each judge:
    - Identifies disagreements with other judges (>1 point score gap on any criterion)
@@ -145,11 +140,11 @@ Launch **3 debate agents in parallel**:
 You are Judge {N} in debate round {R}.
 
 <your_previous_report>
-{path to report.{N}.md}
+{path to .specs/reports/{solution-name}-{date}.{N}.md}
 </your_previous_report>
 
 <other_judges_reports>
-Judge 1: report.1.md
+Judge 1: .specs/reports/{solution-name}-{date}.1.md
 ...
 </other_judges_reports>
 
@@ -162,7 +157,7 @@ Judge 1: report.1.md
 </solution_path>
 
 <output_file>
-report.{N}.md (append to existing file)
+.specs/reports/{solution-name}-{date}.{N}.md (append to existing file)
 </output_file>
 
 Read ${CLAUDE_PLUGIN_ROOT}/tasks/judge.md for evaluation methodology principles.
@@ -234,7 +229,7 @@ After each debate round, check for consensus:
 **Step 1: Run Independent Analysis (Round 1)**
 
 1. Launch 3 judge agents in parallel (Judge 1, 2, 3)
-2. Each writes their independent assessment to `report.[1|2|3].md`
+2. Each writes their independent assessment to `.specs/reports/{solution-name}-{date}.[1|2|3].md`
 3. Wait for all 3 agents to complete
 
 **Step 2: Check for Consensus**
@@ -320,10 +315,10 @@ If consensus achieved, reply final synthesis:
 <output>
 The command produces:
 
-1. **Initial reports**: `report.1.md`, `report.2.md`, `report.3.md`
-2. **Debate updates**: Appended sections in each report file per round
-3. **Consensus report**: `evaluation-consensus.md` (if consensus reached)
-4. **No-consensus report**: `evaluation-disagreement.md` (if max rounds exceeded)
+1. **Reports directory**: `.specs/reports/` (created if not exists)
+2. **Initial reports**: `.specs/reports/{solution-name}-{date}.1.md`, `.specs/reports/{solution-name}-{date}.2.md`, `.specs/reports/{solution-name}-{date}.3.md`
+3. **Debate updates**: Appended sections in each report file per round
+4. **Final synthesis**: Replied to user (consensus or disagreement summary)
 </output>
 
 ## Best Practices
@@ -374,14 +369,13 @@ Choose 3-5 weighted criteria relevant to the solution type:
 /judge-with-debate \
   --solution "src/api/users.ts" \
   --task "Implement REST API for user management" \
-  --criteria "correctness:30,design:25,security:20,performance:15,docs:10" \
-  --output "evaluation/"
+  --criteria "correctness:30,design:25,security:20,performance:15,docs:10"
 ```
 
-**Round 1 outputs:**
-- `evaluation/report.1.md` - Judge 1 scores correctness 4/5, security 3/5
-- `evaluation/report.2.md` - Judge 2 scores correctness 4/5, security 5/5
-- `evaluation/report.3.md` - Judge 3 scores correctness 5/5, security 4/5
+**Round 1 outputs** (assuming date 2025-01-15):
+- `.specs/reports/users-api-2025-01-15.1.md` - Judge 1 scores correctness 4/5, security 3/5
+- `.specs/reports/users-api-2025-01-15.2.md` - Judge 2 scores correctness 4/5, security 5/5
+- `.specs/reports/users-api-2025-01-15.3.md` - Judge 3 scores correctness 5/5, security 4/5
 
 **Disagreement detected:** Security scores range from 3-5
 

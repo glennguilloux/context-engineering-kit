@@ -52,6 +52,23 @@ Phase 3: Evidence-Based Synthesis        │                       │
 
 ## Process
 
+### Setup: Create Reports Directory
+
+Before starting, ensure the reports directory exists:
+
+```bash
+mkdir -p .specs/reports
+```
+
+**Report naming convention:** `.specs/reports/{solution-name}-{YYYY-MM-DD}.[1|2|3].md`
+
+Where:
+- `{solution-name}` - Derived from output path (e.g., `users-api` from output `specs/api/users.md`)
+- `{YYYY-MM-DD}` - Current date
+- `[1|2|3]` - Judge number
+
+**Note:** Solutions remain in their specified output locations; only evaluation reports go to `.specs/reports/`
+
 ### Phase 1: Competitive Generation
 
 Launch **3 independent agents in parallel** (recommended: Opus for quality):
@@ -87,7 +104,7 @@ Instructions:
 2. Consider multiple approaches
 3. Choose the approach you think is best
 4. Implement it completely
-5. Generate 3-5 verification questions about critical aspects.
+5. Generate 5 verification questions about critical aspects.
 6. Answer own questions:
    - Review solution against each question
    - Identify gaps or weaknesses
@@ -106,7 +123,7 @@ Launch **3 independent judges in parallel** (recommended: Opus for rigor):
    - **Comparative analysis** (which solution excels where)
    - **Evidence-based ratings** (with specific quotes/examples)
    - **Final vote** (which solution they prefer and why)
-4. Reports saved to distinct files (e.g., `report.1.md`, `report.2.md`, `report.3.md`)
+4. Reports saved to distinct files (e.g., `.specs/reports/{solution-name}-{date}.[1|2|3].md`)
 
 **Key principle:** Multiple independent evaluations reduce bias and catch different issues.
 
@@ -124,7 +141,7 @@ You are evaluating {number} solutions to this task:
 </solutions>
 
 <output>
-Write full report to this file: {report.[*].md based on the task description and context. Each [*] is a unique identifier per judge}
+Write full report to: {.specs/reports/{solution-name}-{date}.[1|2|3].md - each judge gets unique number identifier}
 
 CRITICAL: You must reply with this exact structured header format:
 
@@ -157,7 +174,7 @@ Instructions:
    2. Compare strengths and weaknesses
    3. Score each solution on each criterion
    4. Calculate weighted total scores
-3. Generate verification 4-6 questions about your evaluation.
+3. Generate verification 5 questions about your evaluation.
 4. Answer verification questions:
    - Re-examine solutions for each question
    - Find counter-evidence if it exists
@@ -350,8 +367,8 @@ The command produces different outputs depending on the adaptive strategy select
 
 ### Outputs (All Strategies)
 
-1. **Candidate solutions:** `{output_prefix}.a`, `{output_prefix}.b`, `{output_prefix}.c`
-2. **Evaluation reports:** `report.1.md`, `report.2.md`, `report.3.md`
+1. **Candidate solutions:** `{output_prefix}.a`, `{output_prefix}.b`, `{output_prefix}.c` (in specified output location)
+2. **Evaluation reports:** `.specs/reports/{solution-name}-{date}.[1|2|3].md`
 3. **Resulting solution:** `{output_path}` 
 
 ### Strategy-Specific Outputs
@@ -417,22 +434,22 @@ Choose 3-5 weighted criteria relevant to the task:
 - `specs/api/users.b.md` - Action-based design with RPC-style endpoints
 - `specs/api/users.c.md` - Minimal design, missing auth consideration
 
-**Phase 2 outputs:**
-- `report.1.md`:
+**Phase 2 outputs** (assuming date 2025-01-15):
+- `.specs/reports/users-api-2025-01-15.1.md`:
   ```
   VOTE: Solution A
   SCORES: A=4.5/5.0, B=3.2/5.0, C=2.8/5.0
   ```
   "Most RESTful, good security"
 
-- `report.2.md`:
+- `.specs/reports/users-api-2025-01-15.2.md`:
   ```
   VOTE: Solution A
   SCORES: A=4.3/5.0, B=3.5/5.0, C=2.6/5.0
   ```
   "Clean resource design, scalable"
 
-- `report.3.md`:
+- `.specs/reports/users-api-2025-01-15.3.md`:
   ```
   VOTE: Solution A
   SCORES: A=4.6/5.0, B=3.0/5.0, C=2.9/5.0
@@ -460,26 +477,26 @@ Choose 3-5 weighted criteria relevant to the task:
 ```
 
 **Phase 1 outputs:**
-- `solution.a.md` - Redis with LRU eviction
-- `solution.b.md` - Multi-tier cache (memory + Redis)
-- `solution.c.md` - CDN + application cache
+- `specs/caching.a.md` - Redis with LRU eviction
+- `specs/caching.b.md` - Multi-tier cache (memory + Redis)
+- `specs/caching.c.md` - CDN + application cache
 
-**Phase 2 outputs:**
-- `report.1.md`:
+**Phase 2 outputs** (assuming date 2025-01-15):
+- `.specs/reports/caching-2025-01-15.1.md`:
   ```
   VOTE: Solution B
   SCORES: A=3.8/5.0, B=4.2/5.0, C=3.9/5.0
   ```
   "Best performance, complex"
 
-- `report.2.md`:
+- `.specs/reports/caching-2025-01-15.2.md`:
   ```
   VOTE: Solution A
   SCORES: A=4.0/5.0, B=3.9/5.0, C=3.7/5.0
   ```
   "Simple, reliable, proven"
 
-- `report.3.md`:
+- `.specs/reports/caching-2025-01-15.3.md`:
   ```
   VOTE: Solution C
   SCORES: A=3.6/5.0, B=4.0/5.0, C=4.1/5.0
@@ -509,26 +526,26 @@ Choose 3-5 weighted criteria relevant to the task:
 ```
 
 **Phase 1 outputs:**
-- `solution.a.md` - Custom OAuth2 implementation
-- `solution.b.md` - Session-based with social providers
-- `solution.c.md` - JWT with password-only auth
+- `specs/auth.a.md` - Custom OAuth2 implementation
+- `specs/auth.b.md` - Session-based with social providers
+- `specs/auth.c.md` - JWT with password-only auth
 
-**Phase 2 outputs:**
-- `report.1.md`:
+**Phase 2 outputs** (assuming date 2025-01-15):
+- `.specs/reports/auth-2025-01-15.1.md`:
   ```
   VOTE: Solution A
   SCORES: A=2.5/5.0, B=2.2/5.0, C=2.3/5.0
   ```
   "Security risks, reinventing wheel"
 
-- `report.2.md`:
+- `.specs/reports/auth-2025-01-15.2.md`:
   ```
   VOTE: Solution B
   SCORES: A=2.4/5.0, B=2.8/5.0, C=2.1/5.0
   ```
   "Sessions don't scale, missing requirements"
 
-- `report.3.md`:
+- `.specs/reports/auth-2025-01-15.3.md`:
   ```
   VOTE: Solution C
   SCORES: A=2.6/5.0, B=2.5/5.0, C=2.3/5.0
