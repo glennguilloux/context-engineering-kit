@@ -55,6 +55,33 @@ make set-marketplace-version VERSION=x.y.z     # Update marketplace version
 - Keep README.md in sync between `plugins/<name>/` and `docs/plugins/<name>/` using `make sync-docs-to-plugins` and `make sync-plugins-to-docs` commands. Do not update both manually.
 - Test plugins with Claude Code before committing using `plugins/customaize-agent:test-prompt` and `plugins/customaize-agent:test-skill` commands.
 
+### When Adding New Skills or Commands
+
+**Documentation Checklist** (all files must be updated):
+
+1. `plugins/<name>/README.md` - Add skill/command with "Use when..." trigger and structured tables
+2. `README.md` (root) - Add to Skills/Commands section under plugin listing
+3. `docs/reference/skills.md` or `docs/reference/commands.md` - Add to complete reference
+4. `docs/plugins/README.md` - Update Key Features for the plugin
+5. `docs/resources/related-projects.md` - Add source project attribution if based on external work
+6. `docs/resources/papers.md` - Add research papers if technique is based on academic research
+7. Run `make sync-plugins-to-docs` to sync plugin README to docs/
+8. Bump plugin version: `make set-version PLUGIN=<name> VERSION=<x.y.z>` (minor for features)
+9. Bump marketplace version: `make set-marketplace-version VERSION=<x.y.z>`
+
+**Finding All References**: Before declaring documentation complete, search for all files referencing the plugin:
+
+```bash
+grep -r "<plugin-name>" docs/ README.md --include="*.md" -l
+```
+
+**Skill Documentation Pattern**:
+
+- Start with "Use when..." trigger phrase
+- Use tables for structured information (not prose)
+- Include key concepts with one-line explanations
+- Keep YAML `name:` field matching folder name for consistency
+
 ## Use Paper Search MCP for Academic Research
 
 Paper Search MCP is available via Docker MCP for searching and downloading academic papers.
@@ -106,6 +133,28 @@ You MUST: Use `"md create"` for issues, TodoWrite for simple single-session exec
 - `mb close <id1> <id2> ...` - Close multiple issues at once (more efficient)
 - `mb close <id> --reason=\"explanation\"` - Close with reason
 - **Tip**: When creating multiple issues/tasks/epics, use parallel subagents for efficiency
+
+#### Modifying Task Descriptions
+
+**Use Write tool instead of `mb update -d` for description changes:**
+
+Tasks are stored as markdown files in `.beads/issues/<id>.md` with this format:
+
+```yaml
+---
+[task frontmatter]
+---
+
+# Description
+
+[Task description content here]
+```
+
+**Why Write tool for descriptions?**
+
+- `mb update -d` replaces entire description (easy to lose content)
+- Write tool allows precise edits while preserving existing content
+- Better for large descriptions with multiple sections
 
 #### Dependencies & Blocking
 

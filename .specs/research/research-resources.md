@@ -44,6 +44,14 @@ claude --agents '{
 [] LSP server integration with Claude Code
 [][Conductor: Google spec driven development kit](https://github.com/gemini-cli-extensions/conductor)
 [] Task tracking: https://github.com/hmans/beans https://github.com/rrnewton/minibeads https://github.com/steveyegge/beads
-[][Agent Skills for Context Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering)
+[x][Agent Skills for Context Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering)
 [][Agent search MCP](https://github.com/exa-labs/exa-mcp-server)
 [][First Principles Framework](https://github.com/m0n0x41d/quint-code)
+[] Think about way to make reflection work as continues-learning agent. It can trigger on words like "You absolutily right", analyse it and save to CLAUDE.md file correction that user provided.
+[][Hookify](https://github.com/anthropics/claude-code/tree/main/plugins/hookify) - advanced hook configuration, that using python skills.
+[][Ralph](https://github.com/anthropics/claude-code/tree/main/plugins/ralph-wiggum) - continus iteration plugin and orcestrator verision https://github.com/mikeyobrien/ralph-orchestrator
+[][Security Reminder](https://github.com/anthropics/claude-code/tree/main/plugins/security-guidance/hooks) - hook that reminds about security best practices.
+[] Add git workspaces usage for competitive model writing
+[] Research how git notes can be used during code writing and review
+[] Research how to add RAG style pipline with vector search to prepent relevant code to context window before code writing
+[] Check "Prompting Science" series. https://arxiv.org/abs/2503.04818, https://arxiv.org/abs/2512.05858, https://chatpaper.com/paper/172346, https://arxiv.org/abs/2508.00614, https://www.researchgate.net/publication/392530384_Prompting_Science_Report_2_The_Decreasing_Value_of_Chain_of_Thought_in_Prompting

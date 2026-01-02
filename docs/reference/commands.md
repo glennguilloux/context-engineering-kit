@@ -70,6 +70,23 @@ Test-first development methodology with agent-orchestrated coverage. [More info]
 - `/tdd:write-tests` - Systematically add test coverage for local code changes using specialized review and development agents
 - `/tdd:fix-tests` - Fix failing tests after business logic changes or refactoring using orchestrated agents
 
+### Subagent-Driven Development (SADD)
+
+Execution framework for parallel/sequential task dispatch, competitive generation, and multi-agent evaluation. [More info](../plugins/sadd/README.md).
+
+#### Execution Commands
+
+- `/sadd:launch-sub-agent` - Launch focused sub-agents with intelligent model selection, Zero-shot CoT reasoning, and self-critique verification
+- `/sadd:do-in-parallel` - Execute the same task across multiple independent targets in parallel with context isolation
+- `/sadd:do-in-steps` - Execute complex tasks through sequential sub-agent orchestration with automatic decomposition and context passing
+- `/sadd:do-competitively` - Execute tasks through competitive generation, multi-judge evaluation, and evidence-based synthesis to produce superior results
+- `/sadd:tree-of-thoughts` - Execute complex reasoning through systematic exploration of solution space, pruning unpromising branches, and synthesizing the best solution
+
+#### Evaluation Commands
+
+- `/sadd:judge-with-debate` - Evaluate solutions through iterative multi-judge debate with consensus building or disagreement reporting
+- `/sadd:judge` - Evaluate completed work using LLM-as-Judge with structured rubrics and evidence-based scoring
+
 ### Docs
 
 Documentation management commands. [More info](../plugins/docs/README.md).
@@ -95,3 +112,19 @@ Commands for integrating Model Context Protocol servers. [More info](../plugins/
 - `/mcp:setup-context7-mcp` - Guide for setting up the Context7 MCP server to load documentation for specific technologies.
 - `/mcp:setup-serena-mcp` - Guide for setting up the Serena MCP server for semantic code retrieval and editing capabilities.
 - `/mcp:build-mcp` - Guide for creating high-quality MCP servers that enable LLMs to interact with external services.
+
+### First Principles Framework (FPF)
+
+Structured reasoning with ADI (Abduction-Deduction-Induction) cycle for auditable decision-making. [More info](../plugins/fpf/README.md).
+
+#### Workflow Command
+
+- `/fpf:propose-hypotheses` - Execute complete FPF reasoning cycle from hypothesis generation to decision. Orchestrates the full ADI cycle: initialize context, generate hypotheses, verify logic, validate evidence, audit trust, and produce a Design Rationale Record (DRR).
+
+#### Utility Commands
+
+- `/fpf:status` - Show current FPF phase and hypothesis counts across knowledge layers (L0/L1/L2).
+- `/fpf:query` - Search the FPF knowledge base and display hypothesis details with assurance information.
+- `/fpf:decay` - Manage evidence freshness: refresh stale evidence, deprecate obsolete decisions, or waive with documented rationale.
+- `/fpf:actualize` - Reconcile the FPF knowledge base with codebase changes, detecting context drift and stale evidence.
+- `/fpf:reset` - Archive current session and reset the FPF cycle for a fresh start.

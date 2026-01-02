@@ -4,7 +4,7 @@ icon: grid-4
 
 # Plugins
 
-This directory contains comprehensive documentation for all 12 plugins in the Context Engineering Kit. Each plugin is designed to enhance Claude Code with specific capabilities focused on code quality, development workflows, and continuous improvement.
+This directory contains comprehensive documentation for all 13 plugins in the Context Engineering Kit. Each plugin is designed to enhance Claude Code with specific capabilities focused on code quality, development workflows, and continuous improvement.
 
 ## Quick Navigation
 
@@ -15,6 +15,7 @@ This directory contains comprehensive documentation for all 12 plugins in the Co
 * [Subagent-Driven Development](sadd/) - Task delegation with quality gates
 * [Domain-Driven Development](ddd/) - Code quality and architecture patterns
 * [Spec-Driven Development](sdd/) - Spec-Driven workflow
+* [First Principles Framework](fpf/) - Structured reasoning with ADI cycle
 * [Kaizen](kaizen/) - Continuous improvement and root cause analysis
 * [Customaize Agent](customaize-agent/) - Create and refine Claude Code extensions
 * [Docs](docs/) - Documentation management
@@ -85,15 +86,17 @@ TDD methodology with anti-pattern detection and testing best practices.
 
 #### Subagent-Driven Development
 
-Task delegation pattern that dispatches fresh subagents with quality gates between tasks.
+Execution framework for parallel/sequential task dispatch, competitive generation, and multi-agent evaluation with quality gates.
 
 **Key Features:**
 
-* Fresh context for each task
-* Code review between tasks
-* Fast iteration with quality control
+* **Execution patterns**: parallel (`do-in-parallel`), sequential (`do-in-steps`), competitive (`do-competitively`), exploration (`tree-of-thoughts`)
+* **Evaluation**: single judge (`judge`) or multi-judge debate (`judge-with-debate`)
+* Fresh context isolation per task
+* Quality gates with code review between tasks
+* Multi-agent architecture patterns (supervisor, peer-to-peer, hierarchical)
 
-**When to use:** For complex features requiring multiple independent tasks.
+**When to use:** For complex features requiring multiple independent tasks, competitive solution generation, or when single-agent context limits are exceeded.
 
 [Full Documentation](sadd/)
 
@@ -110,6 +113,29 @@ Comprehensive Spec-Driven Development workflow using specialized agents for each
 **When to use:** For complex features requiring detailed specifications and planning.
 
 [Full Documentation](sdd/)
+
+#### First Principles Framework
+
+Structured reasoning methodology implementing the ADI (Abduction-Deduction-Induction) cycle for auditable decision-making. The FPF plugin implements structured reasoning using [the First Principles Framework](https://github.com/ailev/FPF) methodology developed by Anatoly Levenchuk a methodology for rigorous, auditable reasoning. The killer feature is turning the black box of AI reasoning into a transparent, evidence-backed audit trail. 
+
+**Key Features:**
+
+* Hypothesis generation with competing alternatives
+* Logical verification and constraint checking
+* Empirical validation with evidence tracking
+* Trust calculus with Weakest Link principle
+* Design Rationale Records (DRRs)
+* Evidence freshness management
+
+The core cycle follows three modes of inference:
+
+- Abduction — Generate competing hypotheses (don't anchor on the first idea).
+- Deduction — Verify logic and constraints (does the idea make sense?).
+- Induction — Gather evidence through tests or research (does the idea work in reality?).
+
+**When to use:** For architectural decisions with long-term consequences requiring auditable reasoning trails.
+
+[Full Documentation](fpf/)
 
 ### Code Quality & Architecture
 
@@ -170,8 +196,10 @@ Tools for creating and refining Claude Code commands, skills, and hooks.
 * Skill development guide
 * Prompt testing framework
 * Anthropic best practices
+* Context engineering fundamentals (attention budget, progressive disclosure)
+* Agent evaluation frameworks (LLM-as-Judge, rubrics, bias mitigation)
 
-**When to use:** Creating custom plugins or extending Claude Code.
+**When to use:** Creating custom plugins, extending Claude Code, or optimizing agent performance.
 
 [Full Documentation](customaize-agent/)
 

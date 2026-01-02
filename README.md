@@ -7,7 +7,7 @@
 
 # [Context Engineering Kit](https://cek.neolab.finance)
 
-Hand-crafted collection of advanced context engineering techniques and patterns with minimal token footprint, focused on improving agent result quality.
+Hand-crafted collection of advanced context engineering techniques and patterns with minimal token footprint, focused on improving agent result quality and predictability.
 
 The Claude Code plugin marketplace is based on prompts used daily by our company developers for a long time, while adding plugins from benchmarked papers and high-quality projects.
 
@@ -59,7 +59,7 @@ Each installed plugin loads only its specific agents, commands, and skills into 
 # If they are minor, it will suggest improvements that you can respond to
 > fix the issues
 
-# If you would like it to avoid issues that were found during reflection to appear again, 
+# If you would like it to avoid issues that were found during reflection to appear again,
 # ask claude to extract resolution strategies and save the insights to project memory
 > /reflexion:memorize
 ```
@@ -68,7 +68,7 @@ Alternatively, you can use the `reflect` word in intial prompt:
 
 ```bash
 > claude "implement user authentication, then reflect"
-# Claude implements user authentication, 
+# Claude implements user authentication,
 # then hook automatically runs /reflexion:reflect
 ```
 
@@ -101,6 +101,7 @@ To view all available plugins:
 - [Subagent-Driven Development](https://cek.neolab.finance/plugins/sadd) - Introduces skills for subagent-driven development, dispatches fresh subagent for each task with code review between tasks, enabling fast iteration with quality gates.
 - [Domain-Driven Development](https://cek.neolab.finance/plugins/ddd) - Introduces commands to update CLAUDE.md with best practices for domain-driven development, focused on code quality, and includes Clean Architecture, SOLID principles, and other design patterns.
 - [Spec-Driven Development](https://cek.neolab.finance/plugins/sdd) - Introduces commands for specification-driven development, based on Github Spec Kit, OpenSpec and BMad Method. Uses specialized agents for effective context management and quality review.
+- [FPF - First Principles Framework](https://cek.neolab.finance/plugins/fpf) - Introduces structured reasoning using ADI cycle (Abduction-Deduction-Induction) with knowledge layer progression. Uses workflow command pattern with fpf-agent for hypothesis generation, verification, and auditable decision-making.
 - [Kaizen](https://cek.neolab.finance/plugins/kaizen) - Inspired by Japanese continuous improvement philosophy, Agile and Lean development practices. Introduces commands for analysis of root causes of issues and problems, including 5 Whys, Cause and Effect Analysis, and other techniques.
 - [Customaize Agent](https://cek.neolab.finance/plugins/customaize-agent) - Commands and skills for writing and refining commands, hooks, and skills for Claude Code. Includes Anthropic Best Practices and [Agent Persuasion Principles](https://arxiv.org/abs/2508.00614) that can be useful for sub-agent workflows.
 - [Docs](https://cek.neolab.finance/plugins/docs) - Commands for analyzing projects, writing and refining documentation.
@@ -127,7 +128,7 @@ Collection of commands that force the LLM to reflect on previous response and ou
 
 - **Automatic Reflection Hook** - Triggers `/reflexion:reflect` automatically when "reflect" appears in your prompt
 
-#### Based on papers
+#### Theoretical Foundation
 
 Based on papers like [Self-Refine](https://arxiv.org/abs/2303.17651) and [Reflexion](https://arxiv.org/abs/2303.11366). These techniques improve the output of large language models by introducing feedback and refinement loops.
 
@@ -188,7 +189,7 @@ name: Claude Code Review
 
 on:
   pull_request:
-    types: 
+    types:
     - opened
     - synchronize # remove if want to run only, when PR is opened
     # Uncomment to limit which files can trigger the workflow
@@ -218,7 +219,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
-      
+
       - name: Run Claude Code Review
         id: claude-review
         uses: anthropics/claude-code-action@v1
@@ -229,7 +230,7 @@ jobs:
 
           plugin_marketplaces: https://github.com/NeoLabHQ/context-engineering-kit.git
           plugins: "code-review@context-engineering-kit\ngit@context-engineering-kit\ntdd@context-engineering-kit\nsadd@context-engineering-kit\nddd@context-engineering-kit\nsdd@context-engineering-kit\nkaizen@context-engineering-kit"
-          
+
           prompt: |
             REPO: ${{ github.repository }}
             PR NUMBER: ${{ github.event.pull_request.number }}
@@ -238,7 +239,7 @@ jobs:
             Do not analyze or read PR, code or anything else UNTIL you have read the command!
 
             Note: The PR branch is already checked out in the current working directory.
-          
+
           # SlashCommand and Bash(gh pr comment:*) is required for review, the rest is optional, but recommended for better context and quality of the review.
           claude_args: '--allowed-tools "SlashCommand,Bash,Glob,Grep,Read,Task,mcp__github_inline_comment__create_inline_comment,Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr edit:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh api:*)"'
 ```
@@ -281,7 +282,7 @@ Commands and skills for test-driven development with anti-pattern detection.
 
 ### Subagent-Driven Development
 
-Skills for subagent-driven development with quality gates between tasks.
+Execution framework for competitive generation, multi-agent evaluation, and subagent-driven development with quality gates.
 
 **How to install**
 
@@ -289,9 +290,20 @@ Skills for subagent-driven development with quality gates between tasks.
 /plugin install sadd@NeoLabHQ/context-engineering-kit
 ```
 
+**Commands**
+
+- `/sadd:launch-sub-agent` - Launch focused sub-agents with intelligent model selection, Zero-shot CoT reasoning, and self-critique verification
+- `/sadd:do-in-parallel` - Execute the same task across multiple independent targets in parallel with context isolation
+- `/sadd:do-in-steps` - Execute complex tasks through sequential sub-agent orchestration with automatic decomposition and context passing
+- `/sadd:do-competitively` - Execute tasks through competitive generation, multi-judge evaluation, and evidence-based synthesis to produce superior results
+- `/sadd:tree-of-thoughts` - Execute complex reasoning through systematic exploration of solution space, pruning unpromising branches, and synthesizing the best solution
+- `/sadd:judge-with-debate` - Evaluate solutions through iterative multi-judge debate with consensus building or disagreement reporting
+- `/sadd:judge` - Evaluate completed work using LLM-as-Judge with structured rubrics and evidence-based scoring
+
 **Skills**
 
 - **subagent-driven-development** - Dispatches fresh subagent for each task with code review between tasks, enabling fast iteration with quality gates
+- **multi-agent-patterns** - Design multi-agent architectures (supervisor, peer-to-peer, hierarchical) for complex tasks exceeding single-agent context limits
 
 ### Domain-Driven Development
 
@@ -363,7 +375,7 @@ claude
 - **code-explorer** - Navigates and understands existing codebase structure
 - **code-reviewer** - Reviews implementations against specifications and quality standards
 
-#### Based on
+#### Theoretical Foundation
 
 The SDD plugin implements a structured software development methodology combining proven frameworks:
 
@@ -375,6 +387,76 @@ Supporting research and techniques:
 
 - [Specification-Driven Development](https://en.wikipedia.org/wiki/Design_by_contract) - Design by contract and formal specification approaches
 - [Verbalized Sampling](https://arxiv.org/abs/2510.01171) - Training-free prompting for diverse idea generation. Achieves **2-3x diversity improvement** while maintaining quality. Used for `create-ideas`, `brainstorm` and `plan` commands.
+
+### FPF - First Principles Framework
+
+Structured reasoning plugin implements the **[First Principles Framework (FPF)](https://github.com/ailev/FPF)** by Anatoly Levenchuk — a methodology for rigorous, auditable reasoning. The killer feature is turning the black box of AI reasoning into a transparent, evidence-backed audit trail. The plugin makes AI decision-making transparent and auditable. Instead of jumping to solutions, FPF enforces generating competing hypotheses, checking them logically, testing against evidence, then letting developers choose.
+
+Key principles:
+
+- **Transparent reasoning** - Full audit trail from hypothesis to decision
+- **Hypothesis-driven** - Generate 3-5 competing alternatives before evaluating
+- **Evidence-based** - Computed trust scores, not estimates
+- **Human-in-the-loop** - AI generates options; humans decide (Transformer Mandate)
+
+The core cycle follows three modes of inference:
+
+1. **Abduction** — Generate competing hypotheses (don't anchor on the first idea).
+2. **Deduction** — Verify logic and constraints (does the idea make sense?).
+3. **Induction** — Gather evidence through tests or research (does the idea work in reality?).
+
+Then, audit for bias, decide, and document the rationale in a durable record.
+
+> **Warning:** This plugin loads the core FPF specification into context, which is large (~600k tokens). As a result it loaded into a subagent with Sonnet[1m] model. But such agent can consume your token limit quickly.
+
+**How to install**
+
+```bash
+/plugin install fpf@NeoLabHQ/context-engineering-kit
+```
+
+#### Usage workflow
+
+```bash
+# Execute complete FPF cycle from hypothesis to decision
+/fpf:propose-hypotheses What caching strategy should we use?
+
+# The workflow will:
+# 1. Initialize context and .fpf/ directory
+# 2. Generate competing hypotheses
+# 3. Allow you to add your own alternatives
+# 4. Verify each against project constraints (parallel)
+# 5. Validate with evidence (parallel)
+# 6. Compute trust scores (parallel)
+# 7. Present comparison for your decision
+```
+
+**Commands**
+
+- `/fpf:propose-hypotheses` - Execute complete FPF cycle from hypothesis to decision (main workflow)
+- `/fpf:status` - Show current FPF phase and hypothesis counts
+- `/fpf:query` - Search knowledge base with assurance info
+- `/fpf:decay` - Manage evidence freshness (refresh/deprecate/waive)
+- `/fpf:actualize` - Reconcile knowledge with codebase changes
+- `/fpf:reset` - Archive session and return to IDLE
+
+**Agent**
+
+- **fpf-agent** - FPF reasoning specialist for hypothesis generation, verification, validation, and trust calculus using ADI cycle and knowledge layer progression
+
+#### Key Concepts
+
+| Concept | Description |
+|---------|-------------|
+| **ADI Cycle** | Abduction-Deduction-Induction reasoning loop |
+| **Knowledge Layers** | L0 (Conjecture) -> L1 (Substantiated) -> L2 (Corroborated) |
+| **WLNK** | Weakest Link principle: R_eff = min(evidence_scores) |
+| **Transformer Mandate** | AI generates options; humans decide |
+
+#### Theoretical Foundation
+
+- [FPF Repository](https://github.com/ailev/FPF) - Original methodology by Anatoly Levenchuk
+- [quint-code](https://github.com/m0n0x41d/quint-code) - Implementation this plugin is based on
 
 ### Kaizen
 
@@ -421,6 +503,8 @@ Commands and skills for creating and refining Claude Code extensions.
 **Skills**
 
 - **prompt-engineering** - Well known prompt engineering techniques and patterns, includes Anthropic Best Practices and Agent Persuasion Principles
+- **context-engineering** - Deep understanding of context mechanics: attention budget, progressive disclosure, lost-in-middle effect, and practical optimization patterns
+- **agent-evaluation** - Evaluation frameworks for agent systems: LLM-as-Judge, multi-dimensional rubrics, bias mitigation, and the 95% performance finding
 
 ### Docs
 

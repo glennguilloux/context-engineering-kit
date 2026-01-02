@@ -19,7 +19,7 @@ Focused on:
 
 The Customaize Agent plugin provides a complete toolkit for extending Claude Code's capabilities. It applies Test-Driven Development principles to prompt engineering: you write test scenarios first, watch agents fail, create prompts that address those failures, and iterate until bulletproof.
 
-The plugin is built on Anthropic's official skill authoring best practices and research-backed persuasion principles (Meincke et al., 2025 - persuasion techniques more than doubled compliance rates from 33% to 72%).
+The plugin is built on Anthropic's official skill authoring best practices and research-backed persuasion principles ([Prompting Science Report 3](https://arxiv.org/abs/2508.00614) - persuasion techniques more than doubled compliance rates from 33% to 72%).
 
 ## Quick Start
 
@@ -59,6 +59,19 @@ Interactive assistant for creating new Claude commands with proper structure, pa
 
 Optional command name or description of the command's purpose (e.g., "validate API documentation", "deploy to staging").
 
+#### Usage Examples
+
+```bash
+# Create an API validation command
+> /customaize-agent:create-command validate API documentation
+
+# Create a deployment command
+> /customaize-agent:create-command deploy feature to staging
+
+# Start without a specific idea
+> /customaize-agent:create-command
+```
+
 #### How It Works
 
 1. **Pattern Research**: Examines existing commands in the target category
@@ -90,19 +103,6 @@ Optional command name or description of the command's purpose (e.g., "validate A
    - Human review sections
    - Documentation references
 
-#### Usage Examples
-
-```bash
-# Create an API validation command
-> /customaize-agent:create-command validate API documentation
-
-# Create a deployment command
-> /customaize-agent:create-command deploy feature to staging
-
-# Start without a specific idea
-> /customaize-agent:create-command
-```
-
 #### Best Practices
 
 - Research first - Let the assistant examine existing commands before creating new ones
@@ -110,6 +110,77 @@ Optional command name or description of the command's purpose (e.g., "validate A
 - Choose location carefully - Project commands for codebase-specific workflows, user commands for general utilities
 - Include MCP tools - Use MCP tool patterns instead of CLI commands where applicable
 - Add human review sections - Flag decisions that need verification
+
+---
+
+### /customaize-agent:create-workflow-command - Workflow Command Builder
+
+Create commands that orchestrate multi-step workflows by dispatching sub-agents with task-specific instructions stored in separate files. Solves the **context bloat problem** by keeping orchestrator commands lean.
+
+- Purpose - Build workflow commands that dispatch sub-agents with file-based task prompts
+- Output - Complete workflow structure: orchestrator command, task files, and optional custom agents
+
+```bash
+/customaize-agent:create-workflow-command [workflow-name] [description]
+```
+
+#### Arguments
+
+Optional workflow name (kebab-case) and description of what the workflow accomplishes.
+
+#### Usage Examples
+
+```bash
+# Create a feature implementation workflow
+> /customaize-agent:create-workflow-command feature-implementation "Research, plan, and implement features"
+
+# Create a code review workflow
+> /customaize-agent:create-workflow-command code-review "Multi-phase code analysis and feedback"
+
+# Start interactive workflow creation
+> /customaize-agent:create-workflow-command
+```
+
+#### How It Works
+
+1. **Gather Requirements**: Collects workflow details
+   - Workflow name and description
+   - List of discrete steps with goals and tools
+   - Execution mode (sequential or parallel)
+   - Agent type preferences
+
+2. **Create Directory Structure**: Sets up the workflow layout
+
+```
+plugins/<plugin-name>/
+├── commands/
+│   └── <workflow>.md          # Lean orchestrator (~50-100 tokens per step)
+├── agents/                     # Optional: reusable executor agents
+│   └── step-executor.md       # Custom agent with specific tools/behavior
+└── tasks/                      # All task instructions directly here
+    ├── step-1-<name>.md       # Full instructions (~500+ tokens each)
+    ├── step-2-<name>.md
+    ├── step-3-<name>.md
+    └── common-context.md      # Shared context across workflows
+```
+
+1. **Create Task Files**: Generates self-contained task instructions
+   - Context and goal for each step
+   - Input/output specifications
+   - Constraints and success criteria
+
+2. **Create Orchestrator Command**: Builds lean dispatch logic
+   - Uses `${CLAUDE_PLUGIN_ROOT}/tasks/` paths for portability
+   - Passes minimal context between steps (summaries, not full data)
+   - Supports sequential, parallel, and stateful (resume) patterns
+
+#### Execution Patterns
+
+| Pattern | Use Case | Description |
+|---------|----------|-------------|
+| **Sequential** | Dependent steps | Each step uses previous step's output |
+| **Parallel** | Independent analysis | Multiple agents run simultaneously |
+| **Stateful (Resume)** | Shared context | Continue same agent across steps |
 
 ---
 
@@ -127,6 +198,19 @@ Guide for creating effective skills using a TDD-based approach. This command tre
 #### Arguments
 
 Optional skill name (e.g., "image-editor", "pdf-processing", "code-review").
+
+#### Usage Examples
+
+```bash
+# Create an image editing skill
+> /customaize-agent:create-skill image-editor
+
+# Create a database query skill
+> /customaize-agent:create-skill bigquery-analysis
+
+# Start the skill creation workflow
+> /customaize-agent:create-skill
+```
 
 #### How It Works
 
@@ -157,19 +241,6 @@ Optional skill name (e.g., "image-editor", "pdf-processing", "code-review").
    - GREEN: Write skill addressing those failures
    - REFACTOR: Close loopholes, iterate until bulletproof
 
-#### Usage Examples
-
-```bash
-# Create an image editing skill
-> /customaize-agent:create-skill image-editor
-
-# Create a database query skill
-> /customaize-agent:create-skill bigquery-analysis
-
-# Start the skill creation workflow
-> /customaize-agent:create-skill
-```
-
 #### Best Practices
 
 - Start with concrete examples - Understand real use cases before writing
@@ -194,6 +265,19 @@ Analyze the project, suggest practical hooks, and create them with proper testin
 #### Arguments
 
 Optional hook type or description of desired behavior (e.g., "type-check on save", "prevent secrets in commits").
+
+#### Usage Examples
+
+```bash
+# Create a TypeScript type-checking hook
+> /customaize-agent:create-hook type-check TypeScript files
+
+# Create a security scanning hook
+> /customaize-agent:create-hook prevent commits with secrets
+
+# Let the assistant analyze and suggest hooks
+> /customaize-agent:create-hook
+```
 
 #### How It Works
 
@@ -232,19 +316,6 @@ Optional hook type or description of desired behavior (e.g., "type-check on save
 | **Validation** | PreToolUse | Enforce requirements before operations |
 | **Development** | PostToolUse | Automated improvements, documentation |
 
-#### Usage Examples
-
-```bash
-# Create a TypeScript type-checking hook
-> /customaize-agent:create-hook type-check TypeScript files
-
-# Create a security scanning hook
-> /customaize-agent:create-hook prevent commits with secrets
-
-# Let the assistant analyze and suggest hooks
-> /customaize-agent:create-hook
-```
-
 #### Best Practices
 
 - Test both paths - Always verify both success and failure scenarios
@@ -264,6 +335,19 @@ Verify skills work under pressure and resist rationalization using the RED-GREEN
 
 ```bash
 /customaize-agent:test-skill ["skill path or name"]
+```
+
+#### Usage Examples
+
+```bash
+# Test a TDD enforcement skill
+> /customaize-agent:test-skill tdd
+
+# Test a custom skill by path
+> /customaize-agent:test-skill ~/.claude/skills/code-review/
+
+# Start testing workflow
+> /customaize-agent:test-skill
 ```
 
 #### Arguments
@@ -301,19 +385,6 @@ Optional path to skill being tested or skill name.
 | **Social** | Looking dogmatic, seeming inflexible |
 | **Pragmatic** | "Being pragmatic vs dogmatic" |
 
-#### Usage Examples
-
-```bash
-# Test a TDD enforcement skill
-> /customaize-agent:test-skill tdd
-
-# Test a custom skill by path
-> /customaize-agent:test-skill ~/.claude/skills/code-review/
-
-# Start testing workflow
-> /customaize-agent:test-skill
-```
-
 #### Best Practices
 
 - Combine 3+ pressures - Single pressure tests are too weak
@@ -333,6 +404,19 @@ Test any prompt (commands, hooks, skills, subagent instructions) using the RED-G
 
 ```bash
 /customaize-agent:test-prompt ["prompt path or content"]
+```
+
+#### Usage Examples
+
+```bash
+# Test a command before deployment
+> /customaize-agent:test-prompt .claude/commands/deploy.md
+
+# Test inline prompt content
+> /customaize-agent:test-prompt "Review this code for security issues"
+
+# Start interactive testing workflow
+> /customaize-agent:test-prompt
 ```
 
 #### Arguments
@@ -378,19 +462,6 @@ Optional path to prompt file or inline prompt content to test.
 | **Reference** | Accurate and accessible? | API documentation |
 | **Subagent** | Task accomplished reliably? | Code review prompt |
 
-#### Usage Examples
-
-```bash
-# Test a command before deployment
-> /customaize-agent:test-prompt .claude/commands/deploy.md
-
-# Test inline prompt content
-> /customaize-agent:test-prompt "Review this code for security issues"
-
-# Start interactive testing workflow
-> /customaize-agent:test-prompt
-```
-
 #### Best Practices
 
 - Use fresh subagents - Always via Task tool for isolated testing
@@ -415,6 +486,19 @@ Comprehensive guide for skill development based on Anthropic's official best pra
 #### Arguments
 
 Optional skill name or path to skill being reviewed.
+
+#### Usage Examples
+
+```bash
+# Optimize an existing skill
+> /customaize-agent:apply-anthropic-skill-best-practices pdf-processing
+
+# Review a skill by path
+> /customaize-agent:apply-anthropic-skill-best-practices ~/.claude/skills/bigquery/
+
+# Start optimization workflow
+> /customaize-agent:apply-anthropic-skill-best-practices
+```
 
 #### How It Works
 
@@ -455,19 +539,6 @@ Optional skill name or path to skill being reviewed.
 | **Degrees of Freedom** | Match specificity to task fragility |
 | **Conciseness** | Only add context Claude doesn't already have |
 
-#### Usage Examples
-
-```bash
-# Optimize an existing skill
-> /customaize-agent:apply-anthropic-skill-best-practices pdf-processing
-
-# Review a skill by path
-> /customaize-agent:apply-anthropic-skill-best-practices ~/.claude/skills/bigquery/
-
-# Start optimization workflow
-> /customaize-agent:apply-anthropic-skill-best-practices
-```
-
 #### Best Practices
 
 - Test with all models - What works for Opus may need more detail for Haiku
@@ -492,7 +563,7 @@ Advanced prompt engineering techniques including Anthropic's official best pract
 - **Template Systems** - Reusable prompt structures
 - **System Prompt Design** - Global behavior and constraints
 
-**Persuasion Principles (from Meincke et al., 2025):**
+**Persuasion Principles (from [Prompting Science Report 3](https://arxiv.org/abs/2508.00614)):**
 
 | Principle | Use For | Example |
 |-----------|---------|---------|
@@ -508,11 +579,62 @@ Advanced prompt engineering techniques including Anthropic's official best pract
 - **Degrees of Freedom** - Match specificity to task fragility
 - **Progressive Disclosure** - Start simple, add complexity when needed
 
-## Foundation
+### context-engineering
+
+Use when writing, editing, or optimizing commands, skills, or sub-agent prompts. Provides deep understanding of context mechanics in agent systems.
+
+**The Anatomy of Context:**
+
+| Component | Role | Key Insight |
+|-----------|------|-------------|
+| **System Prompts** | Core identity and constraints | Balance specificity vs flexibility ("right altitude") |
+| **Tool Definitions** | Available actions | Poor descriptions force guessing; optimize with examples |
+| **Retrieved Documents** | Domain knowledge | Use just-in-time loading, not pre-loading |
+| **Message History** | Conversation state | Can dominate context in long tasks |
+| **Tool Outputs** | Action results | Up to 83.9% of total context usage |
+
+**Key Principles:**
+
+- **Attention Budget** - Context is finite; every token depletes the budget
+- **Progressive Disclosure** - Load information only when needed
+- **Quality over Quantity** - Smallest high-signal token set wins
+- **Lost-in-Middle Effect** - Critical info at start/end, not middle
+
+**Practical Patterns:**
+
+- File-system based access for progressive disclosure
+- Hybrid strategies (pre-load some, load rest on-demand)
+- Explicit context budgeting with compaction triggers
+
+### agent-evaluation
+
+Use when testing prompt effectiveness, validating context engineering choices, or measuring agent improvement quality.
+
+**Evaluation Approaches:**
+
+- **LLM-as-Judge** - Direct scoring, pairwise comparison, rubric-based
+- **Outcome-Focused** - Judge results, not exact paths (agents may take valid alternative routes)
+- **Multi-Level Testing** - Simple to complex queries, isolated to extended interactions
+- **Bias Mitigation** - Position bias, verbosity bias, self-enhancement bias
+
+**Multi-Dimensional Evaluation Rubric:**
+
+| Dimension | Weight | What It Measures |
+|-----------|--------|------------------|
+| Instruction Following | 0.30 | Task adherence |
+| Output Completeness | 0.25 | Coverage of requirements |
+| Tool Efficiency | 0.20 | Optimal tool selection |
+| Reasoning Quality | 0.15 | Logical soundness |
+| Response Coherence | 0.10 | Structure and clarity |
+
+## Theoretical Foundation
 
 The Customaize Agent plugin is based on:
 
 ### Persuasion Research
 
-- **Meincke et al. (2025)** - Tested 7 persuasion principles with N=28,000 AI conversations. Persuasion techniques more than doubled compliance rates (33% to 72%, p < .001).
+- **[Prompting Science Report 3](https://arxiv.org/abs/2508.00614)** - Tested 7 persuasion principles with N=28,000 AI conversations. Persuasion techniques more than doubled compliance rates (33% to 72%, p < .001), based on related SSRN work on persuasion principles.
 
+### Agent Skills for Context Engineering
+
+- [Agent Skills for Context Engineering project](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering) by Murat Can Koylan.
