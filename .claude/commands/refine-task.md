@@ -1,12 +1,13 @@
 ---
-description: Refine a minibeads task with detailed specification, affected files, and implementation resources
-argument-hint: Task ID (e.g., cek-673b) or 'latest' for most recent task
+description: Refine a task with detailed specification, affected files, and implementation resources
+argument-hint: Task file name (e.g., task-add-auth-hooks.md) or 'latest' for most recent task
+allowed-tools: Read, Write, Bash(ls), Glob, Grep
 ---
 
 # Refine Task Command
 
 <task>
-You are a task refinement specialist. Analyze and enhance minibeads tasks with comprehensive implementation details that enable developers to start work immediately with full context.
+You are a task refinement specialist. Analyze and enhance tasks with comprehensive implementation details that enable developers to start work immediately with full context.
 </task>
 
 <context>
@@ -22,10 +23,14 @@ This command transforms vague or incomplete tasks into actionable specifications
 
 ## Phase 1: Load and Understand Task
 
-1. **Get task details**:
+1. **Read task file**:
 
    ```bash
-   mb show $TASK_ID
+   # List tasks to find the file
+   ls .specs/tasks/
+   
+   # Read the task file
+   Read .specs/tasks/$TASK_FILE
    ```
 
 2. **Understand the current state**:
@@ -76,13 +81,13 @@ Collect files useful for building context:
 
 ## Phase 4: Update Task Description
 
-**Use Write tool to modify the task file directly** (NOT `mb update -d`):
+**Use Write tool to modify the task file directly**:
 
-1. **Locate the task file**: `.beads/issues/$TASK_ID.md`
+1. **Locate the task file**: `.specs/tasks/$TASK_FILE`
 
 2. **Read the current file** to get frontmatter and existing content
 
-3. **Preserve the frontmatter** (title, status, priority, issue_type, created_at, updated_at)
+3. **Preserve the frontmatter** (title, status, issue_type)
 
 4. **Write the updated file** with new description content:
 
@@ -90,28 +95,17 @@ Collect files useful for building context:
 ---
 title: [KEEP EXISTING]
 status: [KEEP EXISTING]
-priority: [KEEP EXISTING]
 issue_type: [KEEP EXISTING]
-created_at: [KEEP EXISTING]
-updated_at: [UPDATE TO CURRENT TIME]
 ---
+
+# Initial User Prompt
+
+[PRESERVE ORIGINAL USER REQUEST - NEVER DELETE THIS]
 
 # Description
 
-**Initial User Prompt:**
-> [PRESERVE ORIGINAL USER REQUEST]
-
----
-
 [YOUR REFINED SPECIFICATION HERE]
 ```
-
-**Why Write tool instead of `mb update -d`?**
-
-- `mb update -d` replaces entire description (risk of losing content)
-- Write tool allows precise edits while preserving existing content
-- Easier to maintain complex multi-section descriptions
-- No escaping issues with special characters
 
 </workflow>
 
@@ -119,21 +113,13 @@ updated_at: [UPDATE TO CURRENT TIME]
 
 ## CRITICAL: Preserve Initial User Prompt
 
-**NEVER delete the initial user prompt from the task description.**
+**NEVER delete the initial user prompt from the task.**
 
-When updating a task with `mb update`, you MUST:
+When updating a task, you MUST:
 
-1. First extract the original user prompt from the existing description (look for "initial user prompt:" or similar)
-2. Include it at the TOP of the new description in this format:
-
-   ```
-   **Initial User Prompt:**
-   > [exact original user request]
-
-   ---
-   ```
-
-3. Then add your refined specification below
+1. First read the task file and extract the content from `# Initial User Prompt` section
+2. Keep this section intact at the TOP of the content (after frontmatter)
+3. Then update the `# Description` section with your refined specification
 
 The initial prompt is essential context that:
 
@@ -148,10 +134,17 @@ The initial prompt is essential context that:
 Structure the task description with these sections:
 
 ```markdown
-**Initial User Prompt:**
-> [EXACT original user request - NEVER omit this]
-
 ---
+title: [Task title]
+status: open
+issue_type: [task|bug|feature]
+---
+
+# Initial User Prompt
+
+[EXACT original user request - NEVER omit this]
+
+# Description
 
 [Brief summary of what needs to be implemented]
 
@@ -237,7 +230,7 @@ plugins/
 
 --- 
 
-## Implementation process
+## Implementation Process
 
 [Think in steps as detailed as possible how you would implement the task.]
 
@@ -246,6 +239,7 @@ plugins/
 
 #### Expected output
 [List of expected output]
+
 #### Success criteria
 [List of success criteria]
 
@@ -265,7 +259,7 @@ plugins/
 <checklist>
 Before completing refinement:
 
-- [ ] **Initial user prompt is preserved** at the top of the description
+- [ ] **Initial user prompt is preserved** in `# Initial User Prompt` section
 - [ ] Task has clear, actionable description
 - [ ] Implementation requirements are specific
 - [ ] All affected files are identified with descriptions
@@ -276,12 +270,12 @@ Before completing refinement:
 </checklist>
 
 <example_session>
-User: /refine-task cek-673b
+User: /refine-task task-add-auth-hooks.md
 
 **Phase 1: Loading task...**
 
 ```bash
-mb show cek-673b
+Read .specs/tasks/task-add-auth-hooks.md
 ```
 
 Task: "Add hooks to reflect plugin"
@@ -319,12 +313,12 @@ Task: "Add hooks to reflect plugin"
 
 ```bash
 # Read current task file
-Read .beads/issues/cek-673b.md
+Read .specs/tasks/task-add-auth-hooks.md
 
 # Write updated file with refined description
-Write .beads/issues/cek-673b.md with:
+Write .specs/tasks/task-add-auth-hooks.md with:
 - Preserved frontmatter
-- Initial user prompt at top
+- Initial user prompt section intact
 - Comprehensive refined specification
 ```
 
@@ -339,10 +333,10 @@ Task refined with:
 <output>
 After refinement, report:
 
-1. **Task Updated**: $TASK_ID
+1. **Task Updated**: $TASK_FILE
 2. **Files Identified**: X files to modify/create
 3. **Resources Gathered**: X useful references
 4. **Ready for Implementation**: Yes/No (any blockers?)
 
-Suggest: `mb show $TASK_ID` to review the refined task
+Suggest: Read `.specs/tasks/$TASK_FILE` to review the refined task
 </output>

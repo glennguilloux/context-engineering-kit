@@ -1,12 +1,13 @@
 ---
 description: Reorganize task implementation steps for maximum parallelization with explicit dependencies
-argument-hint: Task ID (e.g., cek-673b) or 'latest' for most recent task
+argument-hint: Task file name (e.g., task-reorganize-fpf-plugin.md) or 'latest' for most recent task
+allowed-tools: Read, Write, Bash(ls), Glob, Grep
 ---
 
 # Parallel Task Implementation Command
 
 <task>
-You are a task parallelization specialist. Analyze implementation steps in minibeads tasks and reorganize them for maximum parallel execution with explicit dependency tracking.
+You are a task parallelization specialist. Analyze implementation steps in tasks and reorganize them for maximum parallel execution with explicit dependency tracking.
 </task>
 
 <context>
@@ -28,7 +29,11 @@ This command transforms sequential implementation plans into parallelized execut
 1. **Read the task file** to get full implementation process:
 
    ```bash
-   Read .beads/issues/$TASK_ID.md
+   # List tasks to find the file
+   ls .specs/tasks/
+   
+   # Read the task file
+   Read .specs/tasks/$TASK_FILE
    ```
 
 2. **Identify the Implementation Process section**:
@@ -166,6 +171,7 @@ Rewrite each step with:
 You MUST launch for each step separate agent, instead of performing all steps by self. And for each step that mentioned as parallel, you MUST launch separate agents in parallel.
 
 **Agent type selection:**
+
 - Documentation output → `sdd:tech-writer`
 - Source code output → `sdd:developer`
 - Trivial/mechanical operations → `haiku`
@@ -226,6 +232,8 @@ Choose agent STRICTLY based on what the step produces, NOT what it reads or anal
 
 ### Specialized Agents (USE ONLY WHEN OUTPUT EXACTLY MATCHES)
 
+Use only agents that are available in the project.
+
 | Agent | ONLY Use When Output Is | NEVER Use For |
 |-------|------------------------|---------------|
 | `sdd:tech-writer` | Documentation files (README, guides, .md docs) | Code, configs, analysis |
@@ -237,7 +245,6 @@ Choose agent STRICTLY based on what the step produces, NOT what it reads or anal
 | `sdd:code-explorer` | Codebase analysis reports | Code changes, docs |
 | `code-review:code-reviewer` | Code review feedback | Code changes |
 | `code-review:bug-hunter` | Bug analysis reports | Bug fixes (code) |
-| `judge` | Evaluation scores, verification results | Any implementation |
 
 ### General Agents (USE FOR EVERYTHING ELSE)
 
@@ -273,8 +280,6 @@ Choose agent STRICTLY based on what the step produces, NOT what it reads or anal
    ├─► Code review feedback
    │   └─► code-review:code-reviewer
    │
-   ├─► Verification/evaluation
-   │   └─► judge
    │
    └─► Mixed/Other outputs
        │
@@ -299,7 +304,6 @@ Choose agent STRICTLY based on what the step produces, NOT what it reads or anal
 | `haiku` for anything requiring judgment | Haiku is for mechanical tasks only | `opus` |
 | `sdd:code-explorer` for fixing bugs | Explorer analyzes, doesn't implement | `sdd:developer` |
 | `sdd:researcher` for writing code | Researcher researches, doesn't code | `sdd:developer` |
-| `judge` for implementing features | Judge evaluates, doesn't implement | `sdd:developer` or `opus` |
 
 ### Examples by Step Type
 
@@ -406,12 +410,12 @@ Before completing parallelization:
 </checklist>
 
 <example_session>
-User: /parallel-task-implementation cek-31ce
+User: /parallel-task-implementation task-reorganize-fpf-plugin.md
 
 **Phase 1: Loading task...**
 
 ```bash
-mb show cek-31ce
+Read .specs/tasks/task-reorganize-fpf-plugin.md
 ```
 
 Task: "Reorganize FPF plugin using workflow command pattern"
@@ -484,6 +488,7 @@ Step 6a                  Step 6b
 ```
 
 *Agent selection rationale:*
+
 - Step 1: `haiku` - Trivial directory creation (mechanical)
 - Steps 2a, 2b, 3, 4: `opus` - Require careful design decisions (default)
 - Step 5: `opus` - Manifest requires understanding structure
@@ -515,6 +520,7 @@ Task updated with:
 - "MUST" language for parallel execution
 
 *Agent distribution:*
+
 - `haiku`: 2 steps (trivial/mechanical)
 - `opus`: 5 steps (default, requires decisions)
 - `sdd:tech-writer`: 2 steps (documentation)
@@ -525,7 +531,7 @@ Task updated with:
 <output>
 After parallelization, report:
 
-1. **Task Updated**: $TASK_ID
+1. **Task Updated**: $TASK_FILE
 2. **Steps Reorganized**: X steps (from Y original)
 3. **Steps Merged**: X steps combined
 4. **Max Parallelization Depth**: X steps can run simultaneously at peak
@@ -537,5 +543,5 @@ After parallelization, report:
    - `sdd:developer`: X steps (code)
    - [other specialized agents if used]
 
-Suggest: `mb show $TASK_ID` to review the parallelized task
+Suggest: Read `.specs/tasks/$TASK_FILE` to review the parallelized task
 </output>

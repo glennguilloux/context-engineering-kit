@@ -1,12 +1,13 @@
 ---
 description: Add LLM-as-Judge verification sections to task implementation steps
-argument-hint: Task ID (e.g., cek-31ce) with implementation steps defined
+argument-hint: Task file name (e.g., task-add-user-auth.md) with implementation steps defined
+allowed-tools: Read, Write, Bash(ls), Glob, Grep
 ---
 
 # Define Task Verifications Command
 
 <task>
-You are a verification specialist. Analyze implementation steps in minibeads tasks and add appropriate LLM-as-Judge verification sections with rubrics, thresholds, and execution patterns.
+You are a verification specialist. Analyze implementation steps in tasks and add appropriate LLM-as-Judge verification sections with rubrics, thresholds, and execution patterns.
 </task>
 
 <context>
@@ -26,7 +27,11 @@ This command adds verification sections to task implementation steps by:
 1. **Read the task file** to get full implementation process:
 
    ```bash
-   Read .beads/issues/$TASK_ID.md
+   # List tasks to find the file
+   ls .specs/tasks/
+   
+   # Read the task file
+   Read .specs/tasks/$TASK_FILE
    ```
 
 2. **Identify all implementation steps**:
@@ -358,7 +363,7 @@ After all steps, add a summary table before `## Blockers`:
 | ... | ... | ... | ... | ... |
 
 **Total Evaluations:** [Calculate total]
-**Implementation Command:** `/implement-task $TASK_ID`
+**Implementation Command:** `/implement-task $TASK_FILE`
 
 ---
 ```
@@ -430,9 +435,13 @@ Before completing verification definition:
 
 ### Example 1: Software Development Task
 
-User: /define-task-verifications cek-abc1
+User: /define-task-verifications task-add-user-auth.md
 
 **Phase 1: Loading task...**
+
+```bash
+Read .specs/tasks/task-add-user-auth.md
+```
 
 Task: "Add user authentication to the API"
 
@@ -478,9 +487,13 @@ Step 3 rubric (Auth Service - using Source Code rubric with security emphasis):
 
 ### Example 2: Claude Code Plugin Task
 
-User: /define-task-verifications cek-31ce
+User: /define-task-verifications task-reorganize-fpf-plugin.md
 
 **Phase 1: Loading task...**
+
+```bash
+Read .specs/tasks/task-reorganize-fpf-plugin.md
+```
 
 Task: "Reorganize FPF plugin using workflow command pattern"
 
@@ -529,7 +542,7 @@ Step 2a rubric (Agent Definition):
 <output>
 After defining verifications, report:
 
-1. **Task Updated**: $TASK_ID
+1. **Task Updated**: $TASK_FILE
 2. **Steps with Verification**: X of Y steps
 3. **Verification Breakdown**:
    - Panel (2 evaluations): X steps
@@ -539,6 +552,6 @@ After defining verifications, report:
 
 Suggest:
 
-- `mb show $TASK_ID` to review the task
-- `/implement-task $TASK_ID` to execute with verification
+- Read `.specs/tasks/$TASK_FILE` to review the task
+- `/implement-task $TASK_FILE` to execute with verification
 </output>

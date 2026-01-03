@@ -1,6 +1,6 @@
 ---
 description: Implement a task with automated LLM-as-Judge verification for critical steps
-argument-hint: Task ID (e.g., cek-31ce) with implementation steps defined
+argument-hint: Task file name (e.g., task-reorganize-fpf-plugin.md) with implementation steps defined
 allowed-tools: Task, Read, TodoWrite, Bash
 ---
 
@@ -11,7 +11,7 @@ Execute task implementation steps with automated quality verification using LLM-
 ## User Input
 
 ```text
-Task ID: $ARGUMENTS
+Task File: $ARGUMENTS
 ```
 
 ---
@@ -89,7 +89,7 @@ This command orchestrates multi-step task implementation with:
 Read the task file ONCE:
 
 ```bash
-Read .beads/issues/$TASK_ID.md
+Read .specs/tasks/$TASK_FILE
 ```
 
 **After this read, you MUST NOT read any other files for the rest of execution.**
@@ -126,7 +126,7 @@ Use Task tool with this prompt:
 ```
 Implement Step [N]: [Step Title]
 
-Read .beads/issues/$TASK_ID.md
+Read .specs/tasks/$TASK_FILE
 
 Your task:
 - Execute ONLY Step [N]: [Step Title]
@@ -165,7 +165,7 @@ Use Task tool with this prompt:
 ```
 Implement Step [N]: [Step Title]
 
-Read .beads/issues/$TASK_ID.md
+Read .specs/tasks/$TASK_FILE
 
 Your task:
 - Execute ONLY Step [N]: [Step Title]
@@ -215,7 +215,7 @@ Rubric:
 [paste rubric table from #### Verification section]
 
 Context:
-- Read .beads/issues/$TASK_ID.md
+- Read .specs/tasks/$TASK_FILE
 - Verify Step [N] ONLY: [Step Title]
 - Threshold: [from #### Verification section]
 - Reference pattern: [if specified in #### Verification section]
@@ -251,7 +251,7 @@ Use Task tool for EACH item (launch all in parallel):
 ```
 Implement Step [N], Item: [Item Name]
 
-Read .beads/issues/$TASK_ID.md
+Read .specs/tasks/$TASK_FILE
 
 Your task:
 - Create ONLY [item_name] from Step [N]
@@ -297,7 +297,7 @@ Rubric:
 [paste rubric from #### Verification section]
 
 Context:
-- Read .beads/issues/$TASK_ID.md
+- Read .specs/tasks/$TASK_FILE
 - Verify Step [N]: [Step Title]
 - Verify ONLY this Item: [Item Name]
 - Threshold: [from #### Verification section]
@@ -535,7 +535,7 @@ After all steps complete:
 │                                                                │
 │  Phase 1: Load Task                                           │
 │  ┌─────────────────────────────────────────────────────────┐ │
-│  │ mb show $TASK_ID → Read task file → Parse steps         │ │
+│  │ Read .specs/tasks/$TASK_FILE → Parse steps              │ │
 │  │ → Extract #### Verification specs → Create TodoWrite    │ │
 │  └─────────────────────────────────────────────────────────┘ │
 │                           │                                   │
@@ -576,7 +576,7 @@ After all steps complete:
 ### Example 1: Implementing a Plugin Reorganization
 
 ```
-User: /implement-task cek-31ce
+User: /implement-task task-reorganize-fpf-plugin.md
 
 Phase 1: Loading task...
 Task: "Reorganize FPF plugin using workflow command pattern"
@@ -663,7 +663,7 @@ Before completing implementation:
 
 ### Context Protection (CRITICAL)
 
-- [ ] Read ONLY the task file (`.beads/issues/$TASK_ID.md`) - no other files
+- [ ] Read ONLY the task file (`.specs/tasks/$TASK_FILE`) - no other files
 - [ ] Did NOT read implementation outputs, reference files, or artifacts
 - [ ] Used sub-agent reports for status - did NOT read files to "check"
 
