@@ -1,12 +1,6 @@
-# Step 1: Create Task
+# Create Task 
 
-## Context
-
-You are executing step 1 of the add-and-triage workflow. This is the first phase of a 4-phase process:
-1. **Create** (THIS STEP) - Generate initial task file with proper structure and complexity estimate
-2. Refine - Add detailed specification, affected files, resources
-3. Parallelize - Reorganize steps for maximum parallel execution
-4. Verify - Add LLM-as-Judge verification sections
+## Role
 
 Your role is to create a well-structured task file that is clear, actionable, and properly categorized.
 

@@ -1,16 +1,16 @@
-# Step 2: Refine Task
+# Refine Task
 
-## Context
+## Role
 
-You are executing step 2 of the add-and-triage workflow. This step transforms an initial task into an actionable specification with comprehensive implementation details that enable developers to start work immediately with full context.
+You are a task refinement specialist. Analyze and enhance tasks with comprehensive implementation details that enable developers to start work immediately with full context.
 
 ## Goal
 
-Analyze and enhance the task file created in Phase 1 by:
+This command transforms vague or incomplete tasks into actionable specifications by:
 
-1. Clarifying requirements and filling in missing details
+1. Analyzing and clarifying requirements and filling in missing details
 2. Identifying all files that will be affected (modified, created, or deleted)
-3. Gathering useful implementation resources (pattern references, documentation, related code)
+3. Gathering and listing useful implementation resources (pattern references, documentation, related code)
 4. Creating a detailed implementation process with steps, success criteria, and risks
 
 ## Input
@@ -23,6 +23,7 @@ Analyze and enhance the task file created in Phase 1 by:
 ### Phase 1: Load and Understand Task
 
 1. **Read the task file**:
+
    ```bash
    ls .specs/tasks/
    Read .specs/tasks/$TASK_FILE
@@ -76,9 +77,11 @@ Analyze and enhance the task file created in Phase 1 by:
 
 1. **Read the current task file** to get frontmatter and existing content
 
-2. **CRITICAL: Preserve the Initial User Prompt section** - NEVER delete it
+2. **CRITICAL: Preserve the Initial User Prompt section, and title, status, issue_type from frontmatter** - NEVER delete it
 
 3. **Write the updated file** using this structure:
+
+#### Template
 
 ```markdown
 ---
@@ -110,9 +113,12 @@ complexity: [S/M/L/XL - update if analysis reveals different scope]
 
 ## Files to be Modified/Created
 
+Use tree-like file structure format for better readability:
+
 ### Primary Changes
 
 ```
+
 path/to/plugin/
 ├── agents/
 │   └── agent-name.md              # NEW: Agent description
@@ -123,17 +129,20 @@ path/to/plugin/
 └── tasks/
     ├── task-one.md                # NEW: Task description
     └── task-two.md                # NEW: Task description
+
 ```
 
 ### Documentation Updates
 
 ```
+
 docs/
 ├── plugins/
 │   └── plugin-name/
 │       └── README.md              # UPDATE: Document the feature
 └── guides/
     └── relevant-guide.md          # UPDATE: Update guide
+
 ```
 
 ---
@@ -143,6 +152,7 @@ docs/
 ### Pattern References
 
 ```
+
 plugins/
 ├── similar-plugin/
 │   └── commands/
@@ -150,31 +160,38 @@ plugins/
 └── other-plugin/
     └── agents/
         └── example-agent.md       # Agent definition pattern
+
 ```
 
 ### Documentation
 
 ```
+
 docs/
 ├── guides/
 │   └── relevant-guide.md          # Key concepts
 └── reference/
     └── relevant-ref.md            # Reference documentation
+
 ```
 
 ### Related Code
 
 ```
+
 plugins/
 ├── related-plugin/
 │   └── agents/                    # Multiple agent examples
 └── another-plugin/
     └── commands/                  # Command examples
+
 ```
 
 ---
 
 ## Implementation Process
+
+[Think in steps as detailed as possible how you would implement the task.]
 
 ### Step 1: [Step title]
 [Step description]
@@ -193,51 +210,12 @@ plugins/
 
 #### Risks
 [List of risks]
-```
-
-## Constraints
-
-- **NEVER delete the Initial User Prompt section** - this preserves original user intent and is essential for acceptance criteria validation
-- **Preserve frontmatter** - keep existing title, status, issue_type fields
-- **Use proper tools** for codebase analysis:
-  - Glob for finding files by pattern
-  - Grep for searching content
-  - Read for examining file contents
-- **Do not invent files** - only list files you have confirmed exist or that clearly need to be created
-- **Keep descriptions actionable** - avoid vague language like "improve" or "enhance"
-- **Do not start implementation** - this step is for analysis and planning only
-
-## Expected Output
-
-Report to the orchestrator:
 
 ```
-## Refinement Complete
 
-**Task Updated**: $TASK_FILE
+### Checklist
 
-**Summary**:
-- Files Identified: X files (Y to create, Z to modify)
-- Implementation Steps: N steps defined
-- Useful Resources: R references gathered
-- Complexity: [S/M/L/XL] (updated from initial if changed)
-
-**Files to Modify/Create**:
-- path/to/file1.md (NEW)
-- path/to/file2.md (UPDATE)
-- ...
-
-**Key Resources**:
-- path/to/reference1.md - [why it's useful]
-- path/to/reference2.md - [why it's useful]
-
-**Ready for Phase 3**: Yes/No
-- [Any blockers or questions that need resolution]
-```
-
-## Success Criteria
-
-Before completing refinement, verify:
+Before completing refinement:
 
 - [ ] Initial user prompt is preserved in `# Initial User Prompt` section
 - [ ] Task has clear, actionable description
@@ -248,3 +226,73 @@ Before completing refinement, verify:
 - [ ] Implementation process has detailed steps with success criteria
 - [ ] Complexity estimate is accurate (update if analysis reveals different scope)
 - [ ] No ambiguous requirements remain
+
+## Example Session
+
+**Phase 1: Loading task...**
+
+```bash
+Read .specs/tasks/task-add-auth-hooks.md
+```
+
+Task: "Add hooks to reflect plugin"
+
+**Phase 2: Analyzing codebase impact...**
+
+*Searching for reflexion plugin structure...*
+
+- Found: `plugins/reflexion/` with commands, plugin.json
+
+*Searching for hook implementation examples...*
+
+- Found: `plugins/customaize-agent/commands/create-hook.md`
+- Found: `plugins/mcp/commands/setup-codemap-cli.md` with hooks config
+
+*Identifying affected files...*
+
+- Primary: Plugin manifest, new hook script
+- Config: Settings.json for hook registration
+- Docs: README updates
+
+**Phase 3: Gathering resources...**
+
+*Pattern references:*
+
+- Hook creation guide in customaize-agent
+- Real hook example in MCP plugin
+
+*Documentation:*
+
+- Custom extensions guide
+- Official Claude Code hooks docs
+
+**Phase 4: Updating task file...**
+
+```bash
+# Read current task file
+Read .specs/tasks/task-add-auth-hooks.md
+
+# Write updated file with refined description
+Write .specs/tasks/task-add-auth-hooks.md with:
+- Preserved frontmatter
+- Initial user prompt section intact
+- Comprehensive refined specification
+```
+
+Task refined with:
+
+- Detailed specification
+- 5 files identified (3 to create, 2 to update)
+- 8 useful resources listed
+- Initial user prompt preserved
+
+### Output
+
+After refinement, report:
+
+1. **Task Updated**: $TASK_FILE
+2. **Files Identified**: X files to modify/create
+3. **Resources Gathered**: X useful references
+4. **Ready for Implementation**: Yes/No (any blockers?)
+
+Suggest: Read `.specs/tasks/$TASK_FILE` to review the refined task
