@@ -156,7 +156,7 @@ Launch judge:
 - **Prompt**:
 
   ```
-  Read ${CLAUDE_PLUGIN_ROOT}/tasks/judge.md for evaluation methodology and execute using following criteria.
+  Read  ./plugins/sadd/tasks/judge.md for evaluation methodology and execute using following criteria.
 
   ### Artifact Path
   {path to refined task file from Phase 2}
@@ -265,7 +265,7 @@ Launch judge:
 - **Prompt**:
 
   ```
-  Read ${CLAUDE_PLUGIN_ROOT}/tasks/judge.md for evaluation methodology and execute using following criteria.
+  Read ./plugins/sadd/tasks/judge.md for evaluation methodology and execute using following criteria.
 
   ### Artifact Path
   {path to parallelized task file from Phase 3}
@@ -376,7 +376,7 @@ Launch judge:
 - **Prompt**:
 
   ```
-  Read ${CLAUDE_PLUGIN_ROOT}/tasks/judge.md for evaluation methodology and execute using following criteria.
+  Read  ./plugins/sadd/tasks/judge.md for evaluation methodology and execute using following criteria.
 
   ### Artifact Path
   {path to task file with verifications from Phase 4}

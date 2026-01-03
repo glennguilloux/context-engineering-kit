@@ -56,7 +56,9 @@ Continuous improvement and problem analysis commands. [More info](../plugins/kai
 
 Commands for creating and testing custom Claude Code extensions. [More info](../plugins/customaize-agent/README.md).
 
+- `/customaize-agent:create-agent` - Comprehensive guide for creating Claude Code agents with proper structure, triggering conditions, system prompts, and validation
 - `/customaize-agent:create-command` - Interactive assistant for creating new Claude commands with proper structure and patterns
+- `/customaize-agent:create-workflow-command` - Create workflow commands that orchestrate multi-step execution through sub-agents with file-based task prompts
 - `/customaize-agent:create-skill` - Guide for creating effective skills with test-driven approach
 - `/customaize-agent:create-hook` - Create and configure git hooks with intelligent project analysis and automated testing
 - `/customaize-agent:test-skill` - Verify skills work under pressure and resist rationalization using RED-GREEN-REFACTOR cycle
