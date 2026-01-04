@@ -99,8 +99,8 @@ Judge 2a              Judge 2b              Judge 2c
                     Judge 4 (pass: 4.5/5.0)
                           │
                           ▼
-                    Phase 5: Parallelize 
-                    [opus]
+                    Phase 5: Parallelize
+                    [team-lead opus]
                     Judge 5 (pass: 4.5/5.0)
                           │
                           ▼
@@ -570,7 +570,7 @@ Launch judge:
 ## Phase 5: Parallelize Steps
 
 **Model:** `opus`
-**Agent:** `opus`
+**Agent:** `team-lead`
 **Depends on:** Phase 4 + Judge 4 PASS
 **Purpose:** Reorganize implementation steps for maximum parallel execution
 
@@ -580,13 +580,12 @@ Launch agent:
 - **Prompt**:
 
   ```
-  Read .claude/tasks/parallelize-task.md and execute.
-
   Task File: <task file path from Phase 1>
   ```
 
 **Capture:**
 
+- Scratchpad file path (e.g., `.specs/scratchpad/<hex-id>.md`)
 - Number of steps reorganized
 - Maximum parallelization depth
 - Agent distribution summary
@@ -596,7 +595,7 @@ Launch agent:
 ### Judge 5: Validate Parallelization
 
 **Model:** `opus`
-**Agent:** `opus`
+**Agent:** `team-lead`
 **Depends on:** Phase 5 completion
 **Purpose:** Validate dependency accuracy and parallelization optimization
 
