@@ -104,8 +104,8 @@ Judge 2a              Judge 2b              Judge 2c
                     Judge 5 (pass: 4.5/5.0)
                           │
                           ▼
-                    Phase 6: Verifications 
-                    [opus]
+                    Phase 6: Verifications
+                    [qa-engineer opus]
                     Judge 6 (pass: 4.5/5.0)
                           │
                           ▼
@@ -650,7 +650,7 @@ Launch judge:
 ## Phase 6: Define Verifications
 
 **Model:** `opus`
-**Agent:** `opus`
+**Agent:** `qa-engineer`
 **Depends on:** Phase 5 + Judge 5 PASS
 **Purpose:** Add LLM-as-Judge verification sections with rubrics
 
@@ -660,13 +660,12 @@ Launch agent:
 - **Prompt**:
 
   ```
-  Read .claude/tasks/verify-task.md and execute.
-
   Task File: <task file path from Phase 1>
   ```
 
 **Capture:**
 
+- Scratchpad file path (e.g., `.specs/scratchpad/<hex-id>.md`)
 - Number of steps with verification
 - Total evaluations defined
 - Verification breakdown (Panel/Per-Item/None)
@@ -676,7 +675,7 @@ Launch agent:
 ### Judge 6: Validate Verifications
 
 **Model:** `opus`
-**Agent:** `opus`
+**Agent:** `qa-engineer`
 **Depends on:** Phase 6 completion
 **Purpose:** Validate verification rubrics and thresholds
 
