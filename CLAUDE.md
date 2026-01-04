@@ -82,6 +82,12 @@ grep -r "<plugin-name>" docs/ README.md --include="*.md" -l
 - Include key concepts with one-line explanations
 - Keep YAML `name:` field matching folder name for consistency
 
+### When Creating/Refactoring Agents
+
+**Agent File Location**: `.claude/agents/<agent-name>.md` or `plugins/<plugin>/agents/<agent-name>.md`
+
+See `plugins/customaize-agent/commands/create-agent.md` command for detailed agent creation guidelines including frontmatter rules, required sections, process ordering, and decision table patterns.
+
 ## Use Context7 MCP for Loading Documentation
 
 Context7 MCP is available to fetch up-to-date documentation with code examples.

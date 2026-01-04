@@ -18,6 +18,7 @@ Description: $2
 ## What Are Agents?
 
 Agents are **autonomous subprocesses** spawned via the Task tool that:
+
 - Handle complex, multi-step tasks independently
 - Have their own isolated context window
 - Return results to the parent conversation
@@ -79,6 +80,7 @@ You are [agent role description]...
 **Format**: Lowercase with hyphens only
 **Length**: 3-50 characters
 **Rules**:
+
 - Must start and end with alphanumeric character
 - Only lowercase letters, numbers, and hyphens
 - No underscores, spaces, or special characters
@@ -96,6 +98,7 @@ You are [agent role description]...
 **The most important field** - Defines when Claude triggers the agent.
 
 **Requirements**:
+
 - Length: 10-5,000 characters (ideal: 200-1,000 with 2-4 examples)
 - **MUST start with**: "Use this agent when..."
 - **MUST include**: `<example>` blocks showing usage patterns
@@ -116,6 +119,7 @@ assistant: "[How Claude triggers the agent - 'I'll use the [agent-name] agent...
 ```
 
 **Best Practices for Descriptions**:
+
 - Include 2-4 concrete examples
 - Show both proactive and reactive triggering scenarios
 - Cover different phrasings of the same intent
@@ -164,6 +168,7 @@ tools: ["Read", "Bash", "Grep"]           # System operations
 ## Triggering Patterns
 
 ### Pattern 1: Explicit Request
+
 User directly asks for the agent's function.
 
 ```markdown
@@ -178,6 +183,7 @@ User explicitly requested code review, trigger the code-reviewer agent.
 ```
 
 ### Pattern 2: Implicit Need
+
 Agent needed based on context, not explicit request.
 
 ```markdown
@@ -194,6 +200,7 @@ assistant: "I'll use the code-simplifier agent to suggest improvements."
 ```
 
 ### Pattern 3: Proactive Trigger
+
 Agent triggers after completing relevant work without explicit request.
 
 ```markdown
@@ -210,6 +217,7 @@ assistant: "I'll use the security-analyzer agent to check the database code."
 ```
 
 ### Pattern 4: Tool Usage Pattern
+
 Agent triggers based on prior tool usage.
 
 ```markdown
@@ -275,6 +283,7 @@ Handle these situations:
 ### Validation Requirements
 
 System prompts must be:
+
 - **Length**: 20-10,000 characters (ideal: 500-3,000)
 - **Well-structured**: Clear sections with responsibilities, process, output format
 - **Specific**: Actionable instructions, not vague guidance
@@ -317,6 +326,43 @@ When creating agents, follow this 6-step process:
 4. **Optimize for Performance**: Decision frameworks, quality control, workflow patterns, fallback strategies
 5. **Create Identifier**: Concise, descriptive, 2-4 words with hyphens
 6. **Generate Examples**: Triggering scenarios with context, user/assistant dialogue, commentary
+
+## Default Agent Standards
+
+### Frontmatter Rules
+
+- `description`: Keep to ONE sentence - descriptions load into parent context, every token counts
+- Do NOT add verbose `<example>` blocks in description - they waste context tokens
+
+### Required Agent Sections (in order)
+
+1. **Title** - `# <Role Title>` with strong identity statement
+2. **Identity** - Quality expectations and motivation (consequences for poor work)
+3. **Goal** - Clear single-paragraph objective
+4. **Input** - What files/data the agent receives
+5. **CRITICAL: Load Context** - Explicit requirement to read ALL relevant files BEFORE analysis
+6. **Process/Stages** - Step-by-step workflow with proper ordering
+
+### Process Stage Ordering (critical for multi-stage agents)
+
+```
+WRONG: Decompose → Self-Critique → Produce → Solve
+RIGHT: Decompose → Solve → Produce Full Solution → Self-Critique → Output
+```
+
+- Self-critique comes as the last step, always
+- Always produce everything first, then evaluate and select
+
+### Decision Tables
+
+Put reasoning column BEFORE decision column:
+
+```markdown
+WRONG: | Section | Include? | Reasoning |
+RIGHT: | Section | Reasoning | Include? |
+```
+
+This forces the agent to explain WHY before deciding, improving decision quality.
 
 ## Validation Rules
 
@@ -531,6 +577,7 @@ touch ${CLAUDE_PLUGIN_ROOT}/agents/<agent-name>.md
 ### Step 3: Write Frontmatter
 
 Generate frontmatter with:
+
 - Unique, descriptive name
 - Description with triggering conditions and examples
 - Appropriate model setting
@@ -540,6 +587,7 @@ Generate frontmatter with:
 ### Step 4: Write System Prompt
 
 Create system prompt following the template:
+
 1. Role statement with specialization
 2. Core responsibilities (numbered list)
 3. Analysis/work process (step-by-step)
@@ -550,11 +598,13 @@ Create system prompt following the template:
 ### Step 5: Validate
 
 Run validation:
+
 ```bash
 scripts/validate-agent.sh agents/<agent-name>.md
 ```
 
 Check:
+
 - [ ] Frontmatter parses correctly
 - [ ] All required fields present
 - [ ] Examples are complete
@@ -563,6 +613,7 @@ Check:
 ### Step 6: Test Triggering
 
 Test with various scenarios:
+
 1. Explicit requests matching examples
 2. Implicit needs where agent should activate
 3. Scenarios where agent should NOT activate
@@ -601,6 +652,7 @@ Agents integrate with plugin workflows:
 3. **Testing phase** verifies triggering across scenarios
 
 For comprehensive plugin development, use:
+
 - `/plugin-dev:create-plugin` for full plugin workflow
 - This command for individual agent creation/refinement
 

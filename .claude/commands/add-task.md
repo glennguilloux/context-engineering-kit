@@ -54,7 +54,7 @@ Before starting workflow:
 1. **Ensure directories exist**:
 
    ```bash
-   mkdir -p .specs/tasks .specs/research .specs/analysis .claude/tasks
+   mkdir -p .specs/tasks .specs/research .specs/analysis .specs/scratchpad .claude/tasks
    ```
 
 Update each todo to `in_progress` when starting a phase and `completed` when judge passes.
@@ -403,7 +403,7 @@ Launch judge:
 ## Phase 3: Architecture Synthesis
 
 **Model:** `opus`
-**Agent:** `sdd:software-architect`
+**Agent:** `software-architect`
 **Depends on:** Phase 2a + Judge 2a PASS, Phase 2b + Judge 2b PASS, Phase 2c + Judge 2c PASS
 **Purpose:** Synthesize research, analysis, and business requirements into architectural overview
 
@@ -413,8 +413,6 @@ Launch agent:
 - **Prompt**:
 
   ```
-  Read .claude/tasks/architecture-synthesis.md and execute.
-
   Task File: <task file path from Phase 1>
   Research File: <research file path from Phase 2a>
   Analysis File: <analysis file path from Phase 2b>
@@ -422,6 +420,7 @@ Launch agent:
 
 **Capture:**
 
+- Scratchpad file path (e.g., `.specs/scratchpad/<hex-id>.md`)
 - Sections added to task file
 - Key architectural decisions count
 - Components identified (if applicable)
@@ -432,7 +431,7 @@ Launch agent:
 ### Judge 3: Validate Architecture Synthesis
 
 **Model:** `opus`
-**Agent:** `sdd:software-architect`
+**Agent:** `software-architect`
 **Depends on:** Phase 3 completion
 **Purpose:** Validate architectural coherence and completeness
 
@@ -731,7 +730,7 @@ Launch judge:
 
 After all phases and judges complete with PASS:
 
-1. Use git tool to stage the task file, research file, and analysis file
+1. Use git tool to stage the task file, research file, analysis file, and scratchpad file
 2. Summarize the workflow results and output to user:
 
 ```markdown
@@ -745,6 +744,7 @@ After all phases and judges complete with PASS:
 | **Complexity** | `<S/M/L/XL>` |
 | **Research** | `<research file path>` |
 | **Analysis** | `<analysis file path>` |
+| **Scratchpad** | `<scratchpad file path>` |
 | **Implementation Steps** | `<count>` |
 | **Parallelization Depth** | `<max parallel agents>` |
 | **Total Verifications** | `<count>` |
@@ -770,8 +770,10 @@ After all phases and judges complete with PASS:
 │   └── task-<name>.md        # Complete task specification
 ├── research/
 │   └── research-<name>.md    # Research document
-└── analysis/
-    └── analysis-<name>.md    # Codebase impact analysis
+├── analysis/
+│   └── analysis-<name>.md    # Codebase impact analysis
+└── scratchpad/
+    └── <hex-id>.md           # Architecture thinking scratchpad
 
 ```
 
