@@ -69,8 +69,16 @@ Commands installation is available for Cursor and OpenCode:
 <details>
 <summary>Cursor</summary>
 
+Install per project to `.claude/commands` directory by default (Cursor uses .claude/commands folder by some reason):
+
 ```bash
-curl -fsSL https://raw.githubusercontent.com/NeoLabHQ/context-engineering-kit/master/.bin/install-commands.sh | bash
+curl -fsSL https://raw.githubusercontent.com/NeoLabHQ/context-engineering-kit/refs/heads/master/.bin/install-commands.sh | bash
+```
+
+Install globally to `~/.cursor/commands` directory:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/NeoLabHQ/context-engineering-kit/refs/heads/master/.bin/install-commands.sh | bash -s -- --global
 ```
 
 </details>
@@ -78,8 +86,16 @@ curl -fsSL https://raw.githubusercontent.com/NeoLabHQ/context-engineering-kit/ma
 <details>
 <summary>OpenCode</summary>
 
+Install per project to `.opencode/commands` directory:
+
 ```bash
-curl -fsSL https://raw.githubusercontent.com/NeoLabHQ/context-engineering-kit/master/.bin/install-commands.sh | bash -s -- --agent opencode
+curl -fsSL https://raw.githubusercontent.com/NeoLabHQ/context-engineering-kit/refs/heads/master/.bin/install-commands.sh | bash -s -- --agent opencode
+```
+
+Install globally to `~/.config/opencode/commands` directory:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/NeoLabHQ/context-engineering-kit/refs/heads/master/.bin/install-commands.sh | bash -s -- --agent opencode --global
 ```
 
 </details>
