@@ -69,7 +69,9 @@ Commands installation is available for Cursor and OpenCode:
 <details>
 <summary>Cursor</summary>
 
-Install per project to `.claude/commands` directory by default (Cursor uses .claude/commands folder by some reason):
+Cursor does not support sub-agents, so the script installs only commands that do not use them.
+
+Install per project to the `.claude/commands` directory by default (Cursor uses the `.claude/commands` folder for some reason):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/NeoLabHQ/context-engineering-kit/refs/heads/master/.bin/install-commands.sh | bash
@@ -132,7 +134,7 @@ Alternatively, you can use the `reflect` word in intial prompt:
 # then hook automatically runs /reflexion:reflect
 ```
 
-In order to use this hook, need to have `bun` installed. But for overral command in not required.
+In order to use this hook, you need to have `bun` installed. However, it is not required for the overall command.
 
 ## Documentation
 
@@ -459,7 +461,7 @@ The core cycle follows three modes of inference:
 
 Then, audit for bias, decide, and document the rationale in a durable record.
 
-> **Warning:** This plugin loads the core FPF specification into context, which is large (~600k tokens). As a result it loaded into a subagent with Sonnet[1m] model. But such agent can consume your token limit quickly.
+> **Warning:** This plugin loads the core FPF specification into context, which is large (~600k tokens). As a result, it is loaded into a subagent with the Sonnet[1m] model. However, such an agent can consume your token limit quickly.
 
 **How to install**
 
@@ -508,7 +510,7 @@ Then, audit for bias, decide, and document the rationale in a durable record.
 #### Theoretical Foundation
 
 - [FPF Repository](https://github.com/ailev/FPF) - Original methodology by Anatoly Levenchuk
-- [quint-code](https://github.com/m0n0x41d/quint-code) - Implementation this plugin is based on
+- [quint-code](https://github.com/m0n0x41d/quint-code) - Implementation that this plugin is based on
 
 ### Kaizen
 

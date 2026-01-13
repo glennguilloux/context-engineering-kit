@@ -214,6 +214,17 @@ PLUGINS=(
     "tech-stack:add-typescript-best-practices"
 )
 
+CURSOR_PLUGINS=(
+    "customaize-agent:apply-anthropic-skill-best-practices,create-agent,create-command,create-hook,create-skill,create-workflow-command"
+    "ddd:setup-code-formating"
+    "docs:update-docs"
+    "git:analyze-issue,attach-review-to-pr,commit,create-pr,load-issues"
+    "kaizen:analyse-problem,analyse,cause-and-effect,plan-do-check-act,root-cause-tracing,why"
+    "reflexion:critique,memorize,reflect"
+    "tech-stack:add-typescript-best-practices"
+)
+
+
 # Main installation function
 install_commands() {
     local install_dir
@@ -239,7 +250,15 @@ install_commands() {
     local installed_commands=0
     local failed_commands=0
     
-    for plugin_entry in "${PLUGINS[@]}"; do
+    # Select plugins array based on agent
+    local plugins_to_install
+    if [[ "$AGENT" == "cursor" ]]; then
+        plugins_to_install=("${CURSOR_PLUGINS[@]}")
+    else
+        plugins_to_install=("${PLUGINS[@]}")
+    fi
+    
+    for plugin_entry in "${plugins_to_install[@]}"; do
         # Parse plugin name and commands
         local plugin_name="${plugin_entry%%:*}"
         local commands_str="${plugin_entry#*:}"
