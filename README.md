@@ -62,9 +62,25 @@ Install any plugins, for example reflexion
 
 Each installed plugin loads only its specific agents, commands, and skills into Claude's context.
 
-#### Cursor, Windsurf, Cline, OpenCode, and anything that reads AGENTS.md file
+#### Cursor, Windsurf, Cline, OpenCode
 
-Uses [OpenSkills](https://github.com/numman-ali/openskills) to install marketplace into project.
+Command installation available for agents that support them.
+
+**Cursor**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/NeoLabHQ/context-engineering-kit/main/.bin/install-commands.sh | bash
+```
+
+**OpenCode**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/NeoLabHQ/context-engineering-kit/main/.bin/install-commands.sh | bash -s -- --agent opencode
+```
+
+**Install Skills**
+
+Use [OpenSkills](https://github.com/numman-ali/openskills) to install skills for broad range of agents:
 
 ```bash
 npx openskills install NeoLabHQ/context-engineering-kit
