@@ -157,15 +157,17 @@ Code quality and architecture patterns including Clean Architecture and SOLID pr
 
 #### Git
 
-Streamlined Git operations with conventional commits and pull request management.
+Streamlined Git operations with conventional commits, pull request management, and advanced workflow patterns.
 
 **Key Features:**
 
 * Conventional commits with emoji
 * Pull request creation
 * Issue analysis and loading
+* Git worktrees for parallel branch development
+* Git notes for commit metadata annotations
 
-**When to use:** For all Git operations to maintain commit and PR quality.
+**When to use:** For all Git operations to maintain commit and PR quality, or when working on multiple branches simultaneously.
 
 [Full Documentation](git/)
 

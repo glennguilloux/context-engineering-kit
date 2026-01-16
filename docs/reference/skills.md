@@ -29,6 +29,13 @@ Continuous improvement methodology with multiple analysis techniques. [More info
 
 - `kaizen` - Japanese continuous improvement philosophy with root cause analysis, Five Whys, PDCA cycles, and lean practices.
 
+### Git
+
+Streamlined Git operations with advanced workflow patterns. [More info](../plugins/git/README.md).
+
+- `worktrees` - Use when working on multiple branches simultaneously, context switching without stashing, reviewing PRs while developing, testing in isolation, or comparing implementations across branches.
+- `notes` - Use when adding metadata to commits without changing history, tracking review status, test results, code quality annotations, or supplementing commit messages post-hoc.
+
 ### Customaize Agent
 
 Prompt engineering techniques and patterns for creating effective extensions. [More info](../plugins/customaize-agent/README.md).

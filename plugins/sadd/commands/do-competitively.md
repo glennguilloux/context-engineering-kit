@@ -13,6 +13,7 @@ Execute tasks through competitive multi-agent generation, multi-judge evaluation
 This command implements the Generate-Critique-Synthesize (GCS) pattern with adaptive strategy selection for high-stakes tasks where quality matters more than speed. It combines competitive generation with multi-perspective evaluation and intelligently selects the optimal synthesis strategy based on results.
 
 **Key features:**
+
 - Self-critique loops in generation (Constitutional AI)
 - Verification loops in evaluation (Chain-of-Verification)
 - Adaptive strategy: polish clear winners, synthesize split decisions, redesign failures
@@ -60,6 +61,7 @@ mkdir -p .specs/reports
 **Report naming convention:** `.specs/reports/{solution-name}-{YYYY-MM-DD}.[1|2|3].md`
 
 Where:
+
 - `{solution-name}` - Derived from output path (e.g., `users-api` from output `specs/api/users.md`)
 - `{YYYY-MM-DD}` - Current date
 - `[1|2|3]` - Judge number
@@ -77,6 +79,7 @@ Launch **3 independent agents in parallel** (recommended: Opus for quality):
 
 **Solution naming convention:** `{solution-file}.[a|b|c].[ext]`
 Where:
+
 - `{solution-file}` - Derived from task (e.g., `create users.ts` result in `users` as solution file)
 - `[a|b|c]` - Unique identifier per sub-agent
 - `[ext]` - File extension (e.g., `md`, `ts` and etc.)
@@ -215,6 +218,7 @@ CRITICAL: Do not read reports files itself, it can overflow your context.
 **Step 2: Check for unanimous winner**
 
 Compare all three VOTE values:
+
 - If Judge 1 VOTE = Judge 2 VOTE = Judge 3 VOTE (same solution):
   - **Strategy: SELECT_AND_POLISH**
   - **Reason:** Clear consensus - all three judges prefer same solution
@@ -222,17 +226,20 @@ Compare all three VOTE values:
 **Step 3: Check if all solutions are fundamentally flawed**
 
 If no unanimous vote, calculate average scores:
+
 1. Average Solution A scores: (Judge1_A + Judge2_A + Judge3_A) / 3
 2. Average Solution B scores: (Judge1_B + Judge2_B + Judge3_B) / 3
 3. Average Solution C scores: (Judge1_C + Judge2_C + Judge3_C) / 3
 
 If (avg_A < 3.0) AND (avg_B < 3.0) AND (avg_C < 3.0):
+
 - **Strategy: REDESIGN**
 - **Reason:** All solutions below quality threshold, fundamental approach issues
 
 **Step 5: Default to full synthesis**
 
 If none of the above conditions met:
+
 - **Strategy: FULL_SYNTHESIS**
 - **Reason:** Split decision with merit, synthesis needed to combine best elements
 
@@ -241,12 +248,14 @@ If none of the above conditions met:
 **When:** Clear winner (unanimous votes)
 
 **Process:**
+
 1. Select the winning solution as the base
 2. Launch subagent to apply specific improvements from judge feedback
 3. Cherry-pick 1-2 best elements from runner-up solutions
 4. Document what was added and why
 
 **Benefits:**
+
 - Saves synthesis cost (simpler than full synthesis)
 - Preserves proven quality of winning solution
 - Focused improvements rather than full reconstruction
@@ -300,6 +309,7 @@ CRITICAL: Preserve the winning solution's core approach. Make targeted improveme
 **When:** All solutions scored <3.0/5.0 (fundamental issues across the board)
 
 **Process:**
+
 1. Launch new agent to analyze the failure modes and lessons learned. Ask the agent to:
    - Think through step by step: what went wrong with each solution?
    - Analyze common failure modes across all solutions
@@ -443,7 +453,7 @@ The command produces different outputs depending on the adaptive strategy select
 
 1. **Candidate solutions:** `{solution-file}.[a|b|c].[ext]` (in specified output location)
 2. **Evaluation reports:** `.specs/reports/{solution-name}-{date}.[1|2|3].md`
-3. **Resulting solution:** `{output_path}` 
+3. **Resulting solution:** `{output_path}`
 
 ### Strategy-Specific Outputs
 
@@ -496,6 +506,7 @@ Synthesis Decisions
 Choose 3-5 weighted criteria relevant to the task:
 
 **Code tasks:**
+
 - Correctness (30%)
 - Design quality (25%)
 - Maintainability (20%)
@@ -503,6 +514,7 @@ Choose 3-5 weighted criteria relevant to the task:
 - Clarity (10%)
 
 **Design tasks:**
+
 - Completeness (30%)
 - Feasibility (25%)
 - Scalability (20%)
@@ -510,6 +522,7 @@ Choose 3-5 weighted criteria relevant to the task:
 - Clarity (10%)
 
 **Documentation tasks:**
+
 - Completeness (35%)
 - Accuracy (30%)
 - Clarity (20%)
@@ -541,39 +554,49 @@ Choose 3-5 weighted criteria relevant to the task:
 ```
 
 **Phase 1 outputs:**
+
 - `specs/api/users.a.md` - Resource-based design with nested routes
 - `specs/api/users.b.md` - Action-based design with RPC-style endpoints
 - `specs/api/users.c.md` - Minimal design, missing auth consideration
 
 **Phase 2 outputs** (assuming date 2025-01-15):
+
 - `.specs/reports/users-api-2025-01-15.1.md`:
+
   ```
   VOTE: Solution A
   SCORES: A=4.5/5.0, B=3.2/5.0, C=2.8/5.0
   ```
+
   "Most RESTful, good security"
 
 - `.specs/reports/users-api-2025-01-15.2.md`:
+
   ```
   VOTE: Solution A
   SCORES: A=4.3/5.0, B=3.5/5.0, C=2.6/5.0
   ```
+
   "Clean resource design, scalable"
 
 - `.specs/reports/users-api-2025-01-15.3.md`:
+
   ```
   VOTE: Solution A
   SCORES: A=4.6/5.0, B=3.0/5.0, C=2.9/5.0
   ```
+
   "Best practices, clear structure"
 
 **Phase 2.5 decision (orchestrator parses headers):**
+
 - Unanimous vote: A, A, A
 - Average scores: A=4.5, B=3.2, C=2.8
 - Strategy: SELECT_AND_POLISH
 - Reason: Unanimous winner with >1.0 point gap
 
 **Phase 3 output:**
+
 - `specs/api/users.md` - Solution A polished with:
   - Added rate limiting documentation (from B)
   - Simplified nested routes (judge feedback)
@@ -588,33 +611,42 @@ Choose 3-5 weighted criteria relevant to the task:
 ```
 
 **Phase 1 outputs:**
+
 - `specs/caching.a.md` - Redis with LRU eviction
 - `specs/caching.b.md` - Multi-tier cache (memory + Redis)
 - `specs/caching.c.md` - CDN + application cache
 
 **Phase 2 outputs** (assuming date 2025-01-15):
+
 - `.specs/reports/caching-2025-01-15.1.md`:
+
   ```
   VOTE: Solution B
   SCORES: A=3.8/5.0, B=4.2/5.0, C=3.9/5.0
   ```
+
   "Best performance, complex"
 
 - `.specs/reports/caching-2025-01-15.2.md`:
+
   ```
   VOTE: Solution A
   SCORES: A=4.0/5.0, B=3.9/5.0, C=3.7/5.0
   ```
+
   "Simple, reliable, proven"
 
 - `.specs/reports/caching-2025-01-15.3.md`:
+
   ```
   VOTE: Solution C
   SCORES: A=3.6/5.0, B=4.0/5.0, C=4.1/5.0
   ```
+
   "Global reach, cost-effective"
 
 **Phase 2.5 decision (orchestrator parses headers):**
+
 - Split votes: B, A, C (no consensus)
 - Average scores: A=3.8, B=4.0, C=3.9
 - Score gap: 4.0 - 3.9 = 0.1 (<1.0 threshold)
@@ -622,6 +654,7 @@ Choose 3-5 weighted criteria relevant to the task:
 - Reason: Split decision, all solutions ≥3.0, no clear winner
 
 **Phase 3 output:**
+
 - `specs/caching.md` - Hybrid approach:
   - Multi-tier architecture (from B)
   - Simple LRU policy (from A)
@@ -637,33 +670,42 @@ Choose 3-5 weighted criteria relevant to the task:
 ```
 
 **Phase 1 outputs:**
+
 - `specs/auth.a.md` - Custom OAuth2 implementation
 - `specs/auth.b.md` - Session-based with social providers
 - `specs/auth.c.md` - JWT with password-only auth
 
 **Phase 2 outputs** (assuming date 2025-01-15):
+
 - `.specs/reports/auth-2025-01-15.1.md`:
+
   ```
   VOTE: Solution A
   SCORES: A=2.5/5.0, B=2.2/5.0, C=2.3/5.0
   ```
+
   "Security risks, reinventing wheel"
 
 - `.specs/reports/auth-2025-01-15.2.md`:
+
   ```
   VOTE: Solution B
   SCORES: A=2.4/5.0, B=2.8/5.0, C=2.1/5.0
   ```
+
   "Sessions don't scale, missing requirements"
 
 - `.specs/reports/auth-2025-01-15.3.md`:
+
   ```
   VOTE: Solution C
   SCORES: A=2.6/5.0, B=2.5/5.0, C=2.3/5.0
   ```
+
   "No social login, security concerns"
 
 **Phase 2.5 decision (orchestrator parses headers):**
+
 - Split votes: A, B, C (no consensus)
 - Average scores: A=2.5, B=2.5, C=2.2 (ALL <3.0)
 - Strategy: REDESIGN

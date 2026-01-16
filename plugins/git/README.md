@@ -258,6 +258,73 @@ PR number or URL (optional - can work with current branch).
 > /git:attach-review-to-pr 456
 ```
 
+## Skills Overview
+
+### worktrees - Parallel Branch Development
+
+Use when working on multiple branches simultaneously, context switching without stashing, reviewing PRs while developing, testing in isolation, or comparing implementations across branches.
+
+- Purpose - Provide git worktree commands and workflow patterns for parallel development
+- Core Principle - One worktree per active branch; switch contexts by changing directories
+
+**Key Concepts**
+
+| Concept | Description |
+|---------|-------------|
+| Main worktree | Original working directory from `git clone` or `git init` |
+| Linked worktree | Additional directories created with `git worktree add` |
+| Shared `.git` | All worktrees share same Git object database (no duplication) |
+| Branch lock | Each branch can only be checked out in ONE worktree at a time |
+
+**Quick Reference**
+
+| Task | Command |
+|------|---------|
+| Create worktree (existing branch) | `git worktree add <path> <branch>` |
+| Create worktree (new branch) | `git worktree add -b <branch> <path>` |
+| List all worktrees | `git worktree list` |
+| Remove worktree | `git worktree remove <path>` |
+
+**Common Workflows**
+
+- **Feature + Hotfix in Parallel** - Create worktree for hotfix while feature work continues
+- **PR Review While Working** - Create temporary worktree to review PRs without stashing
+- **Compare Implementations** - Create worktrees for different versions to diff side-by-side
+- **Long-Running Tasks** - Run tests in isolated worktree while continuing development
+
+### notes - Commit Metadata Annotations
+
+Use when adding metadata to commits without changing history, tracking review status, test results, code quality annotations, or supplementing commit messages post-hoc.
+
+- Purpose - Attach non-invasive metadata to Git objects without modifying commit history
+- Core Principle - Add information to commits after creation without rewriting history
+
+**Key Concepts**
+
+| Concept | Description |
+|---------|-------------|
+| Notes ref | Storage location, default `refs/notes/commits` |
+| Non-invasive | Notes never modify SHA of original object |
+| Namespaces | Use `--ref` for different note categories (reviews, testing, audit) |
+| Display | Notes appear in `git log` and `git show` output |
+
+**Quick Reference**
+
+| Task | Command |
+|------|---------|
+| Add note | `git notes add -m "message" <sha>` |
+| View note | `git notes show <sha>` |
+| Append to note | `git notes append -m "message" <sha>` |
+| Use namespace | `git notes --ref=<name> <command>` |
+| Push notes | `git push origin refs/notes/<name>` |
+
+**Common Use Cases**
+
+- **Code Review Tracking** - Mark commits as reviewed with reviewer attribution
+- **Test Results Annotation** - Record test pass/fail status and coverage
+- **Audit Trail** - Attach security review or compliance information
+- **Sharing Notes** - Push/fetch notes to share metadata with team
+
 ## Conventional Commit Format
 
 The plugin follows the [conventional commits specification](https://www.conventionalcommits.org/):

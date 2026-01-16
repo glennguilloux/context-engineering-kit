@@ -300,7 +300,7 @@ jobs:
 
 ### Git
 
-Commands for streamlined Git operations including commits and pull request creation.
+Commands and skills for streamlined Git operations including commits, pull request creation, and advanced workflow patterns.
 
 **How to install**
 
@@ -314,6 +314,11 @@ Commands for streamlined Git operations including commits and pull request creat
 - `/git:create-pr` - Create pull requests using GitHub CLI with proper templates and formatting
 - `/git:analyze-issue` - Analyze a GitHub issue and create a detailed technical specification
 - `/git:load-issues` - Load all open issues from GitHub and save them as markdown files
+
+**Skills**
+
+- **worktrees** - Git worktree commands and workflow patterns for parallel branch development
+- **notes** - Git notes commands for attaching non-invasive metadata to commits
 
 ### Test-Driven Development
 
