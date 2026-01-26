@@ -289,13 +289,13 @@ jobs:
             REPO: ${{ github.repository }}
             PR NUMBER: ${{ github.event.pull_request.number }}
 
-            CRITICAL: You MUST use SlashCommand tool to read and perform /code-review:review-pr command EXACTLY!
+            CRITICAL: You MUST use Skill tool to read and perform /code-review:review-pr command EXACTLY!
             Do not analyze or read PR, code or anything else UNTIL you have read the command!
 
             Note: The PR branch is already checked out in the current working directory.
 
-          # SlashCommand and Bash(gh pr comment:*) is required for review, the rest is optional, but recommended for better context and quality of the review.
-          claude_args: '--allowed-tools "SlashCommand,Bash,Glob,Grep,Read,Task,mcp__github_inline_comment__create_inline_comment,Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr edit:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh api:*)"'
+          # Skill and Bash(gh pr comment:*) is required for review, the rest is optional, but recommended for better context and quality of the review.
+          claude_args: '--allowed-tools "Skill,Bash,Glob,Grep,Read,Task,mcp__github_inline_comment__create_inline_comment,Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr edit:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh api:*)"'
 ```
 
 ### Git
@@ -352,6 +352,7 @@ Execution framework for competitive generation, multi-agent evaluation, and suba
 **Commands**
 
 - `/sadd:launch-sub-agent` - Launch focused sub-agents with intelligent model selection, Zero-shot CoT reasoning, and self-critique verification
+- `/sadd:do-and-judge` - Execute a single task with implementation sub-agent, independent judge verification, and automatic retry loop until passing
 - `/sadd:do-in-parallel` - Execute the same task across multiple independent targets in parallel with context isolation
 - `/sadd:do-in-steps` - Execute complex tasks through sequential sub-agent orchestration with automatic decomposition and context passing
 - `/sadd:do-competitively` - Execute tasks through competitive generation, multi-judge evaluation, and evidence-based synthesis to produce superior results
