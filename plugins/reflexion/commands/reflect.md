@@ -81,27 +81,14 @@ Before proceeding, evaluate your most recent output against these criteria:
    - [ ] Are there edge cases that haven't been considered?
    - [ ] Could there be unintended side effects?
 
-4. **Dependency & Impact Verification** (CRITICAL - per ISSUE-086, DEC-096)
+4. **Dependency & Impact Verification** 
    - [ ] For ANY proposed addition/deletion/modification, have you checked for dependencies?
-   - [ ] Have you searched for related decisions (DEC-###) that may be superseded or supersede this?
-   - [ ] Have you checked AUTHORITATIVE.yaml for active evaluations or status?
+   - [ ] Have you searched for related decisions that may be superseded or supersede this?
+   - [ ] Have you checked the configuration or docs (for example AUTHORITATIVE.yaml) for active evaluations or status?
    - [ ] Have you searched the ecosystem for files/processes that depend on items being changed?
    - [ ] If recommending removal of anything, have you verified nothing depends on it?
 
-   **Mandatory Checks Before Recommending Changes:**
-   ```bash
-   # Check for active evaluations/status
-   grep -A20 "item_name" ~/dev/AUTHORITATIVE.yaml | grep -i "status\|evaluation\|active"
 
-   # Check for ecosystem dependencies
-   grep -ri "item_name" ~/dev/infrastructure/ --include="*.md" --include="*.yaml" | head -20
-
-   # Check for related/superseding decisions
-   grep -i "item_name" ~/dev/infrastructure/dev-env-docs/DECISIONS-LOG.md | head -10
-
-   # Check for dedicated project directories
-   find ~/dev/infrastructure -maxdepth 2 -type d -iname "*item_name*" 2>/dev/null
-   ```
 
    **HARD RULE:** If ANY check reveals active dependencies, evaluations, or pending decisions, FLAG THIS IN THE EVALUATION. Do not approve work that recommends changes without dependency verification.
 
@@ -117,23 +104,7 @@ Before proceeding, evaluate your most recent output against these criteria:
    - [ ] **Documentation sync**: If counts, stats, or references changed, all documentation citing them updated
    - [ ] **State verification**: Claims about system state verified with actual commands, not memory
 
-   **Verification Commands (run before declaring complete):**
-   ```bash
-   # Cross-reference check: verify tool/API names exist
-   # Example for MCP tools:
-   grep -o 'mcp_[a-z_]*' generated_file.py | sort -u | while read tool; do
-     grep -q "$tool" ~/.config/claude/claude_desktop_config.json || echo "MISSING: $tool"
-   done
-
-   # Security scan: check staged files for sensitive paths (Linux, macOS, Windows)
-   git diff --cached --name-only | xargs -r grep -l '/home/\|/Users/\|C:\\Users\|%USERPROFILE%' 2>/dev/null
-
-   # Documentation sync: find docs referencing old values after changes
-   # Example: if you changed a count from 117 to 118
-   grep -rn "117" docs/ *.md | grep -i "count\|total\|items"
-   ```
-
-   **HARD RULE:** Do not declare work complete until verification commands confirm claims match reality.
+   **HARD RULE:** Do not declare work complete until you confirm claims match reality.
 
 ### Step 2: Decision Point
 
@@ -607,11 +578,11 @@ Before finalizing any output:
 - [ ] Did I search for existing libraries before writing custom code?
 - [ ] Is the architecture aligned with Clean Architecture/DDD principles?
 - [ ] Are names domain-specific rather than generic (utils/helpers)?
-- [ ] **CROSS-REFERENCE CHECK:** Any tool/API/file references verified against actual inventory (not assumed)
-- [ ] **SECURITY CHECK:** Generated files scanned for sensitive info (paths, usernames, credentials)
-- [ ] **DOCUMENTATION SYNC:** All docs referencing changed values have been updated
-- [ ] **STATE VERIFICATION:** Claims verified with actual commands, not memory
-- [ ] **DEPENDENCY CHECK:** For any additions/deletions/modifications, have I verified no active dependencies, evaluations, or superseding decisions exist?
+- [ ] Any tool/API/file references verified against actual inventory (not assumed)
+- [ ] Generated files scanned for sensitive info (paths, usernames, credentials)
+- [ ] All docs referencing changed values have been updated
+- [ ] Claims verified with actual commands, not memory
+- [ ] For any additions/deletions/modifications, have I verified no active dependencies, evaluations, or superseding decisions exist?
 
 ### Reflexion Questions
 
