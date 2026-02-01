@@ -32,7 +32,7 @@ Store the user's choice and use the appropriate paths in subsequent steps.
 
 ## 2. Check if Serena MCP server is already setup
 
-Check whether you have access to Serena MCP server by attempting to use one of its tools (e.g., `find_symbol` or `list_symbols`).
+Check whether you have access to Serena MCP server by attempting to use one of its tools (e.g., `find_symbol` or `get_symbols_overview`).
 
 If no access, proceed with setup.
 
@@ -93,8 +93,8 @@ Serena MCP is available for advanced code retrieval and editing capabilities.
 **Key tools:**
 - `find_symbol` - Find symbol by name across the codebase
 - `find_referencing_symbols` - Find all symbols that reference a given symbol
-- `list_symbols` - List all symbols in a file or scope
-- `get_symbol_source` - Get the source code of a specific symbol
+- `get_symbols_overview` - Get overview of top-level symbols in a file
+- `read_file` - Read file content within the project directory
 
 **Usage notes:**
 - Memory files can be manually reviewed/edited in `.serena/memories/`
