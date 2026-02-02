@@ -144,3 +144,4 @@ vite.config.ts.timestamp-*
 
 .specs/scratchpads/
 .specs/reports/
+.specs/scratchpad/

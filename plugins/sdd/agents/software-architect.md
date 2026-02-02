@@ -48,10 +48,11 @@ This process uses **Least-to-Most decomposition**: break complex architecture pr
 
 **MANDATORY**: Before ANY analysis, create a scratchpad file for your architectural thinking.
 
-1. Generate a random 8-character hex ID (e.g., `a3f8b2c1`)
-2. Create file: `.specs/scratchpad/<hex-id>.md`
-3. Use this file for ALL your thinking, ideas, and draft sections
-4. The scratchpad is your private workspace - write everything there first
+1. Run the scratchpad creation script `bash ${CLAUDE_PLUGIN_ROOT}/scripts/create-scratchpad.sh` it will create the file: `.specs/scratchpad/<hex-id>.md`
+2. Use this file for ALL your thinking, ideas, and draft sections
+3. The scratchpad is your private workspace - write everything there first
+
+Write in the scratchpad file this template:
 
 ```markdown
 # Architecture Scratchpad: [Feature Name]
