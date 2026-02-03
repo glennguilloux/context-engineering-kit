@@ -1,0 +1,821 @@
+networks:
+  workflows-web:
+    driver: bridge
+services:
+  anythingllm:
+    container_name: anythingllm
+    environment:
+    - STORAGE_DIR=/app/server/storage
+    - JWT_SECRET=${ANYTHINGLLM_JWT_SECRET:-auto-generated-secret-change-in-production}
+    - API_KEY=${ANYTHINGLLM_API_KEY:-}
+    - LLM_PROVIDER=ollama
+    - OLLAMA_BASE_URL=http://ollama:11434
+    - OLLAMA_MODEL=${OLLAMA_MODEL:-llama2}
+    - EMBEDDING_PROVIDER=ollama
+    - EMBEDDING_MODEL_PREF=nomic-embed-text
+    - VECTOR_DB=lancedb
+    - PORT=3001
+    - NODE_ENV=production
+    - TTS_PROVIDER=external
+    - TTS_EXTERNAL_URL=https://voice.workflows.glennguilloux.com/api/v1/audio/speech
+    - TTS_VOICE=fr-Spk1_woman
+    - TTS_AUTO_PLAY=true
+    - TTS_ENABLED=true
+    - AUDIO_TTS_ENGINE=openai
+    - AUDIO_TTS_OPENAI_API_BASE_URL=https://voice.workflows.glennguilloux.com/api/v1/audio/speech
+    - AUDIO_TTS_VOICE=fr-Spk1_woman
+    - USER_PERMISSIONS_CHAT_TTS=true
+    - WORKSPACE_NAME=Default
+    - USER_NAME=Admin
+    - USER_EMAIL=${ANYTHINGLLM_ADMIN_EMAIL:-admin@workflows.com}
+    - USER_PASSWORD=${ANYTHINGLLM_ADMIN_PASSWORD:-admin123456}
+    - API_BASE_URL=https://openwebui.glennguilloux.com
+    - SERVER_URL=https://openwebui.glennguilloux.com
+    extra_hosts:
+    - host.docker.internal:host-gateway
+    healthcheck:
+      interval: 30s
+      retries: 3
+      test:
+      - CMD
+      - curl
+      - -f
+      - http://localhost:3001/api/v1/health
+      timeout: 10s
+    image: mintplexlabs/anythingllm:latest
+    labels:
+    - traefik.enable=true
+    - traefik.http.routers.anythingllm.rule=Host(`openwebui.glennguilloux.com`)
+    - traefik.http.routers.anythingllm.entrypoints=websecure
+    - traefik.http.routers.anythingllm.tls=true
+    - traefik.http.routers.anythingllm.tls.certresolver=letsencrypt
+    - traefik.http.routers.anythingllm.priority=100
+    - traefik.http.routers.anythingllm.middlewares=anythingllm-cors
+    - traefik.http.middlewares.anythingllm-cors.headers.accesscontrolallowmethods=GET,POST,PUT,DELETE,OPTIONS
+    - traefik.http.middlewares.anythingllm-cors.headers.accesscontrolalloworiginlist=https://openwebui.glennguilloux.com
+    - traefik.http.middlewares.anythingllm-cors.headers.accesscontrolallowheaders=*
+    - traefik.http.middlewares.anythingllm-cors.headers.accesscontrolallowcredentials=true
+    - traefik.http.routers.anythingllm-path.rule=Host(`workflows.glennguilloux.com`)
+      && PathPrefix(`/openwebui`)
+    - traefik.http.routers.anythingllm-path.entrypoints=websecure
+    - traefik.http.routers.anythingllm-path.tls=true
+    - traefik.http.routers.anythingllm-path.tls.certresolver=letsencrypt
+    - traefik.http.routers.anythingllm-path.priority=50
+    - traefik.http.routers.anythingllm-path.middlewares=anythingllm-stripprefix,anythingllm-headers
+    - traefik.http.middlewares.anythingllm-stripprefix.stripprefix.prefixes=/openwebui
+    - traefik.http.middlewares.anythingllm-headers.headers.customrequestheaders.X-Forwarded-Prefix=/openwebui
+    - traefik.http.services.anythingllm.loadbalancer.server.port=3001
+    networks:
+    - workflows-web
+    ports:
+    - "3001:3001"
+    restart: unless-stopped
+    volumes:
+    - anythingllm_data:/app/server/storage
+    - anythingllm_uploads:/app/collector/hotdir
+  celery-worker:
+    build: ./apps/backend
+    container_name: workflow-celery-worker
+    command: sh -c "cd /app && python -m celery -A app.tasks.celery_app worker --loglevel=info --pool=solo"
+    depends_on:
+      - rabbitmq
+      - postgres
+      - backend
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-postgresql://${POSTGRES_USER:-react_user}:${POSTGRES_PASSWORD:-react_password}@postgres:5432/${POSTGRES_DB:-react_website}}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL:-amqp://rabbitmq:rabbitmq_password@rabbitmq:5672//}
+      - CELERY_RESULT_BACKEND=${REDIS_URL:-redis://redis:6379}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://ollama:11434}
+      - PYTHONUNBUFFERED=1
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    healthcheck:
+      interval: 30s
+      retries: 3
+      test: ["CMD-SHELL", "python -c \"import pika; connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitmq')); connection.close()\" || exit 1"]
+      timeout: 10s
+    labels:
+      - traefik.enable=false  # Celery worker doesn't need web access
+    networks:
+      - workflows-web
+    restart: unless-stopped
+    volumes:
+      - ./apps/backend:/app
+      - file_storage:/app/storage
+      - chroma_data:/app/chroma_db
+  celery-beat:
+    build: ./apps/backend
+    container_name: workflow-celery-beat
+    command: sh -c "cd /app && python -m celery -A app.tasks.celery_app beat --loglevel=info"
+    depends_on:
+      - rabbitmq
+      - postgres
+      - backend
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-postgresql://${POSTGRES_USER:-react_user}:${POSTGRES_PASSWORD:-react_password}@postgres:5432/${POSTGRES_DB:-react_website}}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL:-amqp://rabbitmq:rabbitmq_password@rabbitmq:5672//}
+      - CELERY_RESULT_BACKEND=${REDIS_URL:-redis://redis:6379}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://ollama:11434}
+      - PYTHONUNBUFFERED=1
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    healthcheck:
+      interval: 30s
+      retries: 3
+      test: ["CMD-SHELL", "python -c \"import pika; connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitmq')); connection.close()\" || exit 1"]
+      timeout: 10s
+    labels:
+      - traefik.enable=false  # Celery beat doesn't need web access
+    networks:
+      - workflows-web
+    restart: unless-stopped
+    volumes:
+      - ./apps/backend:/app
+      - file_storage:/app/storage
+      - chroma_data:/app/chroma_db
+  qdrant:
+    container_name: workflow-qdrant
+    image: qdrant/qdrant:v1.12.0
+    environment:
+      - QDRANT__SERVICE__GRPC_PORT=6334
+      - QDRANT__SERVICE__HTTP_PORT=6333
+      - QDRANT__LOG_LEVEL=INFO
+    healthcheck:
+      interval: 30s
+      retries: 3
+      test: ["CMD-SHELL", "timeout 5 bash -c ':> /dev/tcp/localhost/6333' || exit 1"]
+      timeout: 10s
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.qdrant.rule=Host(`qdrant.workflows.glennguilloux.com`)
+      - traefik.http.routers.qdrant.entrypoints=websecure
+      - traefik.http.routers.qdrant.tls=true
+      - traefik.http.routers.qdrant.tls.certresolver=letsencrypt
+      - traefik.http.services.qdrant.loadbalancer.server.port=6333
+      - traefik.http.routers.qdrant.priority=100
+    networks:
+      - workflows-web
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    restart: unless-stopped
+    volumes:
+      - qdrant_data:/qdrant/storage
+  backend:
+    build: ./apps/backend
+    container_name: workflow-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+    environment:
+      BACKEND_API_URL: ${BACKEND_API_URL:-http://localhost:8000/api}
+      CHROMA_PERSIST_DIR: ${CHROMA_PERSIST_DIR:-./chroma_db}
+      COMFYUI_URL: ${COMFYUI_URL:-http://comfyui-3d:8188}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://${POSTGRES_USER:-react_user}:${POSTGRES_PASSWORD:-react_password}@postgres:5432/${POSTGRES_DB:-react_website}}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-nomic-embed-text}
+      EXTERNAL_WORKFLOWS_ENABLED: ${EXTERNAL_WORKFLOWS_ENABLED:-true}
+      EXTERNAL_WORKFLOWS_PATH: ${EXTERNAL_WORKFLOWS_PATH:-/external-workflows}
+      FLASK_ENV: ${FLASK_ENV:-production}
+      JWT_ACCESS_TOKEN_EXPIRES: ${JWT_ACCESS_TOKEN_EXPIRES:-3600}
+      JWT_ALGORITHM: ${JWT_ALGORITHM:-HS256}
+      JWT_HEADER_NAME: ${JWT_HEADER_NAME:-Authorization}
+      JWT_HEADER_TYPE: ${JWT_HEADER_TYPE:-Bearer}
+      JWT_REFRESH_TOKEN_EXPIRES: ${JWT_REFRESH_TOKEN_EXPIRES:-86400}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-dkL1lRhre8Wks60/1YjxW3kVg9pcFp0nHYva7/SaoH8=}
+      JWT_TOKEN_LOCATION: ${JWT_TOKEN_LOCATION:-headers}
+      PYTHONUNBUFFERED: '1'
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      VIBEVOICE_URL: ${VIBEVOICE_URL:-http://vibevoice:8085}
+      # Celery Configuration
+      CELERY_BROKER_URL: ${REDIS_URL:-redis://redis:6379}
+      CELERY_RESULT_BACKEND: ${REDIS_URL:-redis://redis:6379}
+      # RAG Configuration
+      RAG_ENABLED: ${RAG_ENABLED:-true}
+      RAG_PIPELINE_VERSION: ${RAG_PIPELINE_VERSION:-1.0}
+      RAG_CHUNK_SIZE: ${RAG_CHUNK_SIZE:-1000}
+      RAG_CHUNK_OVERLAP: ${RAG_CHUNK_OVERLAP:-200}
+      RAG_TOKEN_AWARE: ${RAG_TOKEN_AWARE:-true}
+      RAG_MIN_CHUNK_LENGTH: ${RAG_MIN_CHUNK_LENGTH:-50}
+      RAG_MAX_CHUNK_LENGTH: ${RAG_MAX_CHUNK_LENGTH:-2000}
+      VECTOR_STORE_TYPE: ${VECTOR_STORE_TYPE:-qdrant}
+      QDRANT_URL: ${QDRANT_URL:-http://qdrant:6333}
+      QDRANT_COLLECTION_NAME: ${QDRANT_COLLECTION_NAME:-workflows_rag}
+      RAG_EMBEDDING_PROVIDER: ${RAG_EMBEDDING_PROVIDER:-huggingface}
+      RAG_EMBEDDING_MODEL: ${RAG_EMBEDDING_MODEL:-sentence-transformers/all-MiniLM-L6-v2}
+      EMBEDDING_DIMENSION: ${EMBEDDING_DIMENSION:-384}
+      RAG_SEARCH_TYPE: ${RAG_SEARCH_TYPE:-hybrid}
+      RAG_DENSE_WEIGHT: ${RAG_DENSE_WEIGHT:-0.6}
+      RAG_SPARSE_WEIGHT: ${RAG_SPARSE_WEIGHT:-0.4}
+      RAG_SIMILARITY_THRESHOLD: ${RAG_SIMILARITY_THRESHOLD:-0.5}
+      RAG_BM25_ENABLED: ${RAG_BM25_ENABLED:-true}
+      RAG_BM25_K1: ${RAG_BM25_K1:-1.5}
+      RAG_BM25_B: ${RAG_BM25_B:-0.75}
+      RAG_RERANK_ENABLED: ${RAG_RERANK_ENABLED:-true}
+      RAG_RERANK_MODEL: ${RAG_RERANK_MODEL:-cross-encoder/ms-marco-MiniLM-L-12-v2}
+      RAG_RERANK_TOP_K: ${RAG_RERANK_TOP_K:-20}
+      RAG_RERANK_FINAL_K: ${RAG_RERANK_FINAL_K:-5}
+      RAG_RERANK_THRESHOLD: ${RAG_RERANK_THRESHOLD:-0.0}
+      RAG_EXPANSION_TYPE: ${RAG_EXPANSION_TYPE:-multi_query}
+      RAG_NUM_QUERY_VARIANTS: ${RAG_NUM_QUERY_VARIANTS:-3}
+      RAG_EXPANSION_ENABLED: ${RAG_EXPANSION_ENABLED:-true}
+      RAG_EVAL_ENABLED: ${RAG_EVAL_ENABLED:-true}
+      RAG_TRACK_HIT_RATE: ${RAG_TRACK_HIT_RATE:-true}
+      RAG_TRACK_MRR: ${RAG_TRACK_MRR:-true}
+      RAG_TRACK_NDCG: ${RAG_TRACK_NDCG:-true}
+      RAG_EVAL_WINDOW_SIZE: ${RAG_EVAL_WINDOW_SIZE:-100}
+      RAG_VERSIONING_ENABLED: ${RAG_VERSIONING_ENABLED:-true}
+      RAG_AUTO_RE_EMBED: ${RAG_AUTO_RE_EMBED:-true}
+      RAG_EMBEDDING_VERSION: ${RAG_EMBEDDING_VERSION:-v1}
+      RAG_CACHE_ENABLED: ${RAG_CACHE_ENABLED:-true}
+      RAG_CACHE_TTL: ${RAG_CACHE_TTL:-3600}
+      RAG_TOP_K_DENSE: ${RAG_TOP_K_DENSE:-20}
+      RAG_TOP_K_SPARSE: ${RAG_TOP_K_SPARSE:-20}
+      RAG_TOP_K_FINAL: ${RAG_TOP_K_FINAL:-5}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://ollama:11434}
+      # LangChain Configuration
+      USE_LANGCHAIN: ${USE_LANGCHAIN:-true}
+      FEATURE_USE_LANGCHAIN: ${USE_LANGCHAIN:-true}
+      LANGCHAIN_SERVER_URL: ${LANGCHAIN_SERVER_URL:-http://host.docker.internal:5000}
+      LANGCHAIN_TRACING_V2: ${LANGCHAIN_TRACING_V2:-false}
+      LANGCHAIN_ENDPOINT: ${LANGCHAIN_ENDPOINT:-https://api.smith.langchain.com}
+      LANGCHAIN_API_KEY: ${LANGCHAIN_API_KEY:-}
+      LANGCHAIN_PROJECT: ${LANGCHAIN_PROJECT:-workflows-production}
+      LANGCHAIN_SESSION_TTL: ${LANGCHAIN_SESSION_TTL:-3600}
+      LANGCHAIN_REQUIRE_AUTH: ${LANGCHAIN_REQUIRE_AUTH:-false}
+    extra_hosts:
+    - host.docker.internal:host-gateway
+    healthcheck:
+      interval: 30s
+      retries: 3
+      test:
+      - CMD
+      - python
+      - -c
+      - import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')
+      timeout: 10s
+    labels:
+    - traefik.enable=true
+    - traefik.http.routers.backend.rule=Host(`workflows.glennguilloux.com`) && PathPrefix(`/api`)
+    - traefik.http.routers.backend.entrypoints=websecure
+    - traefik.http.routers.backend.tls=true
+    - traefik.http.routers.backend.tls.certresolver=letsencrypt
+    - traefik.http.services.backend.loadbalancer.server.port=8000
+    - traefik.http.routers.backend.priority=100
+    - traefik.http.routers.socketio.rule=Host(`workflows.glennguilloux.com`) && PathPrefix(`/socket.io`)
+    - traefik.http.routers.backend.middlewares=cors@file
+    - traefik.http.routers.socketio.entrypoints=websecure
+    - traefik.http.routers.socketio.tls=true
+    - traefik.http.routers.socketio.tls.certresolver=letsencrypt
+    - traefik.http.routers.socketio.service=backend
+    - traefik.http.routers.socketio.priority=100
+    - traefik.http.routers.backend-ws.rule=Host(`workflows.glennguilloux.com`) && PathPrefix(`/ws`)
+    - traefik.http.routers.backend-ws.entrypoints=websecure
+    - traefik.http.routers.backend-ws.tls=true
+    - traefik.http.routers.backend-ws.tls.certresolver=letsencrypt
+    - traefik.http.routers.backend-ws.service=backend
+    - traefik.http.routers.backend-ws.priority=0
+    - traefik.http.routers.copilotkit.rule=Host(`workflows.glennguilloux.com`) &&
+      PathPrefix(`/copilotkit`)
+    - traefik.http.routers.copilotkit.entrypoints=websecure
+    - traefik.http.routers.copilotkit.tls=true
+    - traefik.http.routers.copilotkit.tls.certresolver=letsencrypt
+    - traefik.http.routers.copilotkit.service=backend
+    - traefik.http.routers.copilotkit.priority=100
+    - traefik.http.middlewares.copilotkit-replace.replacepathregex.regex=^/copilotkit/(.*)
+    - traefik.http.middlewares.copilotkit-replace.replacepathregex.replacement=/api/ai/copilotkit/$1
+    - traefik.http.routers.langchain.rule=Host(`workflows.glennguilloux.com`) && PathPrefix(`/api/langchain`)
+    - traefik.http.routers.langchain.entrypoints=websecure
+    - traefik.http.routers.langchain.tls=true
+    - traefik.http.routers.langchain.tls.certresolver=letsencrypt
+    - traefik.http.routers.langchain.service=backend
+    - traefik.http.routers.langchain.priority=100
+    networks:
+    - workflows-web
+    ports:
+    - "8000:8000"
+    restart: unless-stopped
+    volumes:
+    - file_storage:/app/storage
+    - ./comfyui-3d/mnt/ComfyUI/output:/comfy-output:rw
+    - /mnt/apps/data/glennguilloux/Workflows:/external-workflows:ro
+    - ./anythingllm-integration:/app/anythingllm-integration:ro
+    - chroma_data:/app/chroma_db
+    - ./openwebui-tools:/app/openwebui-tools:ro
+    - source: ./chromadb_data
+      target: /var/lib/workflows/chromadb
+      type: bind
+
+  ollama:
+    container_name: ollama
+    image: ollama/ollama:latest
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - capabilities:
+            - gpu
+            count: all
+            driver: nvidia
+            options:
+              # GPU memory limits - RTX 5060 Ti has 16GB per card
+              # Reserve 12GB per GPU for Ollama to prevent OOM
+              memory: "12G"  # 12GB in bytes per GPU
+        limits:
+          # Total GPU memory limit across all GPUs
+          # 2x RTX 5060 Ti = 32GB total, reserve 24GB for Ollama
+          memory: "24G"  # 24GB in bytes
+    environment:
+      # GPU Memory Limits (in bytes, per GPU)
+      # RTX 5060 Ti = 16GB VRAM, leaving ~4GB for system overhead
+      - OLLAMA_GPU_MEMORY_0=12000000000    # GPU0: 12GB
+      - OLLAMA_GPU_MEMORY_1=12000000000    # GPU1: 12GB
+      # Alternative: Set global memory fraction (deprecated but still works)
+      - OLLAMA_GPU_MEMORY_FRACTION=0.75    # Use 75% of available GPU memory per GPU
+      # Server settings
+      - OLLAMA_KEEP_ALIVE=1h               # Reduce from 24h to 1h to free memory
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_ORIGINS=*
+      - NVIDIA_VISIBLE_DEVICES=0,1         # Explicitly set which GPUs to use
+      - CUDA_VISIBLE_DEVICES=0,1
+      # Performance tuning
+      - OLLAMA_NUM_PARALLEL=2              # Limit parallel requests to reduce memory pressure
+      - OLLAMA_MAX_LOADED_MODELS=1         # Only load one model at a time
+    healthcheck:
+      interval: 30s
+      retries: 5
+      # Longer timeout to account for GPU model loading
+      timeout: 60s
+      start_period: 60s                    # Give GPU time to initialize
+      test: ["CMD", "/bin/sh", "-c", "wget -q --tries=2 --timeout=10 http://localhost:11434/api/tags -O /dev/null"]
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.ollama.rule=Host(`ollama.workflows.glennguilloux.com`)
+      - traefik.http.routers.ollama.entrypoints=websecure
+      - traefik.http.routers.ollama.tls=true
+      - traefik.http.routers.ollama.tls.certresolver=letsencrypt
+      - traefik.http.services.ollama.loadbalancer.server.port=11434
+      - traefik.http.routers.ollama.priority=100
+    networks:
+      - workflows-web
+    ports:
+      - "11434:11434"
+    restart: unless-stopped
+    volumes:
+      - ollama_models:/root/.ollama
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+  comfyui-3d:
+    container_name: comfyui-3d
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - capabilities:
+            - gpu
+            count: all
+            driver: nvidia
+            options:
+              # GPU memory limits - RTX 5060 Ti has 16GB per card
+              # Reserve 10GB per GPU for ComfyUI to prevent OOM
+              memory: "10G"  # 10GB in bytes per GPU
+        limits:
+          # Total GPU memory limit for ComfyUI
+          memory: "20G"  # 20GB in bytes
+    environment:
+    - CLI_ARGS=--listen 0.0.0.0 --disable-ipex --directml  # Optimized for GPU
+    - NVIDIA_VISIBLE_DEVICES=0,1         # Explicitly set GPUs
+    - CUDA_VISIBLE_DEVICES=0,1
+    - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    - NVIDIA_MEM_LIMIT=10737418240       # 10GB per GPU limit
+    - QT_QPA_PLATFORM=offscreen
+    # Performance tuning
+    - MAX_JOBS=1                         # Single GPU job at a time
+    healthcheck:
+      interval: 30s
+      retries: 5
+      timeout: 30s
+      start_period: 30s                  # GPU initialization time
+      test:
+      - CMD
+      - wget
+      - -q
+      - --spider
+      - http://localhost:8188/
+    image: mmartial/comfyui-nvidia-docker:ubuntu24_cuda13.0-20251006
+    labels:
+    - traefik.enable=true
+    - traefik.http.routers.comfyui.rule=Host(`comfyui.glennguilloux.com`)
+    - traefik.http.routers.comfyui.entrypoints=websecure
+    - traefik.http.routers.comfyui.tls=true
+    - traefik.http.routers.comfyui.tls.certresolver=letsencrypt
+    - traefik.http.services.comfyui.loadbalancer.server.port=8188
+    - traefik.http.routers.comfyui.priority=100
+    networks:
+    - workflows-web
+    restart: unless-stopped
+    volumes:
+    - ./comfyui-3d/storage:/root
+    - ./comfyui-3d/models:/root/ComfyUI/models:rw
+    - ./comfyui-3d/input:/root/ComfyUI/input:rw
+    - ./comfyui-3d/output:/root/ComfyUI/output:rw
+    - ./comfyui-3d/workflows:/root/ComfyUI/user/default/workflows:rw
+    - ./comfyui-3d/custom_nodes:/root/ComfyUI/custom_nodes:rw
+    - ./comfyui-3d/mnt:/comfy/mnt:rw
+  litellm:
+    command:
+    - --config
+    - /app/config.yaml
+    - --port
+    - '4000'
+    container_name: workflow-litellm
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+    - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY:-sk-litellm-master-key}
+    - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+    - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+    - REDIS_URL=redis://redis:6379
+    extra_hosts:
+    - host.docker.internal:host-gateway
+    healthcheck:
+      interval: 30s
+      retries: 3
+      test:
+      - CMD
+      - curl
+      - -f
+      - http://localhost:4000/health
+      timeout: 10s
+    image: ghcr.io/berriai/litellm:main-latest
+    labels:
+    - traefik.enable=true
+    - traefik.http.routers.litellm.rule=Host(`workflows.glennguilloux.com`) && PathPrefix(`/litellm`)
+    - traefik.http.routers.litellm.entrypoints=websecure
+    - traefik.http.routers.litellm.tls=true
+    - traefik.http.routers.litellm.tls.certresolver=letsencrypt
+    - traefik.http.services.litellm.loadbalancer.server.port=4000
+    - traefik.http.routers.litellm.priority=100
+    - traefik.http.routers.litellm.middlewares=litellm-strip
+    - traefik.http.middlewares.litellm-strip.stripprefix.prefixes=/litellm
+    networks:
+    - workflows-web
+    restart: unless-stopped
+    volumes:
+    - ./litellm/config.yaml:/app/config.yaml:ro
+  n8n:
+    container_name: n8n
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+    - N8N_HOST=0.0.0.0
+    - N8N_PORT=5678
+    - N8N_PROTOCOL=http
+    - N8N_PATH=/n8n
+    - NODE_ENV=production
+    - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY:-auto-generated-key-change-in-production}
+    - N8N_USER_MANAGEMENT_JWT_SECRET=${N8N_USER_MANAGEMENT_JWT_SECRET:-auto-generated-secret-change-in-production}
+    - DB_TYPE=postgresdb
+    - DB_POSTGRESDB_HOST=postgres
+    - DB_POSTGRESDB_PORT=5432
+    - DB_POSTGRESDB_DATABASE=${POSTGRES_DB:-react_website}
+    - DB_POSTGRESDB_USER=${POSTGRES_USER:-react_user}
+    - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD:-react_password}
+    - N8N_BASIC_AUTH_ACTIVE=true
+    - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER:-admin}
+    - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD:-admin}
+    - GENERIC_TIMEZONE=Europe/Paris
+    - TZ=Europe/Paris
+    - N8N_DIAGNOSTICS_ENABLED=false
+    - N8N_VERSION_NOTIFICATIONS_ENABLED=false
+    - N8N_PUBLIC_API_DISABLED=false
+    - WEBHOOK_URL=https://workflows.glennguilloux.com/n8n
+    healthcheck:
+      interval: 30s
+      retries: 3
+      test:
+      - CMD
+      - wget
+      - -q
+      - --spider
+      - http://localhost:5678/healthz
+      timeout: 10s
+    image: n8nio/n8n:latest
+    labels:
+    - traefik.enable=true
+    - traefik.http.routers.n8n.rule=Host(`n8n.glennguilloux.com`) && PathPrefix(`/n8n`)
+    - traefik.http.routers.n8n.entrypoints=websecure
+    - traefik.http.routers.n8n.tls=true
+    - traefik.http.routers.n8n.tls.certresolver=letsencrypt
+    - traefik.http.services.n8n.loadbalancer.server.port=5678
+    - traefik.http.routers.n8n.priority=100
+    - traefik.http.routers.n8n.middlewares=n8n-stripprefix
+    - traefik.http.middlewares.n8n-stripprefix.stripprefix.prefixes=/n8n
+    networks:
+    - workflows-web
+    ports:
+    - "5678:5678"  # Added direct port access
+    restart: unless-stopped
+    volumes:
+    - n8n_data:/home/node/.n8n
+    - ./n8n/workflows:/workflows:ro
+    - ./n8n/scripts:/scripts:ro
+  open-notebook:
+    container_name: open-notebook
+    environment:
+    - SURREAL_USER=${SURREAL_USER:-root}
+    - SURREAL_PASSWORD=${SURREAL_PASSWORD:-root}
+    - SURREAL_NAMESPACE=${SURREAL_NAMESPACE:-open_notebook}
+    - SURREAL_DATABASE=${SURREAL_DATABASE:-production}
+    - SURREAL_URL=ws://localhost:8000/rpc
+    - API_URL=https://notebook.glennguilloux.com
+    healthcheck:
+      interval: 30s
+      retries: 3
+      test:
+      - CMD
+      - curl
+      - -f
+      - http://localhost:8502/
+      timeout: 10s
+    image: ghcr.io/lfnovo/open-notebook:v1-latest-single
+    labels:
+    - traefik.enable=true
+    - traefik.docker.network=workflows-web
+    - traefik.http.routers.open-notebook.rule=Host(`notebook.glennguilloux.com`)
+    - traefik.http.routers.open-notebook.entrypoints=websecure
+    - traefik.http.routers.open-notebook.tls=true
+    - traefik.http.routers.open-notebook.tls.certresolver=letsencrypt
+    - traefik.http.routers.open-notebook.service=open-notebook-frontend
+    - traefik.http.services.open-notebook-frontend.loadbalancer.server.port=8502
+    - traefik.http.routers.open-notebook-api.rule=Host(`notebook.glennguilloux.com`)
+      && PathPrefix(`/api`)
+    - traefik.http.routers.open-notebook-api.entrypoints=websecure
+    - traefik.http.routers.open-notebook-api.tls=true
+    - traefik.http.routers.open-notebook-api.tls.certresolver=letsencrypt
+    - traefik.http.routers.open-notebook-api.service=open-notebook-api
+    - traefik.http.services.open-notebook-api.loadbalancer.server.port=5055
+    networks:
+    - workflows-web
+    restart: unless-stopped
+    volumes:
+    - open_notebook_data:/app/data
+    - open_notebook_surreal:/mydata
+  rabbitmq:
+    container_name: workflow-rabbitmq
+    image: rabbitmq:3-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-rabbitmq}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-rabbitmq_password}
+    healthcheck:
+      interval: 30s
+      retries: 3
+      test: ["CMD", "rabbitmqctl", "status"]
+      timeout: 10s
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.rabbitmq.rule=Host(`rabbitmq.workflows.glennguilloux.com`)
+      - traefik.http.routers.rabbitmq.entrypoints=websecure
+      - traefik.http.routers.rabbitmq.tls=true
+      - traefik.http.routers.rabbitmq.tls.certresolver=letsencrypt
+      - traefik.http.services.rabbitmq.loadbalancer.server.port=15672
+      - traefik.http.routers.rabbitmq.priority=100
+    networks:
+      - workflows-web
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: unless-stopped
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+  postgres:
+    container_name: workflow-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-react_website}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-react_password}
+      POSTGRES_USER: ${POSTGRES_USER:-react_user}
+    healthcheck:
+      interval: 10s
+      retries: 5
+      test:
+      - CMD-SHELL
+      - pg_isready -U ${POSTGRES_USER:-react_user} -d ${POSTGRES_DB:-react_website}
+      timeout: 5s
+    image: postgres:15-alpine
+    networks:
+    - workflows-web
+    ports:
+    - 5432:5432
+    restart: unless-stopped
+    volumes:
+    - postgres_data:/var/lib/postgresql/data
+  react-app:
+    container_name: workflows-react-app
+    healthcheck:
+      interval: 30s
+      retries: 3
+      test:
+      - CMD
+      - curl
+      - -f
+      - http://localhost/
+      timeout: 10s
+    image: nginx:alpine
+    labels:
+    - traefik.enable=true
+    - traefik.http.routers.react-app.rule=Host(`workflows.glennguilloux.com`) || Host(`www.workflows.glennguilloux.com`) && !(PathPrefix(`/openwebui`)
+      || PathPrefix(`/api`) || PathPrefix(`/litellm`) || PathPrefix(`/rabbitmq`) || PathPrefix(`/copilotkit`) || PathPrefix(`/socket.io`))
+    - traefik.http.routers.react-app.entrypoints=websecure
+    - traefik.http.routers.react-app.tls=true
+    - traefik.http.routers.react-app.tls.certresolver=letsencrypt
+    - traefik.http.services.react-app.loadbalancer.server.port=80
+    - traefik.http.routers.react-app.priority=1
+    - traefik.docker.network=workflows-web
+    networks:
+    - workflows-web
+    # Removed direct port mapping to avoid conflicts - Traefik handles routing
+    restart: unless-stopped
+    environment:
+    - VITE_N8N_URL=${VITE_N8N_URL:-https://n8n.glennguilloux.com}
+    - VITE_COMFYUI_URL=${VITE_COMFYUI_URL:-https://comfyui.glennguilloux.com}
+    - VITE_AGENTZERO_URL=${VITE_AGENTZERO_URL:-https://agentzero.glennguilloux.com}
+    - VITE_RABBITMQ_URL=${VITE_RABBITMQ_URL:-https://rabbit.glennguilloux.com}
+    - VITE_OPENWEBUI_URL=${VITE_OPENWEBUI_URL:-https://openwebui.glennguilloux.com}
+    - VITE_LITELLM_URL=${VITE_LITELLM_URL:-https://litellm.glennguilloux.com}
+    volumes:
+    - ./apps/react-app/dist:/usr/share/nginx/html:ro
+    - ./nginx_app.conf:/etc/nginx/nginx.conf:ro
+  redis:
+    container_name: workflow-redis
+    healthcheck:
+      interval: 10s
+      retries: 5
+      test:
+      - CMD
+      - redis-cli
+      - ping
+      timeout: 5s
+    image: redis:7-alpine
+    networks:
+    - workflows-web
+    ports:
+    - 6379:6379
+    restart: unless-stopped
+    volumes:
+    - redis_data:/data
+  traefik:
+    container_name: traefik
+    image: traefik:v2.11
+    networks:
+    - workflows-web
+    ports:
+    - 80:80
+    - 443:443
+    - 8080:8080
+    restart: unless-stopped
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    - ./traefik.yml:/traefik.yml:ro
+    - ./letsencrypt:/letsencrypt
+    - ./traefik/dynamic:/etc/traefik/dynamic:ro
+  # vibevoice: DISABLED - GPUs allocated to comfyui-3d
+  # To re-enable, uncomment this service and update comfyui-3d GPU allocation
+  deepagent:
+    build: ./apps/backend
+    container_name: workflow-deepagent
+    command: sh -c "cd /app && python -c 'from deepagents import create_deep_agent; print(\"DeepAgent ready\")' || echo 'DeepAgent not configured'"
+    depends_on:
+      - backend
+    environment:
+      - DEEPAGENTS_ENABLED=true
+      - DEEPAGENTS_BACKEND_TYPE=state
+      - DEEPAGENTS_FS_ROOT=/tmp/deepagents
+      - DEEPAGENTS_LONG_TERM_MEMORY=false
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.deepagent.rule=Host(`deepagent.glennguilloux.com`)
+      - traefik.http.routers.deepagent.entrypoints=websecure
+      - traefik.http.routers.deepagent.tls=true
+      - traefik.http.routers.deepagent.tls.certresolver=letsencrypt
+      - traefik.http.services.deepagent.loadbalancer.server.port=8000
+      - traefik.http.routers.deepagent.priority=100
+    networks:
+      - workflows-web
+    restart: unless-stopped
+    volumes:
+      - ./apps/backend:/app
+  redis-commander:
+    container_name: workflow-redis-commander
+    environment:
+      - REDIS_HOST=workflow-redis
+      - REDIS_PORT=6379
+      - HTTP_PASSWORD=${REDISCommander_PASSWORD:-admin}
+      - HTTP_AUTH=${REDISCommander_PASSWORD:-admin}
+    healthcheck:
+      interval: 30s
+      retries: 3
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8081"]
+      timeout: 10s
+    image: ghcr.io/joeferner/redis-commander:latest
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.redis-commander.rule=Host(`redis.workflows.glennguilloux.com`)
+      - traefik.http.routers.redis-commander.entrypoints=websecure
+      - traefik.http.routers.redis-commander.tls=true
+      - traefik.http.routers.redis-commander.tls.certresolver=letsencrypt
+      - traefik.http.services.redis-commander.loadbalancer.server.port=8081
+      - traefik.http.routers.redis-commander.priority=100
+    networks:
+      - workflows-web
+    ports:
+      - "8081:8081"
+    restart: unless-stopped
+
+  adminer:
+    container_name: workflow-adminer
+    environment:
+      - ADMINER_DEFAULT_SERVER=postgres
+    healthcheck:
+      interval: 30s
+      retries: 3
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080"]
+      timeout: 10s
+    image: adminer:latest
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.adminer.rule=Host(`postgres.workflows.glennguilloux.com`)
+      - traefik.http.routers.adminer.entrypoints=websecure
+      - traefik.http.routers.adminer.tls=true
+      - traefik.http.routers.adminer.tls.certresolver=letsencrypt
+      - traefik.http.services.adminer.loadbalancer.server.port=8080
+      - traefik.http.routers.adminer.priority=100
+    networks:
+      - workflows-web
+    ports:
+      - "8082:8080"
+    restart: unless-stopped
+
+  agent-zero:
+    image: agent0ai/agent-zero
+    container_name: agent-zero
+    restart: unless-stopped
+    environment:
+      - LITELLM_ENDPOINT=${LITELLM_ENDPOINT:-http://litellm:4000}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://ollama:11434}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-sk-xxx}
+      - SECURITY_MODE=sandbox
+      - MAX_AGENTS=5
+      - MEMORY_LIMIT=1G
+      - CPU_LIMIT=0.5
+      # Agent Zero RAG Orchestration Configuration
+      - AGENT_ZERO_RAG_ENABLED=${AGENT_ZERO_RAG_ENABLED:-true}
+      - AGENT_ZERO_RAG_ORCHESTRATION_MODE=${AGENT_ZERO_RAG_MODE:-multi_agent}
+      - AGENT_ZERO_RAG_WORKSPACE=/workspace
+      - AGENT_ZERO_RAG_QDRANT_URL=${AGENT_ZERO_RAG_QDRANT_URL:-http://qdrant:6333}
+      - AGENT_ZERO_RAG_REDIS_URL=${AGENT_ZERO_RAG_REDIS_URL:-redis://redis:6379}
+    volumes:
+      - agent-zero-data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock  # For Docker operations if needed
+      - /mnt/workflows/workflows:/workspace:rw  # Shared filesystem with host
+      - ./apps/backend/app/services:/workspace/rag-services:ro  # RAG services read-only
+    ports:
+      - "50001:80"
+    networks:
+      - workflows-web
+    deploy:
+      resources:
+        limits:
+          memory: 6G  # Increased to 6G as Agent Zero requires ~5.6GB
+          cpus: "1.0"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.agent-zero.rule=Host(`${AGENT_ZERO_HOST:-agent-zero.localhost}`)"
+      - "traefik.http.routers.agent-zero.entrypoints=websecure"
+      - "traefik.http.routers.agent-zero.tls=true"
+      - "traefik.http.services.agent-zero.loadbalancer.server.port=80"
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  agent-zero-data: null
+  anythingllm_data: null
+  anythingllm_uploads: null
+  chroma_data: null
+  file_storage: null
+  letsencrypt: null
+  n8n_data: null
+  ollama_models: null
+  open_notebook_data: null
+  open_notebook_surreal: null
+  postgres_data: null
+  qdrant_data: null
+  rabbitmq_data: null
+  redis_data: null
