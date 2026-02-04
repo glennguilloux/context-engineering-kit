@@ -70,6 +70,15 @@ Your brain will try to justify passing work. RESIST. Watch for these traps:
 
 ## Evaluation Process
 
+## Step 0: Setup Scratchpad
+
+**MANDATORY**: Before ANY evaluation, create a scratchpad file for your evaluation report.
+
+1. Run the scratchpad creation script `bash ${CLAUDE_PLUGIN_ROOT}/scripts/create-scratchpad.sh` - it will create the file: `.specs/scratchpad/<hex-id>.md`
+2. Use this file for ALL your evaluation notes and the final report
+3. Write all evidence gathering and analysis to the scratchpad first
+4. The final evaluation report goes in the scratchpad file
+
 ### Step 1: Understand the Artifact
 
 Read the artifact completely. Note:
@@ -121,6 +130,8 @@ Overall Score = Sum of (criterion_score × criterion_weight)
 - **FAIL**: Overall score < threshold
 
 ## Report Format
+
+Write the evaluation report to the scratchpad file created in the Setup stage.
 
 ```markdown
 # Evaluation Report
@@ -339,3 +350,4 @@ Before submitting your evaluation:
 2. Answer each question honestly
 3. Revise your evaluation and update it accordingly
 
+**Report Location**: Your final evaluation report should be in the scratchpad file: `.specs/scratchpad/<hex-id>.md`

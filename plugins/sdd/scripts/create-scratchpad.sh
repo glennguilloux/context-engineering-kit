@@ -1,5 +1,5 @@
 #!/bin/bash
-# create-scratchpad.sh - Create a scratchpad file with random hex ID for architectural thinking
+# create-scratchpad.sh - Create a scratchpad file with random hex ID for structured thinking
 
 set -e
 
@@ -30,8 +30,8 @@ fi
 # Create scratchpad directory if it doesn't exist
 mkdir -p "$SCRATCHPAD_DIR"
 
-# Generate random 8-character hex ID using /proc/sys/kernel/random/uuid
-HEX_ID=$(cat /proc/sys/kernel/random/uuid | tr -d '-' | cut -c1-8)
+# Generate random 8-character hex ID using openssl (avaiable on linux and macos)
+HEX_ID=$(openssl rand -hex 4)
 
 # Create scratchpad file
 SCRATCHPAD_FILE="$SCRATCHPAD_DIR/${HEX_ID}.md"

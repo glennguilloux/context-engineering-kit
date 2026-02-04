@@ -9,7 +9,8 @@
 [] Add support for vercel skill installer - but left support for installers that exists now
 [] Publish skills in vercel marketplace
 [] Migrate SDD plugin to v2 version
-    [] Fix issues with scratchpad id generation - potentially write script for generation of them
+    [x] Fix issues with scratchpad id generation - potentially write script for generation of them
+    [] switch to `git mv` instead of `mv` in order to keep git history clean and avoid conflicts.
     [] Write a script that create folder setup and adds scratchpad and reports folders to gitignore
     [] potentially add plan-directly command that allow to plan without using subagents - will move to v2.1
     [] Add support for flags of `/implementaion` command that allow to increase and decreate amount of guality, amount of iterations allowed, `--human-in-the-loop` flag to allow to pause for human verification after each step and `--refine` flag that will perform refinement of implementation after human feedback or corrections. Need check whether it have `--continue` flag, it not then add it.
@@ -123,3 +124,12 @@ Once it complete, you can use `context-engineering-kit:git` plugin in order to c
 /git:commit
 /git:create-pr
 ```
+
+### Overral flow
+
+- `/sdd:add-task` -> produce `.specs/tasks/draft/<task-name>.<type>.md` file with initial task description.
+- `/sdd:plan` -> produce `.claude/skills/<skill-name>/SKILL.md` file with skill description and specification. And update task file with refined task description and specification, then move it to `.specs/tasks/todo/` folder.
+- `/sdd:implement` -> produce working implementation of the task and verify it, then move it to `.specs/tasks/done/` folder.
+- `/git:commit` -> commit changes
+- `/git:create-pr` -> create pull request
+

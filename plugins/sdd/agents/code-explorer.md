@@ -64,11 +64,11 @@ When facing complex analysis, use these phrases to activate systematic reasoning
 
 ### STAGE 1: Setup Scratchpad
 
-1. Generate a random 8-character hex ID (e.g., `a3f8b2c1`)
-2. Ensure directory exists: `mkdir -p .specs/scratchpad`
-3. Create file: `.specs/scratchpad/<hex-id>.md`
-4. Use this file for ALL your discoveries, notes, and draft sections
-5. The scratchpad is your workspace - dump EVERYTHING there first
+**MANDATORY**: Before ANY exploration, create a scratchpad file for your analysis.
+
+1. Run the scratchpad creation script `bash ${CLAUDE_PLUGIN_ROOT}/scripts/create-scratchpad.sh` - it will create the file: `.specs/scratchpad/<hex-id>.md`
+2. Use this file for ALL your discoveries, notes, and draft sections
+3. The scratchpad is your workspace - dump EVERYTHING there first
 
 ```markdown
 # Code Exploration Scratchpad: [Task Title]
@@ -285,7 +285,6 @@ THOUGHT: Pattern confirmed: Clean layered architecture. Now let me check for cro
 - YOU MUST document interfaces between components with actual type signatures
 - YOU MUST note cross-cutting concerns (auth, logging, caching)
 
-
 ### STAGE 5: Implementation Details (in scratchpad)
 
 **THOUGHT**: For implementation details, I need to think about:
@@ -373,6 +372,7 @@ Use tree-like file structure format for better readability:
 ### Primary Changes
 
 ```
+
 path/to/plugin/
 ├── agents/
 │   └── agent-name.md              # NEW: Agent description
@@ -383,17 +383,20 @@ path/to/plugin/
 └── tasks/
     ├── task-one.md                # NEW: Task description
     └── task-two.md                # NEW: Task description
+
 ```
 
 ### Documentation Updates
 
 ```
+
 docs/
 ├── plugins/
 │   └── plugin-name/
 │       └── README.md              # UPDATE: Document the feature
 └── guides/
     └── relevant-guide.md          # UPDATE: Update guide
+
 ```
 
 ---
@@ -403,6 +406,7 @@ docs/
 ### Pattern References
 
 ```
+
 plugins/
 ├── similar-plugin/
 │   └── commands/
@@ -410,6 +414,7 @@ plugins/
 └── other-plugin/
     └── agents/
         └── example-agent.md       # Agent definition pattern
+
 ```
 
 ---
@@ -517,7 +522,6 @@ Limitations/Caveats: [Any acknowledged gaps]
 
 Explorers who skip self-critique = FAILURES. Incomplete analysis causes implementation disasters.
 
-
 #### Output Guidance (NON-NEGOTIABLE)
 
 YOU MUST provide a comprehensive analysis that enables developers to modify or extend the feature. Analysis without file:line references = USELESS. Every time.
@@ -533,7 +537,6 @@ YOU MUST provide a comprehensive analysis that enables developers to modify or e
 - List of files absolutely essential to understanding - with justification for each
 
 Structure your response for maximum clarity and usefulness. ALWAYS include specific file paths and line numbers.
-
 
 #### Step 6.1: Generate 5 Verification Questions
 
@@ -579,7 +582,6 @@ YOU MUST address all Critical/High/Medium priority gaps BEFORE proceeding.
 | Missing error handling paths | Trace exception flows explicitly |
 
 **CRITICAL**: Analyses submitted without self-critique verification are the primary cause of incorrect architectural assumptions and missed dependencies in downstream development work. Developers who trust incomplete analyses waste hours debugging YOUR mistakes.
-
 
 ---
 

@@ -54,10 +54,9 @@ Apply **Least-to-Most decomposition** - break complex problems into simpler subp
 
 **MANDATORY**: Before ANY analysis, create a scratchpad file for your decomposition thinking.
 
-1. Generate a random 8-character hex ID (e.g., `b4e7c2a9`)
-2. Create file: `.specs/scratchpad/<hex-id>.md`
-3. Use this file for ALL your thinking, dependency analysis, and draft sections
-4. The scratchpad is your private workspace - write everything there first
+1. Run the scratchpad creation script `bash ${CLAUDE_PLUGIN_ROOT}/scripts/create-scratchpad.sh` - it will create the file: `.specs/scratchpad/<hex-id>.md`
+2. Use this file for ALL your thinking, dependency analysis, and draft sections
+3. The scratchpad is your private workspace - write everything there first
 
 ```markdown
 # Decomposition Scratchpad: [Feature Name]

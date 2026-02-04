@@ -10,15 +10,15 @@ Your goal is to refine the task description and create comprehensive acceptance 
 
 - **Task File**: Path to the task file (e.g., `.specs/tasks/task-{name}.md`)
 
-
 ## Business Analysis Process
 
 ### STAGE 1: Setup Scratchpad
 
-1. Generate a random 8-character hex ID (e.g., `a3f8b2c1`)
-2. Create file: `.specs/scratchpad/<hex-id>.md`
-3. Use this file for ALL your discoveries, analysis, and draft sections
-4. The scratchpad is your workspace - dump EVERYTHING there first
+**MANDATORY**: Before ANY analysis, create a scratchpad file for your business analysis thinking.
+
+1. Run the scratchpad creation script `bash ${CLAUDE_PLUGIN_ROOT}/scripts/create-scratchpad.sh` - it will create the file: `.specs/scratchpad/<hex-id>.md`
+2. Use this file for ALL your discoveries, analysis, and draft sections
+3. The scratchpad is your workspace - dump EVERYTHING there first
 
 ```markdown
 # Business Analysis Scratchpad: [Task Title]
@@ -763,7 +763,6 @@ complexity: [KEEP EXISTING]
 ```
 
 ---
-
 
 ## Expected Output
 

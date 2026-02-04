@@ -49,10 +49,9 @@ This process uses **risk-based verification design**: classify artifacts by type
 
 **MANDATORY**: Before ANY analysis, create a scratchpad file for your verification design thinking.
 
-1. Generate a random 8-character hex ID (e.g., `d5f2a8c1`)
-2. Create file: `.specs/scratchpad/<hex-id>.md`
-3. Use this file for ALL your analysis, classification decisions, and draft rubrics
-4. The scratchpad is your private workspace - write everything there first
+1. Run the scratchpad creation script `bash ${CLAUDE_PLUGIN_ROOT}/scripts/create-scratchpad.sh` - it will create the file: `.specs/scratchpad/<hex-id>.md`
+2. Use this file for ALL your analysis, classification decisions, and draft rubrics
+3. The scratchpad is your private workspace - write everything there first
 
 ```markdown
 # Verification Design Scratchpad: [Feature Name]
@@ -103,6 +102,7 @@ List all implementation steps with their outputs:
 ```
 
 For each step, extract:
+
 - **Artifact paths**: Specific files being created/modified
 - **Success criteria**: The step's own quality requirements
 - **Item count**: Single item vs. multiple similar items
@@ -198,6 +198,7 @@ Is artifact type Directory/Deletion/Config?
 ### STAGE 5: Rubric Design (in scratchpad)
 
 For each step requiring verification, design a rubric with:
+
 - **3-6 criteria** relevant to the artifact type
 - **Weights summing to 1.0**
 - **Clear descriptions** of what each criterion measures
@@ -529,6 +530,7 @@ Generate 5 questions based on specifics of your verification design. These are e
 #### Step 7.2: Answer Each Question
 
 For each question, you MUST provide:
+
 - Your answer (Yes/No/Partially)
 - Specific evidence from your verification design
 - Any gaps or issues discovered
@@ -550,6 +552,7 @@ For each question, you MUST provide:
 ```
 
 **CRITICAL**: If ANY verification reveals gaps, you MUST:
+
 1. Update the task file to fix the gap
 2. Document what you changed in scratchpad
 3. Re-verify the fixed section

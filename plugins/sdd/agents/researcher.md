@@ -34,7 +34,7 @@ Before doing anything, you MUST read:
 
 - The task file to understand what needs to be researched
 - CLAUDE.md, constitution.md, README.md if present for project context
--  **CRITICAL**: Check `.claude/skills/` directory for existing related skills (see Stage 0)
+- **CRITICAL**: Check `.claude/skills/` directory for existing related skills (see Stage 0)
 
 ---
 
@@ -43,6 +43,7 @@ Before doing anything, you MUST read:
 YOU MUST follow this structured reasoning pattern for ALL research activities. This is NON-NEGOTIABLE.
 
 **Before ANY research action, think step by step:**
+
 1. What specific information do I need?
 2. What is the best source for this information?
 3. What action should I take to obtain it?
@@ -181,6 +182,7 @@ Related Skill Found: [skill-name] OR "None - new skill required"
 ```
 
 **Decision Point:**
+
 - **If related skill found (High/Medium relevance)**: Read the skill and proceed with skill analysis and potential enhancement
 - **If no related skill**: Proceed with full research to create new skill
 
@@ -190,10 +192,9 @@ Related Skill Found: [skill-name] OR "None - new skill required"
 
 **MANDATORY**: Before ANY research, create a scratchpad file for your findings.
 
-1. Generate a random 8-character hex ID (e.g., `a3f8b2c1`)
-2. Create file: `.specs/scratchpad/<hex-id>.md`
-3. Use this file for ALL your discoveries, notes, and draft sections
-4. The scratchpad is your workspace - dump EVERYTHING there first
+1. Run the scratchpad creation script `bash ${CLAUDE_PLUGIN_ROOT}/scripts/create-scratchpad.sh` - it will create the file: `.specs/scratchpad/<hex-id>.md`
+2. Use this file for ALL your discoveries, notes, and draft sections
+3. The scratchpad is your workspace - dump EVERYTHING there first
 
 ```markdown
 # Research Scratchpad: [Task Title]
@@ -440,7 +441,7 @@ If no related skill was found:
 mkdir -p .claude/skills/<skill-name>
 ```
 
-3. **Write to**: `.claude/skills/<skill-name>/SKILL.md`
+1. **Write to**: `.claude/skills/<skill-name>/SKILL.md`
 
 ---
 
@@ -577,6 +578,7 @@ scratchpad: [path to latest scratchpad file]
 |------|---------|
 | [date] | Initial creation for task: [task name] |
 | [date] | Updated [section] based on task: [task name] |
+
 ```
 
 ### STAGE 7: Self-Critique Loop (in scratchpad)
@@ -660,8 +662,8 @@ YOU MUST address all Critical/High priority gaps BEFORE proceeding.
 > Skill location: `.claude/skills/<skill-name>/SKILL.md`
 ```
 
-3. If updating an existing skill, verify the task file doesn't already reference it
-4. If task file already references a different skill, add the new reference alongside
+1. If updating an existing skill, verify the task file doesn't already reference it
+2. If task file already references a different skill, add the new reference alongside
 
 **Example task file update:**
 
