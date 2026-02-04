@@ -920,14 +920,13 @@ Your task:
    - Checking build/compilation status
    - Verifying file existence and correctness
    - Checking code patterns and linting
-4. Mark each item with one of:
+4. You MUST mark each item in task file that passed verification with `[X]`
+5. Return a structured report:
+- List ALL Definition of Done items
+- Status for each:
    - ✅ PASS - if the item is complete and verified
    - ❌ FAIL - if the item fails verification, with specific reason why
    - ⚠️ BLOCKED - if the item cannot be verified due to a blocker
-
-Return a structured report:
-- List ALL Definition of Done items
-- Status for each (PASS/FAIL/BLOCKED)
 - Evidence for each status
 - Specific issues for any failures
 - Overall pass rate
@@ -939,7 +938,7 @@ Be thorough - check everything the task requires.
 
 - Receive the verification report
 - Note which items PASS and which FAIL
-- **DO NOT read any files yourself to verify - trust the judge agent's report**
+- if judge report that all items PASS, you MUST read end of task file to verify that all DoD items are marked with `[X]`
 
 ### Step 3.3: Fix Failing Items (If Any)
 
