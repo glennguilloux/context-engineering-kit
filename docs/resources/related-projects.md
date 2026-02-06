@@ -15,6 +15,7 @@ CEK builds upon and integrates ideas from these open-source projects:
 - **[obra/superpowers](https://github.com/obra/superpowers)** - Collection of productivity-enhancing plugins and commands
 - **[ComposioHQ/awesome-claude-skills](https://github.com/ComposioHQ/awesome-claude-skills)** - Curated list of community Claude skills and resources
 - **[steveyegge/beads](https://github.com/steveyegge/beads)** - Modular system for composing AI capabilities into workflows
+- **[obra/the-elements-of-style](https://github.com/obra/the-elements-of-style)** - William Strunk Jr.'s *The Elements of Style* (1918) in markdown format for AI agents.
 
 ---
 
@@ -34,6 +35,7 @@ CEK's FPF plugin implements structured reasoning methodology from:
 - **[ailev/FPF](https://github.com/ailev/FPF)** - Original First Principles Framework methodology by Anatoly Levenchuk, providing the theoretical foundation for structured reasoning and trust calculus.
 
 The FPF plugin adapts the quint-code approach into a workflow-based architecture:
+
 - **Workflow command** (`/fpf:propose-hypotheses`) - Orchestrates the complete ADI cycle using sub-agents
 - **Utility commands** (`/fpf:status`, `/fpf:query`, `/fpf:decay`, `/fpf:actualize`, `/fpf:reset`) - Manage knowledge base state and maintenance
 

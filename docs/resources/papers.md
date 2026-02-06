@@ -78,6 +78,12 @@ Comprehensive documentation of all academic papers that inform the Context Engin
 
 **Note**: The plugin also references Meincke et al.'s persuasion principles research (2025a, published on SSRN), which demonstrates that classic persuasion principles (authority, commitment, unity, etc.) can increase AI compliance rates from 33% to 72%.
 
+### Docs Plugin
+
+**Primary References**:
+
+- [The Elements of Style](https://en.wikisource.org/wiki/The_Elements_of_Style) - Classic writing manual for concise prose
+
 ---
 
 ## Reflection and Iterative Refinement
@@ -563,6 +569,47 @@ Part of the "Prompting Science" research series that informs evidence-based prom
 - Individual question-level variation remains an open research question
 
 **Note**: This paper references related work by the same authors on persuasion principles and AI compliance (Meincke et al. 2025a), which found that classic persuasion principles (authority, commitment, unity, etc.) can increase AI compliance rates from 33% to 72%. That work is published separately and informed the prompt engineering techniques discussed in the Customaize Agent plugin.
+
+---
+
+## Writing and Documentation
+
+### [The Elements of Style](https://en.wikisource.org/wiki/The_Elements_of_Style)
+
+**Citation**: Strunk, William Jr. (1918). "The Elements of Style." Ithaca, NY: W.P. Humphrey. (Revised by E.B. White, 1959)
+
+The Elements of Style is the foundational reference for clear, concise English prose. Originally written by William Strunk Jr. as a brief guide for his Cornell University English students, the book distills effective writing into essential principles that eliminate wordiness and strengthen expression.
+
+Core principles:
+
+1. **Use the active voice** - Subject performs action directly
+2. **Put statements in positive form** - Assert what is, not what isn't
+3. **Use definite, specific, concrete language** - Prefer specific to general
+4. **Omit needless words** - Every word must justify its presence
+5. **Keep related words together** - Proximity signals relationship
+6. **Place emphatic words at end** - Sentence endings carry weight
+
+**Key Results**:
+
+- Remained in continuous print for over 100 years
+- Standard reference for technical and professional writing
+- Principles validated by readability research
+- Adopted by universities, publishers, and style guides worldwide
+
+**Relevance to CEK**:
+Directly informs the `/docs:write-concisely` command. The skill applies Strunk's rules to automatically improve documentation clarity and reduce word count while maintaining meaning.
+
+**Used By Plugins**:
+
+- Docs (`/docs:write-concisely`, `/docs:update-docs`)
+
+**Technical Notes**:
+
+- Public domain text (1918 edition)
+- Rules are prescriptive but widely accepted
+- Focus on English prose; some rules are language-specific
+- Principles complement rather than contradict modern style guides
+- Original text available on Wikisource for reference
 
 ---
 

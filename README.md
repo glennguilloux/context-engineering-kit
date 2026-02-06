@@ -19,6 +19,14 @@ Hand-crafted collection of advanced context engineering techniques and patterns 
 
 Marketplace is based on prompts used daily by our company developers for a long time, while adding plugins from benchmarked papers and high-quality projects.
 
+## Key Features
+
+- **Simple to Use** - Easy to install and use without any dependencies. Contains automatically used skills and self-explanatory commands.
+- **Token-Efficient** - Carefully crafted prompts and architecture, preferring command oriented skills with sub-agents over general information skills when possible, to minimize populating context with unnecessary information.
+- **Quality-Focused** - Each plugin is focused on meaningfully improving agent results in a specific area.
+- **Granular** - Install only the plugins you need. Each plugin loads only its specific agents, commands, and skills. Each without overlap and redundant skills.
+- **Scientifically proven** - Plugins are based on proven techniques and patterns that were tested by well-trusted benchmarks and studies.
+
 ## Supported Agents
 
 Universal support based on [agentskills.io](https://agentskills.io) and [openskills](https://github.com/numman-ali/openskills) standards.
@@ -31,14 +39,6 @@ Universal support based on [agentskills.io](https://agentskills.io) and [openski
 | **Cline** | openskills → AGENTS.md | ✅ Universal |
 | **OpenCode** | Native skill support | ✅ Native |
 | **Amp Code** | openskills → AGENTS.md | ✅ Universal |
-
-## Key Features
-
-- **Simple to Use** - Easy to install and use without any dependencies. Contains automatically used skills and self-explanatory commands.
-- **Token-Efficient** - Carefully crafted prompts and architecture, preferring commands with sub-agents over skills when possible, to minimize populating context with unnecessary information.
-- **Quality-Focused** - Each plugin is focused on meaningfully improving agent results in a specific area.
-- **Granular** - Install only the plugins you need. Each plugin loads only its specific agents, commands, and skills. Each without overlap and redundant skills.
-- **Scientifically proven** - Plugins are based on proven techniques and patterns that were tested by well-trusted benchmarks and studies.
 
 ## Quick Start
 
@@ -568,7 +568,7 @@ Commands and skills for creating and refining Claude Code extensions.
 
 ### Docs
 
-Commands for project analysis and documentation management.
+Commands for project analysis and documentation management based on proven writing principles.
 
 **How to install**
 
@@ -579,6 +579,7 @@ Commands for project analysis and documentation management.
 **Commands**
 
 - `/docs:update-docs` - Update implementation documentation after completing development phases
+- `/docs:write-concisely` - Apply *The Elements of Style* principles to make documentation clearer and more professional
 
 ### Tech Stack
 
