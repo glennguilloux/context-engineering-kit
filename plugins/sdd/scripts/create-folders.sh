@@ -40,12 +40,22 @@ touch "$REPO_ROOT/.specs/tasks/done/.gitkeep"
 # Create scratchpad directory (no .gitkeep - folder is gitignored)
 mkdir -p "$REPO_ROOT/.specs/scratchpad"
 
+# Create analysis directory
+mkdir -p "$REPO_ROOT/.specs/analysis"
+touch "$REPO_ROOT/.specs/analysis/.gitkeep"
+
+# Create skills directory
+mkdir -p "$REPO_ROOT/.claude/skills"
+touch "$REPO_ROOT/.claude/skills/.gitkeep"
+
 # Output confirmation
-echo "Created task folders:"
+echo "Created folders:"
 echo "  .specs/tasks/draft/"
 echo "  .specs/tasks/todo/"
 echo "  .specs/tasks/in-progress/"
 echo "  .specs/tasks/done/"
 echo "  .specs/scratchpad/"
+echo "  .specs/analysis/"
+echo "  .claude/skills/"
 echo ""
 echo "Added to .gitignore: $SCRATCHPAD_PATTERN"

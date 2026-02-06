@@ -306,9 +306,21 @@ Before starting workflow:
 
 7. **Ensure directories exist**:
 
+   Run the folder creation script to create task directories and configure gitignore:
+
    ```bash
-   mkdir -p .specs/tasks/todo .specs/tasks/in-progress .specs/tasks/done .specs/analysis .specs/scratchpad .claude/skills
+   bash ${CLAUDE_PLUGIN_ROOT}/scripts/create-folders.sh
    ```
+
+   This creates:
+
+   - `.specs/tasks/draft/` - New tasks awaiting analysis
+   - `.specs/tasks/todo/` - Tasks ready to implement
+   - `.specs/tasks/in-progress/` - Currently being worked on
+   - `.specs/tasks/done/` - Completed tasks
+   - `.specs/scratchpad/` - Temporary working files (gitignored)
+   - `.specs/analysis/` - Codebase impact analysis files
+   - `.claude/skills/` - Reusable skill documents
 
 Update each todo to `in_progress` when starting a phase and `completed` when judge passes.
 
