@@ -213,7 +213,7 @@ Is this subtask CRITICAL (architecture, interface, breaking changes)?
                                  +-- NO --> Use Sonnet (default for uncertain)
 ```
 
-**Specialized Agent:** Specialized agent list depends on project and plugins that are loaded.
+**Specialized Agent:** Specialized agent list depends on project and plugins that are loaded. Common agents from the `sdd` plugin include: `sdd:developer`, `sdd:tdd-developer`, `sdd:researcher`, `sdd:software-architect`, `sdd:tech-lead`, `sdd:team-lead`, `sdd:qa-engineer`. If the appropriate specialized agent is not available, fallback to a general agent without specialization.
 
 **Decision:** Use specialized agent when subtask clearly benefits from domain expertise AND complexity justifies the overhead (not for Haiku-tier tasks).
 
@@ -224,10 +224,10 @@ Is this subtask CRITICAL (architecture, interface, breaking changes)?
 
 | Step | Subtask | Model | Agent | Rationale |
 |------|---------|-------|-------|-----------|
-| 1 | Update interface | opus | developer | Complex API design |
-| 2 | Update implementations | sonnet | developer | Follow patterns |
+| 1 | Update interface | opus | sdd:developer | Complex API design |
+| 2 | Update implementations | sonnet | sdd:developer | Follow patterns |
 | 3 | Update callers | haiku | - | Simple find/replace |
-| 4 | Update tests | sonnet | tdd-developer | Test expertise |
+| 4 | Update tests | sonnet | sdd:tdd-developer | Test expertise |
 ```
 
 ### Phase 3: Sequential Execution with Judge Verification
@@ -748,10 +748,10 @@ Awaiting your decision...
 
 | Step | Subtask | Model | Agent | Rationale |
 |------|---------|-------|-------|-----------|
-| 1 | Create DTO | sonnet | developer | Medium complexity, standard pattern |
-| 2 | Update Service | opus | developer | High risk, core service change |
-| 3 | Update Controller | sonnet | developer | Medium complexity, follows patterns |
-| 4 | Update Tests | sonnet | tdd-developer | Test expertise |
+| 1 | Create DTO | sonnet | sdd:developer | Medium complexity, standard pattern |
+| 2 | Update Service | opus | sdd:developer | High risk, core service change |
+| 3 | Update Controller | sonnet | sdd:developer | Medium complexity, follows patterns |
+| 4 | Update Tests | sonnet | sdd:tdd-developer | Test expertise |
 
 **Phase 3 - Execution with Judge Verification:**
 
@@ -785,7 +785,7 @@ Step 3: Update UserController
   -> Context passed: Endpoint contracts updated
 
 Step 4: Update Tests
-  Implementation (Sonnet + tdd-developer)...
+  Implementation (Sonnet + sdd:developer)...
     -> Updated service and controller tests
   Judge Verification (Sonnet)...
     -> VERDICT: PASS, SCORE: 4.3/5.0

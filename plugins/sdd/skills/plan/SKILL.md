@@ -351,7 +351,7 @@ Phase 2: Parallel Analysis
     ▼                     ▼                     ▼
 Phase 2a:             Phase 2b:             Phase 2c:
 Research              Codebase Analysis     Business Analysis
-[researcher sonnet]   [code-explorer sonnet]  [business-analyst opus]
+[sdd:researcher sonnet]   [sdd:code-explorer sonnet]  [sdd:business-analyst opus]
 Judge 2a              Judge 2b              Judge 2c
 (pass: >THRESHOLD)     (pass: >THRESHOLD)     (pass: >THRESHOLD)
     │                     │                     │
@@ -359,22 +359,22 @@ Judge 2a              Judge 2b              Judge 2c
                           │
                           ▼
                     Phase 3: Architecture Synthesis
-                    [software-architect opus]
+                    [sdd:software-architect opus]
                     Judge 3 (pass: >THRESHOLD)
                           │
                           ▼
                     Phase 4: Decomposition
-                    [tech-lead opus]
+                    [sdd:tech-lead opus]
                     Judge 4 (pass: >THRESHOLD)
                           │
                           ▼
                     Phase 5: Parallelize
-                    [team-lead opus]
+                    [sdd:team-lead opus]
                     Judge 5 (pass: >THRESHOLD)
                           │
                           ▼
                     Phase 6: Verifications
-                    [qa-engineer opus]
+                    [sdd:qa-engineer opus]
                     Judge 6 (pass: >THRESHOLD)
                           │
                           ▼
@@ -399,7 +399,7 @@ Launch these three phases **in parallel** immediately:
 #### Phase 2a: Research
 
 **Model:** `sonnet`
-**Agent:** `researcher`
+**Agent:** `sdd:researcher`
 **Depends on:** Task file exists
 **Purpose:** Gather relevant resources, documentation, libraries, and prior art. Creates or updates a reusable skill.
 
@@ -430,7 +430,7 @@ CRITICAL: If expected files not created, launch the agent again with the same pr
 #### Phase 2b: Codebase Impact Analysis
 
 **Model:** `sonnet`
-**Agent:** `code-explorer`
+**Agent:** `sdd:code-explorer`
 **Depends on:** Task file exists
 **Purpose:** Identify affected files, interfaces, and integration points
 
@@ -461,7 +461,7 @@ CRITICAL: If expected files not created, launch the agent again with the same pr
 #### Phase 2c: Business Analysis
 
 **Model:** `opus`
-**Agent:** `business-analyst`
+**Agent:** `sdd:business-analyst`
 **Depends on:** Task file exists
 **Purpose:** Refine description and create acceptance criteria
 
@@ -495,7 +495,7 @@ After **each** parallel phase completes, launch its respective judge **with the 
 #### Judge 2a: Validate Research/Skill
 
 **Model:** `sonnet`
-**Agent:** `researcher`
+**Agent:** `sdd:researcher`
 **Depends on:** Phase 2a completion
 **Purpose:** Validate skill completeness and relevance
 
@@ -551,7 +551,7 @@ CRITICAL: use prompt exactly as is, do not add anything else. Including output o
 #### Judge 2b: Validate Codebase Analysis
 
 **Model:** `sonnet`
-**Agent:** `code-explorer`
+**Agent:** `sdd:code-explorer`
 **Depends on:** Phase 2b completion
 **Purpose:** Validate file identification accuracy and integration mapping
 
@@ -603,7 +603,7 @@ CRITICAL: use prompt exactly as is, do not add anything else. Including output o
 #### Judge 2c: Validate Business Analysis
 
 **Model:** `opus`
-**Agent:** `business-analyst`
+**Agent:** `sdd:business-analyst`
 **Depends on:** Phase 2c completion
 **Purpose:** Validate acceptance criteria quality and scope definition
 
@@ -662,7 +662,7 @@ CRITICAL: use prompt exactly as is, do not add anything else. Including output o
 ## Phase 3: Architecture Synthesis
 
 **Model:** `opus`
-**Agent:** `software-architect`
+**Agent:** `sdd:software-architect`
 **Depends on:** Phase 2a + Judge 2a PASS, Phase 2b + Judge 2b PASS, Phase 2c + Judge 2c PASS
 **Purpose:** Synthesize research, analysis, and business requirements into architectural overview
 
@@ -692,7 +692,7 @@ Launch agent:
 ### Judge 3: Validate Architecture Synthesis
 
 **Model:** `opus`
-**Agent:** `software-architect`
+**Agent:** `sdd:software-architect`
 **Depends on:** Phase 3 completion
 **Purpose:** Validate architectural coherence and completeness
 
@@ -750,7 +750,7 @@ CRITICAL: use prompt exactly as is, do not add anything else. Including output o
 ## Phase 4: Decomposition
 
 **Model:** `opus`
-**Agent:** `tech-lead`
+**Agent:** `sdd:tech-lead`
 **Depends on:** Phase 3 + Judge 3 PASS
 **Purpose:** Break architecture into implementation steps with success criteria and risks
 
@@ -778,7 +778,7 @@ Launch agent:
 ### Judge 4: Validate Decomposition
 
 **Model:** `opus`
-**Agent:** `tech-lead`
+**Agent:** `sdd:tech-lead`
 **Depends on:** Phase 4 completion
 **Purpose:** Validate implementation steps quality and completeness
 
@@ -839,7 +839,7 @@ CRITICAL: use prompt exactly as is, do not add anything else. Including output o
 ## Phase 5: Parallelize Steps
 
 **Model:** `opus`
-**Agent:** `team-lead`
+**Agent:** `sdd:team-lead`
 **Depends on:** Phase 4 + Judge 4 PASS
 **Purpose:** Reorganize implementation steps for maximum parallel execution
 
@@ -866,7 +866,7 @@ Launch agent:
 ### Judge 5: Validate Parallelization
 
 **Model:** `opus`
-**Agent:** `team-lead`
+**Agent:** `sdd:team-lead`
 **Depends on:** Phase 5 completion
 **Purpose:** Validate dependency accuracy and parallelization optimization
 
@@ -924,7 +924,7 @@ CRITICAL: use prompt exactly as is, do not add anything else. Including output o
 ## Phase 6: Define Verifications
 
 **Model:** `opus`
-**Agent:** `qa-engineer`
+**Agent:** `sdd:qa-engineer`
 **Depends on:** Phase 5 + Judge 5 PASS
 **Purpose:** Add LLM-as-Judge verification sections with rubrics
 
@@ -951,7 +951,7 @@ Launch agent:
 ### Judge 6: Validate Verifications
 
 **Model:** `opus`
-**Agent:** `qa-engineer`
+**Agent:** `sdd:qa-engineer`
 **Depends on:** Phase 6 completion
 **Purpose:** Validate verification rubrics and thresholds
 

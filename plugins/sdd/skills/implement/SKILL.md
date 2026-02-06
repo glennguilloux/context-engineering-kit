@@ -349,7 +349,7 @@ Phase 2: Execute Steps
     │    │
     │    ▼
     │    ┌─────────────────────────────────────────────────┐
-    │    │ Launch developer agent                          │
+    │    │ Launch sdd:developer agent                          │
     │    │ (implementation)                                │
     │    └─────────────────┬───────────────────────────────┘
     │                      │
@@ -594,7 +594,7 @@ For each step in dependency order:
 
 Use Task tool with:
 
-- **Agent Type**: `developer`
+- **Agent Type**: `sdd:developer`
 - **Model**: As specified in step or `opus` by default
 - **Description**: "Implement Step [N]: [Title]"
 - **Prompt**:
@@ -637,7 +637,7 @@ When complete, report:
 
 Use Task tool with:
 
-- **Agent Type**: `developer`
+- **Agent Type**: `sdd:developer`
 - **Model**: As specified in step or `opus` by default
 - **Description**: "Implement Step [N]: [Title]"
 - **Prompt**:
@@ -669,7 +669,7 @@ When complete, report:
 
 **⚠️ MANDATORY: This pattern requires launching evaluation agents. You MUST launch these evaluations. Do NOT skip. Do NOT verify yourself.**
 
-**Use `developer` agent type for evaluations**
+**Use `sdd:developer` agent type for evaluations**
 
 **Evaluation 1 & 2** (launch both in parallel with same prompt structure):
 
@@ -763,7 +763,7 @@ For steps that create multiple similar items:
 
 Use Task tool for EACH item (launch all in parallel):
 
-- **Agent Type**: `developer`
+- **Agent Type**: `sdd:developer`
 - **Model**: As specified or `opus` by default
 - **Description**: "Implement Step [N], Item: [Name]"
 - **Prompt**:
@@ -796,7 +796,7 @@ When complete, report:
 
 **⚠️ MANDATORY: Launch evaluation agents. Do NOT skip. Do NOT verify yourself.**
 
-**Use `developer` agent type for evaluations**
+**Use `sdd:developer` agent type for evaluations**
 
 For each item:
 
@@ -885,7 +885,7 @@ Return: scores with evidence, overall score, PASS/FAIL, improvements if FAIL.
 
 Before moving to final verification, verify you followed the rules:
 
-- [ ] Did you launch developer agents for ALL implementations?
+- [ ] Did you launch sdd:developer agents for ALL implementations?
 - [ ] Did you launch evaluation agents for ALL verifications?
 - [ ] Did you mark steps complete ONLY after judge PASS?
 - [ ] Did you avoid reading ANY artifact files yourself?
@@ -902,7 +902,7 @@ After all implementation steps are complete, verify the task meets all Definitio
 
 **Use Task tool with:**
 
-- **Agent Type**: `developer`
+- **Agent Type**: `sdd:developer`
 - **Model**: `opus`
 - **Description**: "Verify Definition of Done"
 - **Prompt**:
@@ -1279,13 +1279,13 @@ Verification plan (from #### Verification sections):
 
 Phase 2: Executing...
 
-Step 1: Launching developer agent...
+Step 1: Launching sdd:developer agent...
   Agent: "Implement Step 1: Create Directory Structure..."
   Result: ✅ Directories created
   Verification: Skipped (simple operation)
   Status: ✅ COMPLETE
 
-Step 2: Launching developer agent...
+Step 2: Launching sdd:developer agent...
   Agent: "Implement Step 2: Create ValidationService..."
   Result: Files created, tests passing
 
@@ -1331,7 +1331,7 @@ Should I attempt to fix this issue? [Y/n]
 
 User: Y
 
-Launching developer agent...
+Launching sdd:developer agent...
   Agent: "Fix ESLint errors..."
   Result: Fixed 356 errors, 0 warnings ✅
 
@@ -1370,7 +1370,7 @@ Should I attempt to fix these issues? [Y/n]
 
 User: Y
 
-Launching developer agent with feedback...
+Launching sdd:developer agent with feedback...
 Agent: "Fix Step 3: Address judge feedback..."
 Result: Issues fixed, tests added
 
@@ -1402,7 +1402,7 @@ Marking step as complete in task file...
 
 Resuming from Step 4...
 
-Step 3: Launching developer agent...
+Step 3: Launching sdd:developer agent...
 [continues normally from Step 4]
 ```
 
@@ -1453,7 +1453,7 @@ User: /implement add-validation.feature.md --human-in-the-loop
 Configuration:
 - Human Checkpoints: All steps
 
-Step 1: Launching developer agent...
+Step 1: Launching sdd:developer agent...
 Result: Directories created ✅
 
 ---
@@ -1472,7 +1472,7 @@ Result: Directories created ✅
 > Continue? [Y/n/feedback]: Y
 ---
 
-Step 2: Launching developer agent...
+Step 2: Launching sdd:developer agent...
 Result: ValidationService created ✅
 
 Launching judge agents...
@@ -1501,7 +1501,7 @@ Panel Result: 4.4/5.0 ✅
 ---
 
 Incorporating feedback: "error messages could be more descriptive"
-Re-launching developer agent with feedback...
+Re-launching sdd:developer agent with feedback...
 [iteration continues]
 ```
 
@@ -1544,11 +1544,11 @@ Status: ✅ COMPLETE (passed on iteration 2)
 
 ### Implementation Failure
 
-If developer agent reports failure:
+If sdd:developer agent reports failure:
 
 1. Present the failure details to user
 2. Ask clarification questions that could help resolve
-3. Launch developer agent again with clarifications
+3. Launch sdd:developer agent again with clarifications
 
 ### Judge Disagreement
 
@@ -1599,8 +1599,8 @@ Before completing implementation:
 
 ### Delegation
 
-- [ ] ALL implementations done by `developer` agents via Task tool
-- [ ] ALL evaluations done by `developer` agents via Task tool
+- [ ] ALL implementations done by `sdd:developer` agents via Task tool
+- [ ] ALL evaluations done by `sdd:developer` agents via Task tool
 - [ ] Did NOT perform any verification yourself
 - [ ] Did NOT skip any verification steps (unless `SKIP_JUDGES` is true)
 
@@ -1616,7 +1616,7 @@ Before completing implementation:
 
 - [ ] All steps executed in dependency order
 - [ ] Parallel steps launched simultaneously (not sequentially)
-- [ ] Each developer agent received focused prompt with exact step
+- [ ] Each sdd:developer agent received focused prompt with exact step
 - [ ] All critical artifacts evaluated by judges (unless `SKIP_JUDGES`)
 - [ ] Panel voting used for high-stakes artifacts
 - [ ] Chain-of-thought requirement included in all evaluation prompts
@@ -1634,7 +1634,7 @@ Before completing implementation:
 
 - [ ] Definition of Done verification agent launched
 - [ ] All DoD items verified (PASS/FAIL/BLOCKED status)
-- [ ] Failing DoD items fixed via developer agents
+- [ ] Failing DoD items fixed via sdd:developer agents
 - [ ] Re-verification performed after fixes
 - [ ] Task moved from `in-progress/` to `done/` folder
 - [ ] All DoD checkboxes marked `[X]` in task file
@@ -1728,13 +1728,13 @@ When judges evaluate artifacts, they use this 5-point scale for each criterion:
 
 **During Phase 2 (Execute Steps):**
 
-1. After a developer agent completes implementation
+1. After a sdd:developer agent completes implementation
 2. Read the step's `#### Verification` section in the task file
 3. Extract: Level, Artifact paths, Threshold, Rubric, Reference Pattern
 4. Launch appropriate judge agent(s) based on Level
 5. Provide judges with: Artifact path, Rubric, Threshold, Reference Pattern
 6. Aggregate judge results and determine PASS/FAIL
-7. If FAIL, launch developer agent to fix issues and re-verify
+7. If FAIL, launch sdd:developer agent to fix issues and re-verify
 
 **Example Verification Section in Task File:**
 

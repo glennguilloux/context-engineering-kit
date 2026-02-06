@@ -94,14 +94,16 @@ If the task matches a specialized domain, incorporate the relevant agent prompt.
 
 **Decision:** Use specialized agent when task clearly benefits from domain expertise. Skip for trivial tasks where specialization adds unnecessary overhead.
 
-**Agents:** Available specialized agents depends on project and plugins installed.
+**Agents:** Available specialized agents depends on project and plugins installed. Common agents from the `sdd` plugin include: `sdd:developer`, `sdd:researcher`, `sdd:software-architect`, `sdd:tech-lead`, `sdd:team-lead`, `sdd:qa-engineer`, `sdd:code-explorer`, `sdd:business-analyst`. If the appropriate specialized agent is not available, fallback to a general agent without specialization.
 
 **Integration with Model Selection:**
+
 - Specialized agents are combined WITH model selection, not instead of
 - Complex task + specialized domain = Opus + Specialized Agent
 - Simple task matching domain = Haiku without specialization (overhead not justified)
 
 **Usage:**
+
 1. Read the agent definition
 2. Include the agent's instructions in the sub-agent prompt AFTER the CoT prefix
 3. Combine with Zero-shot CoT prefix and Critique suffix
@@ -238,14 +240,15 @@ Use Task tool:
 **Input:** `/launch-sub-agent Design a caching strategy for our API that handles 10k requests/second`
 
 **Analysis:**
+
 - Task type: Architecture / design
 - Complexity: High (performance requirements, system design)
 - Output size: Medium (design document)
-- Domain match: software-architect
+- Domain match: sdd:software-architect
 
-**Selection:** Opus + software-architect agent
+**Selection:** Opus + sdd:software-architect agent
 
-**Dispatch:** Task tool with Opus model, software-architect prompt, CoT prefix, critique suffix
+**Dispatch:** Task tool with Opus model, sdd:software-architect prompt, CoT prefix, critique suffix
 
 ---
 
@@ -254,6 +257,7 @@ Use Task tool:
 **Input:** `/launch-sub-agent Update the README to add --verbose flag to CLI options`
 
 **Analysis:**
+
 - Task type: Documentation (simple edit)
 - Complexity: Low (single file, well-defined)
 - Output size: Small (one section)
@@ -270,14 +274,15 @@ Use Task tool:
 **Input:** `/launch-sub-agent Implement pagination for /users endpoint following patterns in /products`
 
 **Analysis:**
+
 - Task type: Code implementation
 - Complexity: Medium (follow existing patterns)
 - Output size: Medium (implementation + tests)
-- Domain match: developer
+- Domain match: sdd:developer
 
-**Selection:** Sonnet + developer agent (non-complex but needs domain expertise)
+**Selection:** Sonnet + sdd:developer agent (non-complex but needs domain expertise)
 
-**Dispatch:** Task tool with Sonnet model, developer prompt, CoT prefix, critique suffix
+**Dispatch:** Task tool with Sonnet model, sdd:developer prompt, CoT prefix, critique suffix
 
 ---
 
@@ -286,35 +291,40 @@ Use Task tool:
 **Input:** `/launch-sub-agent Research authentication options for mobile app - evaluate OAuth2, SAML, passwordless`
 
 **Analysis:**
+
 - Task type: Research / comparison
 - Complexity: High (comparative analysis, recommendations)
 - Output size: Large (comprehensive research)
-- Domain match: researcher
+- Domain match: sdd:researcher
 
-**Selection:** Opus + researcher agent
+**Selection:** Opus + sdd:researcher agent
 
-**Dispatch:** Task tool with Opus model, researcher prompt, CoT prefix, critique suffix
+**Dispatch:** Task tool with Opus model, sdd:researcher prompt, CoT prefix, critique suffix
 
 ## Best Practices
 
 ### Context Isolation
+
 - Pass only context relevant to the specific task
 - Avoid passing entire conversation history
 - Let sub-agent discover codebase patterns through tools
 - Use file paths and references rather than embedding large content
 
 ### Model Selection
+
 - When in doubt, use Opus (quality over cost)
 - Use Haiku only for truly trivial tasks
 - Use Sonnet for "grunt work" - needs capability but not genius
 - Production code always deserves Opus
 
 ### Specialized Agents
+
 - Use when domain expertise clearly improves quality
 - Combine with CoT and critique patterns
 - Don't force specialization on general tasks
 
 ### Quality Gates
+
 - Self-critique loop is non-negotiable
 - Sub-agents must answer verification questions before completing
 - Review sub-agent output before accepting

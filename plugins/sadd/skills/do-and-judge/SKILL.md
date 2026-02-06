@@ -14,6 +14,7 @@ Execute a single task by dispatching an implementation sub-agent, verifying with
 This command implements a **single-task execution pattern** with **LLM-as-a-judge verification**. You (the orchestrator) dispatch a focused sub-agent to implement the task, then dispatch an independent judge to verify quality. If verification fails, you iterate with judge feedback until passing (score ≥4) or max retries (2) exceeded.
 
 Key benefits:
+
 - **Fresh context** - Implementation agent works with clean context window
 - **External verification** - Judge catches blind spots self-critique misses
 - **Feedback loop** - Retry with specific issues identified by judge
@@ -78,6 +79,8 @@ Let me analyze this task to determine the optimal configuration:
 | `opus` | **Default/standard choice**. Safe for any task. Use when correctness matters, decisions are nuanced, or you're unsure. | Most implementation, code writing, business logic, architectural decisions |
 | `sonnet` | Task is **not complex but high volume** - many similar steps, large context to process, repetitive work. | Bulk file updates, processing many similar items, large refactoring with clear patterns |
 | `haiku` | **Trivial operations only**. Simple, mechanical tasks with no decision-making. | Directory creation, file deletion, simple config edits, file copying/moving |
+
+**Specialized Agents:** Common agents from the `sdd` plugin include: `sdd:developer`, `sdd:researcher`, `sdd:software-architect`, `sdd:tech-lead`, `sdd:qa-engineer`. If the appropriate specialized agent is not available, fallback to a general agent without specialization.
 
 ### Phase 2: Dispatch Implementation Agent
 
@@ -173,7 +176,7 @@ Use Task tool:
   - description: "Implement: {brief task summary}"
   - prompt: {constructed prompt with CoT + task + self-critique}
   - model: {selected model}
-  - subagent_type: "developer"
+  - subagent_type: "sdd:developer"
 ```
 
 ### Phase 3: Dispatch Judge Agent
@@ -396,17 +399,19 @@ Awaiting your decision...
 ### Example 1: Simple Refactoring (Pass on First Try)
 
 **Input:**
+
 ```
 /do-and-judge Extract the validation logic from UserController into a separate UserValidator class
 ```
 
 **Execution:**
+
 ```
 Phase 1: Task Analysis
   → Model: Opus
 
 Phase 2: Dispatch Implementation
-  Implementation (Opus + developer)...
+  Implementation (Opus + sdd:developer)...
     → Created UserValidator.ts
     → Updated UserController to use validator
     → Summary: 2 files modified, validation extracted
@@ -425,11 +430,13 @@ Phase 6: Final Report
 ### Example 2: Complex Task (Pass After Retry)
 
 **Input:**
+
 ```
 /do-and-judge Implement rate limiting middleware with configurable limits per endpoint
 ```
 
 **Execution:**
+
 ```
 Phase 1: Task Analysis
   - Complexity: High (new feature, multiple concerns)
@@ -438,7 +445,7 @@ Phase 1: Task Analysis
   → Model: opus
 
 Phase 2: Dispatch Implementation (Attempt 1)
-  Implementation (Opus + developer)...
+  Implementation (Opus + sdd:developer)...
     → Created RateLimiter middleware
     → Added configuration schema
 
@@ -451,7 +458,7 @@ Phase 3: Dispatch Judge
     → IMPROVEMENTS: Add monitoring hooks
 
 Phase 5: Retry with Feedback
-  Implementation (Opus + developer)...
+  Implementation (Opus + sdd:developer)...
     → Added endpoint-specific limits
     → Added Redis adapter option
 
@@ -468,11 +475,13 @@ Phase 6: Final Report
 ### Example 3: Task Requiring Escalation
 
 **Input:**
+
 ```
 /do-and-judge Migrate the database schema to support multi-tenancy
 ```
 
 **Execution:**
+
 ```
 Phase 1: Task Analysis
   - Complexity: High
@@ -500,21 +509,25 @@ Attempt 4 (with guidance): PASS (4.1/5.0)
 ## Best Practices
 
 ### Model Selection
+
 - **When in doubt, use Opus** - Quality matters more than cost for verified work
 - **Match complexity** - Don't use Opus for simple transformations
 - **Consider risk** - Higher risk = stronger model
 
 ### Judge Verification
+
 - **Never skip** - The judge catches what self-critique misses
 - **Parse only headers** - Don't read full reports to avoid context pollution
 - **Trust the threshold** - 4/5.0 is the quality gate
 
 ### Iteration
+
 - **Focus fixes** - Don't rewrite everything, fix specific issues
 - **Pass feedback verbatim** - Let the implementation agent see exact issues
 - **Escalate appropriately** - Don't loop forever on fundamental problems
 
 ### Context Management
+
 - **Keep it clean** - You orchestrate, sub-agents implement
 - **Summarize, don't copy** - Pass summaries, not full file contents
 - **Trust sub-agents** - They can read files themselves
