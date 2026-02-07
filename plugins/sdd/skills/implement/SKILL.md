@@ -262,6 +262,7 @@ CRITICAL: For each sub-agent (implementation and evaluation), you need to provid
 - Step number
 - Item number (if applicable)
 - Artifact path (if applicable)
+- **Value of `${CLAUDE_PLUGIN_ROOT}` so agents can resolve paths like `@${CLAUDE_PLUGIN_ROOT}/scripts/create-scratchpad.sh`**
 
 ### What You DO
 
@@ -674,6 +675,8 @@ When complete, report:
 **Evaluation 1 & 2** (launch both in parallel with same prompt structure):
 
 ```
+CLAUDE_PLUGIN_ROOT=${CLAUDE_PLUGIN_ROOT}
+
 Read @${CLAUDE_PLUGIN_ROOT}/prompts/judge.md for evaluation methodology.
 
 Evaluate artifact at: [artifact_path from implementation agent report]
@@ -801,6 +804,8 @@ When complete, report:
 For each item:
 
 ```
+CLAUDE_PLUGIN_ROOT=${CLAUDE_PLUGIN_ROOT}
+
 Read @${CLAUDE_PLUGIN_ROOT}/prompts/judge.md for evaluation methodology.
 
 Evaluate artifact at: [item_path from implementation agent report]
@@ -908,6 +913,8 @@ After all implementation steps are complete, verify the task meets all Definitio
 - **Prompt**:
 
 ```
+CLAUDE_PLUGIN_ROOT=${CLAUDE_PLUGIN_ROOT}
+
 Verify all Definition of Done items in the task file.
 
 Task File: $TASK_PATH

@@ -37,5 +37,7 @@ HEX_ID=$(openssl rand -hex 4)
 SCRATCHPAD_FILE="$SCRATCHPAD_DIR/${HEX_ID}.md"
 touch "$SCRATCHPAD_FILE"
 
-# Output the path (relative to repo root for cleaner output)
-echo "${SCRATCHPAD_FILE#$REPO_ROOT/}"
+# Output the paths and critical instruction
+echo "Scratchpad file created: ${SCRATCHPAD_FILE#$REPO_ROOT/}"
+echo "Absolute path: $SCRATCHPAD_FILE"
+echo "CRITICAL: You MUST use only Read and Write tools in order to work with scratchpad file. Do not use bash, cat, echo or python for it!"

@@ -345,8 +345,9 @@ You MUST launch for each step a separate agent, instead of performing all steps 
 
 1. Use the **Agent** type and **Model** specified in the step
 2. Provide the task file path and user input as context
-3. Require agent to implement exactly that step, not more, not less
-4. After each sub-phase, launch a judge agent to validate quality before proceeding
+3. **Provide the value of `${CLAUDE_PLUGIN_ROOT}` so agents can resolve paths like `@${CLAUDE_PLUGIN_ROOT}/scripts/create-scratchpad.sh`**
+4. Require agent to implement exactly that step, not more, not less
+5. After each sub-phase, launch a judge agent to validate quality before proceeding
 
 ### Complete Workflow Overview
 
@@ -421,6 +422,8 @@ Launch agent:
 - **Prompt**:
 
   ```
+  CLAUDE_PLUGIN_ROOT=${CLAUDE_PLUGIN_ROOT}
+
   Task File: <TASK_FILE>
   Task Title: <title from task file>
 
@@ -452,6 +455,8 @@ Launch agent:
 - **Prompt**:
 
   ```text
+  CLAUDE_PLUGIN_ROOT=${CLAUDE_PLUGIN_ROOT}
+
   Task File: <TASK_FILE>
   Task Title: <title from task file>
 
@@ -483,7 +488,9 @@ Launch agent:
 - **Prompt**:
 
   ```
-  Read @./analyse-business-requirements.md and execute it exactly as is!
+  CLAUDE_PLUGIN_ROOT=${CLAUDE_PLUGIN_ROOT}
+
+  Read ${CLAUDE_PLUGIN_ROOT}/skills/plan/analyse-business-requirements.md and execute it exactly as is!
 
   Task File: <TASK_FILE>
   Task Title: <title from task file>
@@ -517,6 +524,8 @@ Launch judge:
 - **Prompt**:
 
   ```
+  CLAUDE_PLUGIN_ROOT=${CLAUDE_PLUGIN_ROOT}
+
   Read @${CLAUDE_PLUGIN_ROOT}/prompts/judge.md for evaluation methodology and execute.
 
   ### Artifact Path
@@ -573,6 +582,8 @@ Launch judge:
 - **Prompt**:
 
   ```
+  CLAUDE_PLUGIN_ROOT=${CLAUDE_PLUGIN_ROOT}
+
   Read @${CLAUDE_PLUGIN_ROOT}/prompts/judge.md for evaluation methodology and execute.
 
   ### Artifact Path
@@ -625,6 +636,8 @@ Launch judge:
 - **Prompt**:
 
   ```
+  CLAUDE_PLUGIN_ROOT=${CLAUDE_PLUGIN_ROOT}
+
   Read @${CLAUDE_PLUGIN_ROOT}/prompts/judge.md for evaluation methodology and execute.
 
   ### Artifact Path
@@ -684,6 +697,8 @@ Launch agent:
 - **Prompt**:
 
   ```
+  CLAUDE_PLUGIN_ROOT=${CLAUDE_PLUGIN_ROOT}
+
   Task File: <TASK_FILE>
   Skill File: <skill file path from Phase 2a>
   Analysis File: <analysis file path from Phase 2b>
@@ -714,6 +729,8 @@ Launch judge:
 - **Prompt**:
 
   ```
+  CLAUDE_PLUGIN_ROOT=${CLAUDE_PLUGIN_ROOT}
+
   Read @${CLAUDE_PLUGIN_ROOT}/prompts/judge.md for evaluation methodology and execute.
 
   ### Artifact Path
@@ -772,6 +789,8 @@ Launch agent:
 - **Prompt**:
 
   ```
+  CLAUDE_PLUGIN_ROOT=${CLAUDE_PLUGIN_ROOT}
+
   Task File: <TASK_FILE>
 
   CRITICAL: DO NOT OUTPUT YOUR DECOMPOSITION, ONLY CREATE THE SCRATCHPAD AND UPDATE THE TASK FILE.
@@ -800,6 +819,8 @@ Launch judge:
 - **Prompt**:
 
   ```
+  CLAUDE_PLUGIN_ROOT=${CLAUDE_PLUGIN_ROOT}
+
   Read @${CLAUDE_PLUGIN_ROOT}/prompts/judge.md for evaluation methodology and execute.
 
   ### Artifact Path
@@ -861,6 +882,8 @@ Launch agent:
 - **Prompt**:
 
   ```
+  CLAUDE_PLUGIN_ROOT=${CLAUDE_PLUGIN_ROOT}
+
   Task File: <TASK_FILE>
 
   CRITICAL: DO NOT OUTPUT YOUR PARALLELIZATION, ONLY CREATE THE SCRATCHPAD AND UPDATE THE TASK FILE.
@@ -888,6 +911,8 @@ Launch judge:
 - **Prompt**:
 
   ```
+  CLAUDE_PLUGIN_ROOT=${CLAUDE_PLUGIN_ROOT}
+
   Read @${CLAUDE_PLUGIN_ROOT}/prompts/judge.md for evaluation methodology and execute.
 
   ### Artifact Path
@@ -946,6 +971,8 @@ Launch agent:
 - **Prompt**:
 
   ```
+  CLAUDE_PLUGIN_ROOT=${CLAUDE_PLUGIN_ROOT}
+
   Task File: <TASK_FILE>
 
   CRITICAL: DO NOT OUTPUT YOUR VERIFICATIONS, ONLY CREATE THE SCRATCHPAD AND UPDATE THE TASK FILE.
@@ -973,6 +1000,8 @@ Launch judge:
 - **Prompt**:
 
   ```
+  CLAUDE_PLUGIN_ROOT=${CLAUDE_PLUGIN_ROOT}
+
   Read @${CLAUDE_PLUGIN_ROOT}/prompts/judge.md for evaluation methodology and execute.
 
   ### Artifact Path
