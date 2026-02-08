@@ -39,68 +39,72 @@ Refine a draft task specification into a fully planned, implementation-ready tas
 
 ## Workflow Diagram
 
-```mermaid
-flowchart TB
-    subgraph Input
-        A[📄 Draft Task File<br/>.specs/tasks/draft/*.md]
-    end
-
-    subgraph Phase2["Phase 2: Parallel Analysis"]
-        direction LR
-        B1[🔬 Research<br/>researcher · sonnet]
-        B2[📂 Codebase Analysis<br/>code-explorer · sonnet]
-        B3[💼 Business Analysis<br/>business-analyst · opus]
-        
-        J1[⚖️ Judge 2a]
-        J2[⚖️ Judge 2b]
-        J3[⚖️ Judge 2c]
-        
-        B1 --> J1
-        B2 --> J2
-        B3 --> J3
-    end
-
-    subgraph Phase3["Phase 3: Architecture Synthesis"]
-        C[🏗️ Architecture Synthesis<br/>software-architect · opus]
-        JC[⚖️ Judge 3]
-        C --> JC
-    end
-
-    subgraph Phase4["Phase 4: Decomposition"]
-        D[📋 Decomposition<br/>tech-lead · opus]
-        JD[⚖️ Judge 4]
-        D --> JD
-    end
-
-    subgraph Phase5["Phase 5: Parallelize"]
-        E[🔀 Parallelize Steps<br/>team-lead · opus]
-        JE[⚖️ Judge 5]
-        E --> JE
-    end
-
-    subgraph Phase6["Phase 6: Verifications"]
-        F[✅ Define Verifications<br/>qa-engineer · opus]
-        JF[⚖️ Judge 6]
-        F --> JF
-    end
-
-    subgraph Output
-        G[📄 Refined Task File<br/>.specs/tasks/todo/*.md]
-        H[📚 Skill File<br/>.claude/skills/*/SKILL.md]
-        I[📊 Analysis File<br/>.specs/analysis/*.md]
-    end
-
-    A --> Phase2
-    J1 & J2 & J3 --> Phase3
-    JC --> Phase4
-    JD --> Phase5
-    JE --> Phase6
-    JF --> G & H & I
-
-    style A fill:#e1f5fe
-    style G fill:#c8e6c9
-    style H fill:#c8e6c9
-    style I fill:#c8e6c9
+```
+                +----------------------------+
+                |      Draft Task File       |
+                | .specs/tasks/draft/*.md    |
+                +-------------+--------------+
+                              |
+                              v
++----------------------------------------------------------+
+| Phase 2: Parallel Analysis                               |
+|                                                          |
+| +----------------+  +------------------+  +-------------+|
+| | Research       |  | Codebase         |  | Business    ||
+| | researcher     |  | Analysis         |  | Analysis    ||
+| | (sonnet)       |  | code-explorer    |  | business-   ||
+| |      |         |  | (sonnet)         |  | analyst     ||
+| |      v         |  |       |          |  | (opus)      ||
+| |  Judge 2a      |  |   Judge 2b       |  |      |      ||
+| +------+---------+  +--------+---------+  +------+------+|
+|        |                     |                    |       |
++----------------------------------------------------------+
+         |                     |                    |
+         +----------+----------+--------------------+
+                    |
+                    v
+         +-----------------------------+
+         | Phase 3: Architecture       |
+         | software-architect (opus)   |
+         |            |                |
+         |            v                |
+         |        Judge 3              |
+         +--------------+--------------+
+                        |
+                        v
+         +-----------------------------+
+         | Phase 4: Decomposition      |
+         | tech-lead (opus)            |
+         |            |                |
+         |            v                |
+         |        Judge 4              |
+         +--------------+--------------+
+                        |
+                        v
+         +-----------------------------+
+         | Phase 5: Parallelize        |
+         | team-lead (opus)            |
+         |            |                |
+         |            v                |
+         |        Judge 5              |
+         +--------------+--------------+
+                        |
+                        v
+         +-----------------------------+
+         | Phase 6: Verifications      |
+         | qa-engineer (opus)          |
+         |            |                |
+         |            v                |
+         |        Judge 6              |
+         +--------------+--------------+
+                        |
+      +-----------------+-----------------+
+      |                 |                 |
+      v                 v                 v
++--------------+ +--------------+ +---------------+
+| Refined Task | | Skill File   | | Analysis File |
+| todo/*.md    | | SKILL.md     | | analysis-*.md |
++--------------+ +--------------+ +---------------+
 ```
 
 ## How It Works

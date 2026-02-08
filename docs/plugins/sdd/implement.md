@@ -23,66 +23,68 @@ Execute task implementation steps with automated LLM-as-Judge quality verificati
 
 ## Workflow Diagram
 
-```mermaid
-flowchart TB
-    subgraph Phase0["Phase 0: Select Task"]
-        A[📄 Task from todo/<br/>or in-progress/]
-        A --> B[📁 Move to in-progress/]
-    end
-
-    subgraph Phase1["Phase 1: Load Task"]
-        C[📖 Parse Implementation Steps<br/>& Verification Requirements]
-    end
-
-    subgraph Phase2["Phase 2: Execute Steps"]
-        D[🔄 For Each Step]
-        
-        subgraph StepExec["Step Execution Loop"]
-            E[👨‍💻 Developer Agent<br/>Implement Step]
-            F{Verification<br/>Level?}
-            
-            G1[⏭️ None<br/>Skip Judge]
-            G2[⚖️ Single Judge<br/>threshold: 4.0]
-            G3[⚖️⚖️ Panel of 2<br/>threshold: 4.5]
-            G4[⚖️ Per-Item<br/>Parallel Judges]
-            
-            H{PASS?}
-            I[🔧 Fix & Retry<br/>with feedback]
-            J[✅ Mark Step DONE]
-        end
-        
-        D --> E
-        E --> F
-        F -->|None| G1 --> J
-        F -->|Single| G2 --> H
-        F -->|Panel| G3 --> H
-        F -->|Per-Item| G4 --> H
-        H -->|Yes| J
-        H -->|No| I --> E
-        J --> D
-    end
-
-    subgraph Phase3["Phase 3: Final Verification"]
-        K[📋 Verify Definition of Done]
-        L{All DoD<br/>PASS?}
-        M[🔧 Fix Failing Items]
-    end
-
-    subgraph Phase4["Phase 4: Complete"]
-        N[📁 Move to done/]
-        O[📊 Final Report]
-    end
-
-    Phase0 --> Phase1
-    Phase1 --> Phase2
-    Phase2 --> Phase3
-    K --> L
-    L -->|No| M --> K
-    L -->|Yes| Phase4
-
-    style A fill:#e1f5fe
-    style N fill:#c8e6c9
-    style O fill:#c8e6c9
+```
++--------------------------------------+
+| Phase 0: Select Task                 |
+|  Task from todo/ or in-progress/     |
+|              |                       |
+|              v                       |
+|  Move to in-progress/                |
++------------------+-------------------+
+                   |
+                   v
++--------------------------------------+
+| Phase 1: Load Task                   |
+|  Parse Implementation Steps          |
+|  & Verification Requirements         |
++------------------+-------------------+
+                   |
+                   v
++------------------------------------------------------+
+| Phase 2: Execute Steps                               |
+|                                                      |
+|  For Each Step:                                      |
+|                                                      |
+|    Developer Agent: Implement Step  <--+             |
+|                |                       |             |
+|                v                       |             |
+|       Verification Level?              |             |
+|        |       |       |       |       |             |
+|      None   Single   Panel  Per-Item   |             |
+|        |    (4.0)   (4.5)  (Parallel)  |             |
+|        |       |       |       |       |             |
+|        |       +---+---+-------+       |             |
+|        |           |                   |             |
+|        |           v                   |             |
+|        |        PASS? --No--> Fix & Retry            |
+|        |           |                                 |
+|        |          Yes                                |
+|        +-----+-----+                                |
+|              |                                       |
+|              v                                       |
+|       Mark Step DONE                                 |
++----------------------+-------------------------------+
+                       |
+                       v
++--------------------------------------+
+| Phase 3: Final Verification          |
+|                                      |
+|  Verify Definition of Done  <--+     |
+|              |                  |     |
+|              v                  |     |
+|      All DoD PASS?              |     |
+|         /       \               |     |
+|       Yes       No              |     |
+|        |         \              |     |
+|        |     Fix Failing Items--+     |
++--------+-----------------------------+
+         |
+         v
++--------------------------------------+
+| Phase 4: Complete                    |
+|  Move to done/                       |
+|  Final Report                        |
++--------------------------------------+
 ```
 
 ## How It Works

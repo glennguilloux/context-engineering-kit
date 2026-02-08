@@ -59,44 +59,20 @@ End-to-end task implementation process from initial prompt to pull request, incl
 - `/git:commit` → commits changes.
 - `/git:create-pr` → creates a pull request.
 
-```mermaid
-flowchart LR
-    subgraph Create["1. Create"]
-        A["/sdd:add-task"]
-    end
-
-    subgraph Plan["2. Plan"]
-        B["/sdd:plan"]
-    end
-
-    subgraph Implement["3. Implement"]
-        C["/sdd:implement"]
-    end
-
-    subgraph Ship["4. Ship"]
-        D["/git:commit"]
-        E["/git:create-pr"]
-    end
-
-    subgraph Files["Task Lifecycle"]
-        F1[📄 draft/*.md]
-        F2[📄 todo/*.md]
-        F3[📄 in-progress/*.md]
-        F4[📄 done/*.md]
-    end
-
-    A --> F1
-    F1 --> B
-    B --> F2
-    F2 --> C
-    C --> F3
-    F3 --> F4
-    F4 --> D --> E
-
-    style F1 fill:#ffecb3
-    style F2 fill:#e1f5fe
-    style F3 fill:#fff3e0
-    style F4 fill:#c8e6c9
+```
+  1. Create        2. Plan         3. Implement           4. Ship
++-------------+  +-----------+  +---------------+  +-----------------+
+|/sdd:add-task|  | /sdd:plan |  |/sdd:implement |  |  /git:commit    |
++------+------+  +-----+-----+  +------+--------+  |       |         |
+       |                |               |           |       v         |
+       v                v               v           |/git:create-pr   |
+                                                    +-------+---------+
+                                                            |
+                     Task Lifecycle                         |
+ +----------+   +----------+   +--------------+   +---------+
+ | draft/   +-->| todo/    +-->| in-progress/ +-->| done/   |
+ |   *.md   |   |   *.md   |   |     *.md     |   |  *.md   |
+ +----------+   +----------+   +--------------+   +---------+
 ```
 
 ## Commands

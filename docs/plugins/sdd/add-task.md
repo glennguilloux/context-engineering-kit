@@ -18,42 +18,47 @@ Create a draft task file that captures the user's intent with structured metadat
 
 ## Workflow Diagram
 
-```mermaid
-flowchart TB
-    subgraph Input
-        A[💬 User Prompt]
-        B[📄 Dependencies]
-    end
-
-    subgraph Phase1[Phase 1: Setup]
-        C[📁 Ensure Directory Structure]
-    end
-
-    subgraph Phase2[Phase 2: Analyze]
-        D[🔍 Parse User Request]
-        E[🏷️ Classify Type]
-        F[✏️ Create Action-Oriented Title]
-    end
-
-    subgraph Phase3[Phase 3: Generate]
-        G[📝 Generate File Name]
-        H[🔎 Verify Uniqueness]
-        I[💾 Write Task File]
-    end
-
-    subgraph Output
-        J[📄 Draft Task File]
-    end
-
-    A & B --> Phase1
-    Phase1 --> Phase2
-    D --> E --> F
-    Phase2 --> Phase3
-    G --> H --> I
-    Phase3 --> Output
-
-    style A fill:#e1f5fe
-    style J fill:#c8e6c9
+```
+           +--------------+  +---------------+
+           |  User Prompt |  | Dependencies  |
+           +------+-------+  +-------+-------+
+                  |                   |
+                  +-------+-----------+
+                          |
+                          v
+               +------------------------+
+               | Phase 1: Setup         |
+               |  Ensure Dir Structure  |
+               +-----------+------------+
+                           |
+                           v
+               +------------------------+
+               | Phase 2: Analyze       |
+               |  Parse User Request    |
+               |          |             |
+               |          v             |
+               |  Classify Type         |
+               |          |             |
+               |          v             |
+               |  Create Action Title   |
+               +-----------+------------+
+                           |
+                           v
+               +------------------------+
+               | Phase 3: Generate      |
+               |  Generate File Name    |
+               |          |             |
+               |          v             |
+               |  Verify Uniqueness     |
+               |          |             |
+               |          v             |
+               |  Write Task File       |
+               +-----------+------------+
+                           |
+                           v
+               +------------------------+
+               |    Draft Task File     |
+               +------------------------+
 ```
 
 ## How It Works

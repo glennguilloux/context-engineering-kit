@@ -47,68 +47,72 @@ Run the planning process:
 
 It will perform the following refinement process to update the task file with a more detailed specification:
 
-```mermaid
-flowchart TB
-    subgraph Input
-        A[📄 Draft Task File<br/>.specs/tasks/draft/*.md]
-    end
-
-    subgraph Phase2["Phase 2: Parallel Analysis"]
-        direction LR
-        B1[🔬 Research<br/>researcher · sonnet]
-        B2[📂 Codebase Analysis<br/>code-explorer · sonnet]
-        B3[💼 Business Analysis<br/>business-analyst · opus]
-        
-        J1[⚖️ Judge 2a]
-        J2[⚖️ Judge 2b]
-        J3[⚖️ Judge 2c]
-        
-        B1 --> J1
-        B2 --> J2
-        B3 --> J3
-    end
-
-    subgraph Phase3["Phase 3: Architecture Synthesis"]
-        C[🏗️ Architecture Synthesis<br/>software-architect · opus]
-        JC[⚖️ Judge 3]
-        C --> JC
-    end
-
-    subgraph Phase4["Phase 4: Decomposition"]
-        D[📋 Decomposition<br/>tech-lead · opus]
-        JD[⚖️ Judge 4]
-        D --> JD
-    end
-
-    subgraph Phase5["Phase 5: Parallelize"]
-        E[🔀 Parallelize Steps<br/>team-lead · opus]
-        JE[⚖️ Judge 5]
-        E --> JE
-    end
-
-    subgraph Phase6["Phase 6: Verifications"]
-        F[✅ Define Verifications<br/>qa-engineer · opus]
-        JF[⚖️ Judge 6]
-        F --> JF
-    end
-
-    subgraph Output
-        G[📄 Refined Task File<br/>.specs/tasks/todo/*.md]
-        H[📚 Skill File<br/>.claude/skills/*/SKILL.md]
-        I[📊 Analysis File<br/>.specs/analysis/*.md]
-    end
-
-    A --> Phase2
-    J1 & J2 & J3 --> Phase3
-    JC --> Phase4
-    JD --> Phase5
-    JE --> Phase6
-    JF --> G & H & I
-
-    style A fill:#e1f5fe
-    style G fill:#c8e6c9
-    style H fill:#c8e6c9
-    style I fill:#c8e6c9
+```
+                +----------------------------+
+                |      Draft Task File       |
+                | .specs/tasks/draft/*.md    |
+                +-------------+--------------+
+                              |
+                              v
++----------------------------------------------------------+
+| Phase 2: Parallel Analysis                               |
+|                                                          |
+| +----------------+  +------------------+  +-------------+|
+| | Research       |  | Codebase         |  | Business    ||
+| | researcher     |  | Analysis         |  | Analysis    ||
+| | (sonnet)       |  | code-explorer    |  | business-   ||
+| |      |         |  | (sonnet)         |  | analyst     ||
+| |      v         |  |       |          |  | (opus)      ||
+| |  Judge 2a      |  |   Judge 2b       |  |      |      ||
+| +------+---------+  +--------+---------+  +------+------+|
+|        |                     |                    |       |
++----------------------------------------------------------+
+         |                     |                    |
+         +----------+----------+--------------------+
+                    |
+                    v
+         +-----------------------------+
+         | Phase 3: Architecture       |
+         | software-architect (opus)   |
+         |            |                |
+         |            v                |
+         |        Judge 3              |
+         +--------------+--------------+
+                        |
+                        v
+         +-----------------------------+
+         | Phase 4: Decomposition      |
+         | tech-lead (opus)            |
+         |            |                |
+         |            v                |
+         |        Judge 4              |
+         +--------------+--------------+
+                        |
+                        v
+         +-----------------------------+
+         | Phase 5: Parallelize        |
+         | team-lead (opus)            |
+         |            |                |
+         |            v                |
+         |        Judge 5              |
+         +--------------+--------------+
+                        |
+                        v
+         +-----------------------------+
+         | Phase 6: Verifications      |
+         | qa-engineer (opus)          |
+         |            |                |
+         |            v                |
+         |        Judge 6              |
+         +--------------+--------------+
+                        |
+      +-----------------+-----------------+
+      |                 |                 |
+      v                 v                 v
++--------------+ +--------------+ +---------------+
+| Refined Task | | Skill File   | | Analysis File |
+| todo/*.md    | | SKILL.md     | | analysis-*.md |
++--------------+ +--------------+ +---------------+
 ```
 
 It will output the updated task file to `.specs/tasks/todo/design-implement-authentication-middleware-with-jwt-support.feature.md` and create new skills if needed. It also produces scratchpads and verification reports along the way to properly evaluate each step of the process. You can safely ignore all of them.
@@ -125,66 +129,68 @@ Once you are happy with the specification, you can run the implementation proces
 
 It will perform the following actions:
 
-```mermaid
-flowchart TB
-    subgraph Phase0["Phase 0: Select Task"]
-        A[📄 Task from todo/<br/>or in-progress/]
-        A --> B[📁 Move to in-progress/]
-    end
-
-    subgraph Phase1["Phase 1: Load Task"]
-        C[📖 Parse Implementation Steps<br/>& Verification Requirements]
-    end
-
-    subgraph Phase2["Phase 2: Execute Steps"]
-        D[🔄 For Each Step]
-        
-        subgraph StepExec["Step Execution Loop"]
-            E[👨‍💻 Developer Agent<br/>Implement Step]
-            F{Verification<br/>Level?}
-            
-            G1[⏭️ None<br/>Skip Judge]
-            G2[⚖️ Single Judge<br/>threshold: 4.0]
-            G3[⚖️⚖️ Panel of 2<br/>threshold: 4.5]
-            G4[⚖️ Per-Item<br/>Parallel Judges]
-            
-            H{PASS?}
-            I[🔧 Fix & Retry<br/>with feedback]
-            J[✅ Mark Step DONE]
-        end
-        
-        D --> E
-        E --> F
-        F -->|None| G1 --> J
-        F -->|Single| G2 --> H
-        F -->|Panel| G3 --> H
-        F -->|Per-Item| G4 --> H
-        H -->|Yes| J
-        H -->|No| I --> E
-        J --> D
-    end
-
-    subgraph Phase3["Phase 3: Final Verification"]
-        K[📋 Verify Definition of Done]
-        L{All DoD<br/>PASS?}
-        M[🔧 Fix Failing Items]
-    end
-
-    subgraph Phase4["Phase 4: Complete"]
-        N[📁 Move to done/]
-        O[📊 Final Report]
-    end
-
-    Phase0 --> Phase1
-    Phase1 --> Phase2
-    Phase2 --> Phase3
-    K --> L
-    L -->|No| M --> K
-    L -->|Yes| Phase4
-
-    style A fill:#e1f5fe
-    style N fill:#c8e6c9
-    style O fill:#c8e6c9
+```
++--------------------------------------+
+| Phase 0: Select Task                 |
+|  Task from todo/ or in-progress/     |
+|              |                       |
+|              v                       |
+|  Move to in-progress/                |
++------------------+-------------------+
+                   |
+                   v
++--------------------------------------+
+| Phase 1: Load Task                   |
+|  Parse Implementation Steps          |
+|  & Verification Requirements         |
++------------------+-------------------+
+                   |
+                   v
++------------------------------------------------------+
+| Phase 2: Execute Steps                               |
+|                                                      |
+|  For Each Step:                                      |
+|                                                      |
+|    Developer Agent: Implement Step  <--+             |
+|                |                       |             |
+|                v                       |             |
+|       Verification Level?              |             |
+|        |       |       |       |       |             |
+|      None   Single   Panel  Per-Item   |             |
+|        |    (4.0)   (4.5)  (Parallel)  |             |
+|        |       |       |       |       |             |
+|        |       +---+---+-------+       |             |
+|        |           |                   |             |
+|        |           v                   |             |
+|        |        PASS? --No--> Fix & Retry            |
+|        |           |                                 |
+|        |          Yes                                |
+|        +-----+-----+                                |
+|              |                                       |
+|              v                                       |
+|       Mark Step DONE                                 |
++----------------------+-------------------------------+
+                       |
+                       v
++--------------------------------------+
+| Phase 3: Final Verification          |
+|                                      |
+|  Verify Definition of Done  <--+     |
+|              |                  |     |
+|              v                  |     |
+|      All DoD PASS?              |     |
+|         /       \               |     |
+|       Yes       No              |     |
+|        |         \              |     |
+|        |     Fix Failing Items--+     |
++--------+-----------------------------+
+         |
+         v
++--------------------------------------+
+| Phase 4: Complete                    |
+|  Move to done/                       |
+|  Final Report                        |
++--------------------------------------+
 ```
 
 It will automatically write tests, verify them, build the solution, and confirm it works as expected.
