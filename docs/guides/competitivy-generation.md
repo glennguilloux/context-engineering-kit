@@ -1,4 +1,4 @@
-# Reliable Engineering with Competitive Synthesis
+# Competitive Multi-Agent Code Generation
 
 High-assurance workflow for critical features using multi-agent competitive generation, independent evaluation, and evidence-based synthesis to produce superior solutions.
 
