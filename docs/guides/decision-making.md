@@ -83,6 +83,7 @@ Use the `/fpf:propose-hypotheses` command to start the FPF cycle. The FPF agent 
 ```
 
 After starting, the FPF agent will:
+
 - Initialize `.fpf/` directory structure if needed
 - Frame your problem in the bounded context
 - Generate diverse L0 hypotheses (conservative + radical approaches)
@@ -111,6 +112,7 @@ If you have additional approaches to consider, describe them. The FPF agent will
 The workflow launches parallel FPF agents to verify each L0 hypothesis against logical constraints.
 
 For each hypothesis:
+
 - Check internal consistency
 - Apply first-principles reasoning
 - Verify against project constraints
@@ -123,6 +125,7 @@ Hypotheses that pass verification are promoted to `.fpf/knowledge/L1/`. Failed h
 The workflow launches parallel FPF agents to gather empirical evidence for each L1 hypothesis.
 
 For each substantiated hypothesis:
+
 - Search codebase for similar patterns
 - Review documentation and external sources
 - Run tests or benchmarks if applicable
@@ -135,6 +138,7 @@ Validated hypotheses are promoted to `.fpf/knowledge/L2/` with confidence scores
 The workflow launches parallel FPF agents to compute effective reliability (R_eff) for each L2 hypothesis using the Weakest Link (WLNK) principle.
 
 For each corroborated hypothesis:
+
 - Apply evidence decay factors for freshness
 - Consider congruence levels (CL1/CL2/CL3)
 - Compute R_eff = min(evidence_scores)
@@ -145,6 +149,7 @@ The trust audit produces ranked hypotheses with their R_eff scores.
 ### 6. Make decision
 
 The FPF agent creates a Decision Readiness Report (DRR) with:
+
 - Ranked hypotheses by R_eff and confidence
 - Comparison table showing trade-offs
 - Recommended action with rationale
@@ -155,6 +160,7 @@ You review the DRR and select the winning hypothesis. The decision is documented
 ### 7. Present results
 
 The workflow presents the final summary:
+
 - Selected hypothesis with rationale
 - R_eff score and confidence interval
 - Supporting evidence
@@ -388,7 +394,8 @@ Use FPF to decide on architecture approach before creating the spec:
 ```bash
 /fpf:propose-hypotheses What architecture pattern should we use for this feature?
 # Review DRR and select approach
-/sdd:01-specify Implement feature using [selected approach]
+/sdd:add-task "Implement feature using [selected approach]"
+/sdd:plan
 ```
 
 ### During brainstorming
@@ -400,7 +407,8 @@ Use FPF to evaluate alternative designs:
 # After exploring approaches, use FPF to decide
 /fpf:propose-hypotheses Which search implementation should we choose?
 # Continue with selected approach
-/sdd:01-specify Implement search with [selected approach]
+/sdd:add-task "Implement search with [selected approach]"
+/sdd:plan
 ```
 
 ### For technical decisions

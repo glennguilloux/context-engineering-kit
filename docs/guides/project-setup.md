@@ -11,7 +11,6 @@ Initialize new projects with established best practices, coding standards, and t
 
 ## Plugins needed for this workflow
 
-- [SDD](../plugins/sdd/README.md)
 - [Tech Stack](../plugins/tech-stack/README.md)
 - [DDD](../plugins/ddd/README.md)
 - [MCP](../plugins/mcp/README.md)
@@ -23,35 +22,28 @@ Initialize new projects with established best practices, coding standards, and t
 
 ```md
 ┌─────────────────────────────────────────────┐
-│ 1. Establish Project Constitution           │
-│    (create specs/constitution.md)           │
-└────────────────────┬────────────────────────┘
-                     │
-                     │ define tech stack and architecture principles
-                     ▼
-┌─────────────────────────────────────────────┐
-│ 2. Setup Language Best Practices            │
+│ 1. Setup Language Best Practices            │
 │    (update CLAUDE.md)                       │
 └────────────────────┬────────────────────────┘
                      │
                      │ add language-specific guidelines
                      ▼
 ┌─────────────────────────────────────────────┐
-│ 3. Setup Code Quality Standards             │
+│ 2. Setup Code Quality Standards             │
 │    (update CLAUDE.md)                       │
 └────────────────────┬────────────────────────┘
                      │
                      │ add formatting and style rules
                      ▼
 ┌─────────────────────────────────────────────┐
-│ 4. Setup MCP Servers (optional)             │
+│ 3. Setup MCP Servers (optional)             │
 │    (configure external tools)               │
 └────────────────────┬────────────────────────┘
                      │
                      │ enable documentation and code retrieval
                      ▼
 ┌─────────────────────────────────────────────┐
-│ 5. Document Project Setup                   │
+│ 4. Document Project Setup                   │
 │    (update docs/ directory)                 │
 └─────────────────────────────────────────────┘
 ```
@@ -64,19 +56,9 @@ Use the `/init` command to initialize your project.
 claude /init
 ```
 
-After LLM completes, review the `CLAUDE.md` file and adjust any principles or constraints. 
+After LLM completes, review the `CLAUDE.md` file and adjust any principles or constraints.
 
-### 1. Establish project constitution
-
-Use the `/sdd:00-setup` command to create your project's governing principles and development guidelines. This creates `specs/constitution.md` which guides all subsequent development.
-
-```bash
-/sdd:00-setup Use FastAPI, PostgreSQL, pytest, follow Clean Architecture
-```
-
-After LLM completes, review `specs/constitution.md` and adjust any principles or constraints. This file serves as the source of truth for architectural decisions.
-
-### 2. Setup language best practices
+### 1. Setup language best practices
 
 Use the `/tech-stack:add-typescript-best-practices` command to add language-specific coding standards to your `CLAUDE.md` file.
 
@@ -86,7 +68,7 @@ Use the `/tech-stack:add-typescript-best-practices` command to add language-spec
 
 After LLM completes, review the added guidelines in `CLAUDE.md`. These rules ensure consistent code style and patterns across all AI-assisted development.
 
-### 3. Setup code quality standards
+### 2. Setup code quality standards
 
 Use the `/ddd:setup-code-formating` command to establish code formatting rules and style guidelines.
 
@@ -96,7 +78,7 @@ Use the `/ddd:setup-code-formating` command to establish code formatting rules a
 
 After LLM completes, review the formatting rules added to `CLAUDE.md`. These standards ensure consistent code structure following Clean Architecture and SOLID principles.
 
-### 4. Setup MCP servers (optional)
+### 3. Setup MCP servers (optional)
 
 Use MCP commands to integrate external tools that enhance AI capabilities. Choose based on your project needs:
 
@@ -114,7 +96,7 @@ Use MCP commands to integrate external tools that enhance AI capabilities. Choos
 
 After LLM completes for each command, follow the setup instructions provided. MCP servers extend Claude's capabilities with project-specific context.
 
-### 5. Document project setup
+### 4. Document project setup
 
 Use the `/docs:update-docs` command to generate initial project documentation based on your setup.
 
@@ -128,7 +110,6 @@ After LLM completes, review the generated documentation in the `docs/` directory
 
 After completing this workflow, your project will have:
 
-- **`specs/constitution.md`** - Project principles and architectural guidelines
 - **`CLAUDE.md`** - AI assistant configuration with coding standards
 - **`docs/`** - Initial project documentation
 - **MCP integrations** - Enhanced tooling for documentation and code retrieval (if configured)

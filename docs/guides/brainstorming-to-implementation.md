@@ -45,14 +45,14 @@ For well-defined requirements, skip brainstorming and use [Spec-Driven Developme
                      │ validated design saved to docs/plans/
                      ▼
 ┌─────────────────────────────────────────────┐
-│ 4. Create Specification                     │
-│    (formal feature spec from design)        │
+│ 4. Create Task & Plan Specification         │
+│    (formal spec from design)                │
 └────────────────────┬────────────────────────┘
                      │
                      │ continue with SDD workflow
                      ▼
 ┌─────────────────────────────────────────────┐
-│ 5-8. Plan, Implement, Review, Document      │
+│ 5-6. Implement, Review                      │
 │    (standard SDD phases)                    │
 └─────────────────────────────────────────────┘
 ```
@@ -66,6 +66,7 @@ Use the `/sdd:brainstorm` command to start a collaborative dialogue. The LLM wil
 ```
 
 After starting, the LLM will:
+
 - Review your project structure, docs, and recent commits
 - Ask focused questions (preferring multiple choice when possible)
 - Help you define purpose, constraints, and success criteria
@@ -103,6 +104,7 @@ For architectural decisions with long-term consequences, consider using the [FPF
 ```
 
 FPF provides:
+
 - **Structured hypothesis generation** - Multiple competing options with diverse perspectives
 - **Logical verification** - Check each option against project constraints
 - **Evidence validation** - Empirical testing with trust scores
@@ -136,57 +138,45 @@ The LLM will cover:
 
 After each section, confirm it matches your expectations or request changes. Once complete, the design is saved to `docs/plans/YYYY-MM-DD-<topic>-design.md`.
 
-### 4. Create specification
+### 4. Create task and plan specification
 
-Use the `/sdd:01-specify` command to create a formal specification from the refined design.
-
-```bash
-/sdd:01-specify Implement faceted search with Elasticsearch, filters, and autocomplete
-```
-
-After LLM completes, review the specification in the `specs/` directory. This becomes the foundation for implementation planning.
-
-### 5. Plan architecture
-
-Use the `/sdd:02-plan` command to create the implementation plan based on your specification.
+Use the `/sdd:add-task` command to create a task file from the refined design, then `/sdd:plan` to generate a detailed specification with architecture, implementation steps, and verification criteria.
 
 ```bash
-/sdd:02-plan
+/sdd:add-task "Implement faceted search with Elasticsearch, filters, and autocomplete"
 ```
 
-After LLM completes, review the proposed architecture and technical decisions.
+After LLM completes, review the task file in `.specs/tasks/draft/`. You can adjust the task file to incorporate additional details from the brainstorming session.
 
-### 6. Break down into tasks
-
-Use the `/sdd:03-tasks` command to create actionable implementation tasks.
+Then run planning to generate the full specification:
 
 ```bash
-/sdd:03-tasks
+/sdd:plan
 ```
 
-After LLM completes, review the task list and adjust priorities as needed.
+After LLM completes, review the refined specification in `.specs/tasks/todo/`. The plan includes architecture design, implementation steps with parallelization, and verification rubrics. You can adjust and run `/sdd:plan --refine` to iterate.
 
-### 7. Implement features
+### 5. Implement features
 
-Use the `/sdd:04-implement` command to execute the implementation.
+Use the `/sdd:implement` command to execute the implementation. This produces working code with tests and verification.
 
 ```bash
-/sdd:04-implement
+/sdd:implement
 ```
 
-During implementation, the LLM updates task progress and follows TDD approach with quality review.
+During implementation, the LLM executes each step with quality gates, writes tests, and verifies the solution works as expected. More info in [Spec-Driven Development](./spec-driven-development.md) workflow.
 
-### 8. Review and document
+### 6. Review and ship
 
-Complete the workflow with code review, documentation, and pull request creation. More info in [Spec-Driven Development](./spec-driven-development.md) workflow.
+Complete the workflow with code review and pull request creation.
 
 ```bash
 /code-review:review-local-changes
-/sdd:05-document
+/git:commit
 /git:create-pr
 ```
 
-After completion, your feature is ready for merge with full documentation in the `docs/` directory.
+After completion, your feature is ready for merge.
 
 ## Key Principles
 
