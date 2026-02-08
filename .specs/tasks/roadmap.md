@@ -12,7 +12,7 @@
     [x] Write a script that create folder setup and adds scratchpad folder to gitignore
     [x] Add support for flags of `/implementaion` command that allow to increase and decreate amount of guality, amount of iterations allowed, `--human-in-the-loop` flag to allow to pause for human verification after each step and `--refine` flag that will perform refinement of implementation after human feedback or corrections. Need check whether it have `--continue` flag, it not then add it.
     [x] Increase amount of maximum iteration to 3 for planing and 3-4 for implementation phase -> Decided to keep iterations unlimited for now.
-[] Update project readme with new features and changes. Remove majoirty of content and move it to docs/, also verify with another projects on best practices of readme. And update header image to be transparent.
+[x] Update project readme with new features and changes. Remove majoirty of content and move it to docs/, also verify with another projects on best practices of readme. And update header image to be transparent.
 
 ## In consideration for V2.1
 
@@ -36,6 +36,3 @@ Possible to create `workflow.yaml` file that will be used to define local pipeli
 [] Possible to add ast-grep support for code-base impact analysis step. Or even as mcp toof for all agents. Or as part of code quality workflow. It allow to search, lint and rewrite code. And allow to write liniting rules using yaml!
 [] jscpd allow to detected code dublication and support 150 languages.
 
-## Draft announce for V2
-
-> SDD plugin was rewritten from sctratch. It now able to achive working code aligned with initial prompt in 100% of cases that was tested on real-life production projects!
