@@ -1,7 +1,6 @@
-<picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/CEK-header.png">
-    <img src="docs/assets/CEK-header.png" alt="Context Engineering Kit - advanced context engineering techniques" />
-</picture>
+<p align="center">
+  <a href="https://cek.neolab.finance/" target="blank"><img src="docs/assets/Context-Engineering-Kit.png" width="512" alt="Context Engineering Kit - advanced context engineering techniques" /></a>
+</p>
 
 <div align="center">
 
@@ -63,6 +62,7 @@ Use [OpenSkills](https://github.com/numman-ali/openskills) to install skills for
 npx openskills install NeoLabHQ/context-engineering-kit
 npx openskills sync
 ```
+
 </details>
 
 ### Step 2: Use Plugin
@@ -192,7 +192,6 @@ Additional commands useful before creating a task:
 
 - [/sdd:create-ideas](https://cek.neolab.finance/plugins/sdd/create-ideas.md) - Generate diverse ideas on a given topic using creative sampling techniques
 - [/sdd:brainstorm](https://cek.neolab.finance/plugins/sdd/brainstorm.md) - Refine vague ideas into fully-formed designs through collaborative dialogue
-
 
 **Agents**
 
