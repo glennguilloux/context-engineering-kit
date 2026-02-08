@@ -34,9 +34,13 @@ Then run following commands:
 /sdd:add-task "Design and implement authentication middleware with JWT support"
 
 # write detailed specification for the task
-/sdd:plan @.specs/tasks/draft/design-auth-middleware.feature.md
+/sdd:plan
 # will move task to .specs/tasks/todo/ folder
+```
 
+Restart Claude Code session to clear context and start fresh. Then run following command:
+
+```bash
 # implement the task
 /sdd:implement @.specs/tasks/todo/design-auth-middleware.feature.md
 # produce working implementation of the task and move task to .specs/tasks/done/ folder
@@ -95,14 +99,15 @@ flowchart LR
     style F4 fill:#c8e6c9
 ```
 
-
 ## Commands
+
+Core workflow commands:
 
 - [/sdd:add-task](./add-task.md) - Create task template file with initial prompt
 - [/sdd:plan](./plan.md) - Analyze prompt, generate required skills and refine task specification
 - [/sdd:implement](./implement.md) - Produce working implementation of the task and verify it
 
-Additional commands that can be usefull before creating task:
+Additional commands that can be useful before creating task:
 
 - [/sdd:create-ideas](./create-ideas.md) - Generate diverse ideas on given topic using creative sampling technique.
 - [/sdd:brainstorm](./brainstorm.md) - Refine vague ideas into fully-formed designs through collaborative dialogue.
@@ -113,13 +118,14 @@ The SDD plugin uses specialized agents for different phases of development:
 
 | Agent | Description | Used By |
 |-------|-------------|---------|
-| `business-analyst` | Requirements discovery, stakeholder analysis, specification writing | `/sdd:01-specify` |
-| `researcher` | Technology research, dependency analysis, best practices | `/sdd:02-plan` |
-| `code-explorer` | Codebase analysis, pattern identification, architecture mapping | `/sdd:02-plan` |
-| `software-architect` | Architecture design, component design, implementation planning | `/sdd:02-plan` |
-| `tech-lead` | Task decomposition, dependency mapping, sprint planning | `/sdd:03-tasks` |
-| `developer` | Code implementation, TDD execution, quality review | `/sdd:04-implement` |
-| `tech-writer` | Documentation creation, API guides, architecture docs | `/sdd:05-document` |
+| `researcher` | Technology research, dependency analysis, best practices | `/sdd:plan` (Phase 2a) |
+| `code-explorer` | Codebase analysis, pattern identification, architecture mapping | `/sdd:plan` (Phase 2b) |
+| `business-analyst` | Requirements discovery, stakeholder analysis, specification writing | `/sdd:plan` (Phase 2c) |
+| `software-architect` | Architecture design, component design, implementation planning | `/sdd:plan` (Phase 3) |
+| `tech-lead` | Task decomposition, dependency mapping, risk analysis | `/sdd:plan` (Phase 4) |
+| `team-lead` | Step parallelization, agent assignment, execution planning | `/sdd:plan` (Phase 5) |
+| `qa-engineer` | Verification rubrics, quality gates, LLM-as-Judge definitions | `/sdd:plan` (Phase 6) |
+| `developer` | Code implementation, TDD execution, quality review, verification | `/sdd:implement` |
 
 ## Patterns
 
