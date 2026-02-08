@@ -97,49 +97,7 @@ In order to use this hook, you need to have `bun` installed. However, it is not 
 
 You can find the complete Context Engineering Kit documentation [here](https://cek.neolab.finance).
 
-## Plugins List
-
-To view all available plugins:
-
-```bash
-/plugin
-```
-
-- [Reflexion](https://cek.neolab.finance/plugins/reflexion) - Introduces feedback and refinement loops to improve output quality.
-- [Spec-Driven Development](https://cek.neolab.finance/plugins/sdd) - Introduces commands for specification-driven development, based on Continuous Learning + LLM-as-Judge + Agent Swarm. Achives **development as compilation** through reliable code generation.
-- [Code Review](https://cek.neolab.finance/plugins/code-review) - Introduces codebase and PR review commands and skills using multiple specialized agents.
-- [Git](https://cek.neolab.finance/plugins/git) - Introduces commands for commit and PRs creation.
-- [Test-Driven Development](https://cek.neolab.finance/plugins/tdd) - Introduces commands for test-driven development, common anti-patterns and skills for testing using subagents.
-- [Subagent-Driven Development](https://cek.neolab.finance/plugins/sadd) - Introduces skills for subagent-driven development, dispatches fresh subagent for each task with code review between tasks, enabling fast iteration with quality gates.
-- [Domain-Driven Development](https://cek.neolab.finance/plugins/ddd) - Introduces commands to update CLAUDE.md with best practices for domain-driven development, focused on code quality, and includes Clean Architecture, SOLID principles, and other design patterns.
-- [FPF - First Principles Framework](https://cek.neolab.finance/plugins/fpf) - Introduces structured reasoning using ADI cycle (Abduction-Deduction-Induction) with knowledge layer progression. Uses workflow command pattern with fpf-agent for hypothesis generation, verification, and auditable decision-making.
-- [Kaizen](https://cek.neolab.finance/plugins/kaizen) - Inspired by Japanese continuous improvement philosophy, Agile and Lean development practices. Introduces commands for analysis of root causes of issues and problems, including 5 Whys, Cause and Effect Analysis, and other techniques.
-- [Customaize Agent](https://cek.neolab.finance/plugins/customaize-agent) - Commands and skills for writing and refining commands, hooks, and skills for Claude Code. Includes Anthropic Best Practices and [Agent Persuasion Principles](https://arxiv.org/abs/2508.00614) that can be useful for sub-agent workflows.
-- [Docs](https://cek.neolab.finance/plugins/docs) - Commands for analyzing projects, writing and refining documentation.
-- [Tech Stack](https://cek.neolab.finance/plugins/tech-stack) - Commands for setting up or updating CLAUDE.md file with best practices for specific languages or frameworks.
-- [MCP](https://cek.neolab.finance/plugins/mcp) - Commands for setting up well-known MCP server integration if needed and updating CLAUDE.md file with requirements to use this MCP server for the current project.
-
-### [Reflexion](https://cek.neolab.finance/plugins/reflexion)
-
-Collection of commands that force the LLM to reflect on previous response and output. Includes **automatic reflection hooks** that trigger when you include "reflect" in your prompt.
-
-**How to install**
-
-```bash
-/plugin install reflexion@NeoLabHQ/context-engineering-kit
-```
-
-**Commands**
-
-- [/reflexion:reflect](https://cek.neolab.finance/plugins/reflexion/reflect.md) - Reflect on previous response and output, based on Self-refinement framework for iterative improvement with complexity triage and verification
-- [/reflexion:memorize](https://cek.neolab.finance/plugins/reflexion/memorize.md) - Memorize insights from reflections and update the CLAUDE.md file with this knowledge. Curates insights from reflections and critiques into CLAUDE.md using Agentic Context Engineering
-- [/reflexion:critique](https://cek.neolab.finance/plugins/reflexion/critique.md) - Comprehensive multi-perspective review using specialized judges with debate and consensus building
-
-**Hooks**
-
-- **Automatic Reflection Hook** - Triggers `/reflexion:reflect` automatically when "reflect" appears in your prompt
-
-### [Spec-Driven Development](https://cek.neolab.finance/plugins/sdd)
+### [Relaible code generation through Spec-Driven Development](https://cek.neolab.finance/plugins/sdd)
 
 Comprehensive specification-driven development workflow plugin that transforms prompts into production-ready implementations through structured planning, architecture design, and quality-gated execution.
 
@@ -207,6 +165,49 @@ Additional commands useful before creating a task:
 | `qa-engineer` | Verification rubrics, quality gates, LLM-as-Judge definitions | `/sdd:plan` (Phase 6) |
 | `developer` | Code implementation, TDD execution, quality review, verification | `/sdd:implement` |
 | `tech-writer` | Technical documentation writing, API guides, architecture updates, lessons learned | `/sdd:implement` |
+
+
+## Plugins List
+
+To view all available plugins:
+
+```bash
+/plugin
+```
+
+- [Reflexion](https://cek.neolab.finance/plugins/reflexion) - Introduces feedback and refinement loops to improve output quality.
+- [Spec-Driven Development](https://cek.neolab.finance/plugins/sdd) - Introduces commands for specification-driven development, based on Continuous Learning + LLM-as-Judge + Agent Swarm. Achives **development as compilation** through reliable code generation.
+- [Code Review](https://cek.neolab.finance/plugins/code-review) - Introduces codebase and PR review commands and skills using multiple specialized agents.
+- [Git](https://cek.neolab.finance/plugins/git) - Introduces commands for commit and PRs creation.
+- [Test-Driven Development](https://cek.neolab.finance/plugins/tdd) - Introduces commands for test-driven development, common anti-patterns and skills for testing using subagents.
+- [Subagent-Driven Development](https://cek.neolab.finance/plugins/sadd) - Introduces skills for subagent-driven development, dispatches fresh subagent for each task with code review between tasks, enabling fast iteration with quality gates.
+- [Domain-Driven Development](https://cek.neolab.finance/plugins/ddd) - Introduces commands to update CLAUDE.md with best practices for domain-driven development, focused on code quality, and includes Clean Architecture, SOLID principles, and other design patterns.
+- [FPF - First Principles Framework](https://cek.neolab.finance/plugins/fpf) - Introduces structured reasoning using ADI cycle (Abduction-Deduction-Induction) with knowledge layer progression. Uses workflow command pattern with fpf-agent for hypothesis generation, verification, and auditable decision-making.
+- [Kaizen](https://cek.neolab.finance/plugins/kaizen) - Inspired by Japanese continuous improvement philosophy, Agile and Lean development practices. Introduces commands for analysis of root causes of issues and problems, including 5 Whys, Cause and Effect Analysis, and other techniques.
+- [Customaize Agent](https://cek.neolab.finance/plugins/customaize-agent) - Commands and skills for writing and refining commands, hooks, and skills for Claude Code. Includes Anthropic Best Practices and [Agent Persuasion Principles](https://arxiv.org/abs/2508.00614) that can be useful for sub-agent workflows.
+- [Docs](https://cek.neolab.finance/plugins/docs) - Commands for analyzing projects, writing and refining documentation.
+- [Tech Stack](https://cek.neolab.finance/plugins/tech-stack) - Commands for setting up or updating CLAUDE.md file with best practices for specific languages or frameworks.
+- [MCP](https://cek.neolab.finance/plugins/mcp) - Commands for setting up well-known MCP server integration if needed and updating CLAUDE.md file with requirements to use this MCP server for the current project.
+
+### [Reflexion](https://cek.neolab.finance/plugins/reflexion)
+
+Collection of commands that force the LLM to reflect on previous response and output. Includes **automatic reflection hooks** that trigger when you include "reflect" in your prompt.
+
+**How to install**
+
+```bash
+/plugin install reflexion@NeoLabHQ/context-engineering-kit
+```
+
+**Commands**
+
+- [/reflexion:reflect](https://cek.neolab.finance/plugins/reflexion/reflect.md) - Reflect on previous response and output, based on Self-refinement framework for iterative improvement with complexity triage and verification
+- [/reflexion:memorize](https://cek.neolab.finance/plugins/reflexion/memorize.md) - Memorize insights from reflections and update the CLAUDE.md file with this knowledge. Curates insights from reflections and critiques into CLAUDE.md using Agentic Context Engineering
+- [/reflexion:critique](https://cek.neolab.finance/plugins/reflexion/critique.md) - Comprehensive multi-perspective review using specialized judges with debate and consensus building
+
+**Hooks**
+
+- **Automatic Reflection Hook** - Triggers `/reflexion:reflect` automatically when "reflect" appears in your prompt
 
 ### [Code Review](https://cek.neolab.finance/plugins/code-review)
 
