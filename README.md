@@ -97,7 +97,9 @@ In order to use this hook, you need to have `bun` installed. However, it is not 
 
 You can find the complete Context Engineering Kit documentation [here](https://cek.neolab.finance).
 
-### [Relaible code generation through Spec-Driven Development](https://cek.neolab.finance/plugins/sdd)
+But main plugin we recommend to start with is [Spec-Driven Development](https://cek.neolab.finance/plugins/sdd).
+
+## [Spec-Driven Development](https://cek.neolab.finance/plugins/sdd)
 
 Comprehensive specification-driven development workflow plugin that transforms prompts into production-ready implementations through structured planning, architecture design, and quality-gated execution.
 
