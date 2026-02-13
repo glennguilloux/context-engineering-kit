@@ -1,0 +1,74 @@
+{
+  "name": "context-engineering-kit",
+  "version": "2.0.0",
+  "description": "A comprehensive collection of AI agent skills for software development workflows including SDD, TDD, code review, git workflows, and more.",
+  "author": "NeoLabHQ",
+  "repository": "https://github.com/NeoLabHQ/context-engineering-kit",
+  "skills": [
+    {
+      "name": "sdd",
+      "path": "plugins/sdd",
+      "description": "Software Design & Development - Complete SDLC workflow with specialized agents"
+    },
+    {
+      "name": "sadd",
+      "path": "plugins/sadd",
+      "description": "Subagent-Driven Development - Parallel task execution with quality gates"
+    },
+    {
+      "name": "tdd",
+      "path": "plugins/tdd",
+      "description": "Test-Driven Development - Write tests first, then implement"
+    },
+    {
+      "name": "code-review",
+      "path": "plugins/code-review",
+      "description": "Code Review - Review local changes and pull requests"
+    },
+    {
+      "name": "git",
+      "path": "plugins/git",
+      "description": "Git Workflow - Commit, create PRs, analyze issues"
+    },
+    {
+      "name": "kaizen",
+      "path": "plugins/kaizen",
+      "description": "Kaizen - Problem analysis and continuous improvement"
+    },
+    {
+      "name": "reflexion",
+      "path": "plugins/reflexion",
+      "description": "Reflexion - Critique, memorize, and reflect on work"
+    },
+    {
+      "name": "mcp",
+      "path": "plugins/mcp",
+      "description": "MCP Tools - Build and setup MCP servers"
+    },
+    {
+      "name": "docs",
+      "path": "plugins/docs",
+      "description": "Documentation - Update and manage documentation"
+    },
+    {
+      "name": "ddd",
+      "path": "plugins/ddd",
+      "description": "Domain-Driven Design - Code formatting setup"
+    },
+    {
+      "name": "fpf",
+      "path": "plugins/fpf",
+      "description": "First Principles First - Hypothesis management"
+    },
+    {
+      "name": "tech-stack",
+      "path": "plugins/tech-stack",
+      "description": "Tech Stack - TypeScript best practices"
+    },
+    {
+      "name": "customaize-agent",
+      "path": "plugins/customaize-agent",
+      "description": "Agent Customization - Create agents, commands, and skills"
+    }
+  ]
+}
