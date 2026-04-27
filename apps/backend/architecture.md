@@ -192,3 +192,99 @@ No `create-starter` CLI command needed — we're building on existing codebase a
   - Supports adaptive resource guard on 16GB VPS by caching low-priority mission data.
 - **Affects**: Backend `app/services/cache.py`, API routers, session management, Hermes skill state persistence
 - **Provided by Starter**: Partial (Redis already in use, caching strategy new)
+
+## ADR 3.1: Authentication Method
+- **Status**: Draft
+- **Category**: 3 - Authentication & Security
+- **Context**: Need unified authentication for user sessions, Hermes skill service accounts, and BYOK (DeepSeek-V4 Flash) access. Existing backend uses JWT but lacks service account auth.
+- **Decision**: Adopt three auth methods:
+  1. JWT access + refresh token pairs for user-facing web/mobile routes
+  2. Scoped API keys for Hermes skill service accounts
+  3. User-provided BYOK tokens for DeepSeek-V4 Flash access
+  No new session-based authentication endpoints.
+- **Consequences**:
+  - ✅ Unified auth for all client types
+  - ✅ JWT refresh tokens enable long-lived sessions without re-login
+  - ❌ Additional key management overhead for API keys
+- **Rhasspy Hermes Pattern Reference**: Maps to Hermes session auth via `custom_data`, where JWT `jti` claim is stored in Hermes session `custom_data` for cross-system context.
+- **Infrastructure Alignment**: JWT signing/verification on 16GB VPS; refresh token sessions in VPS Redis (key: `session:{jwt_jti}`, 24h TTL per existing convention); API keys validated via Home Lab Postgres.
+
+## ADR 3.2: Authorization Model
+- **Status**: Draft
+- **Category**: 3 - Authentication & Security
+- **Context**: Need access control for user tiers (Free/Pro/Enterprise) and service accounts. Existing system lacks RBAC.
+- **Decision**: Implement RBAC with three roles:
+  1. **User**: Tiered permissions (Free: limited API calls, no BYOK; Pro: BYOK, 10x rate limits; Enterprise: dedicated VPS, SLA)
+  2. **Service Account**: For Hermes skills, scoped to specific API endpoints
+  3. **Admin**: Full system access
+- **Consequences**:
+  - ✅ Clear permission boundaries
+  - ✅ Scalable for enterprise tiers
+  - ❌ Requires Postgres schema updates for roles/tiers
+- **Rhasspy Hermes Pattern Reference**: Aligns with Hermes skill-level permissions, where API key scopes restrict skill access to authorized endpoints only.
+- **Infrastructure Alignment**: Roles stored in Home Lab Postgres; cached in Redis for low-latency checks; VPS proxy enforces tier-based rate limits via Redis sliding window.
+
+## ADR 3.3: API Key Management
+- **Status**: Draft
+- **Category**: 3 - Authentication & Security
+- **Context**: Need to manage Hermes skill API keys, BYOK for DeepSeek-V4 Flash, and tier-based rate limits. Existing rate limiting uses Redis sliding window.
+- **Decision**:
+  1. Hermes skill API keys: Scoped to specific endpoints, rotated every 90 days
+  2. BYOK (DeepSeek-V4 Flash): User-provided keys encrypted with AES-256 (using `AES_ENCRYPTION_KEY`) at rest in Postgres, validated before each request
+  3. Rate limits per tier: Free (100 req/min), Pro (1000 req/min), Enterprise (10000 req/min) via existing Redis sliding window
+- **Consequences**:
+  - ✅ Secure key storage
+  - ✅ Compliance with tier quotas
+  - ❌ `AES_ENCRYPTION_KEY` must be set to real value before production (currently placeholder)
+- **Rhasspy Hermes Pattern Reference**: Maps to Hermes skill API keys stored in `custom_data`, with scopes limiting skill access to authorized workflows.
+- **Infrastructure Alignment**: API keys stored in Home Lab Postgres; rate limiting enforced on VPS via Redis; BYOK validation handled by Home Lab backend.
+
+## ADR 3.4: Secrets Management
+- **Status**: Draft
+- **Category**: 3 - Authentication & Security
+- **Context**: Need to manage JWT_SECRET_KEY, SECRET_KEY, AES_ENCRYPTION_KEY, and third-party integration secrets. Existing system has placeholder secrets, production validation blocks startup if placeholders are present.
+- **Decision**:
+  1. JWT_SECRET_KEY, SECRET_KEY: Stored in VPS `~/flowmanner-app/.env` (not baked into Docker image, not committed to repo); rotated every 24 hours
+  2. AES_ENCRYPTION_KEY: Stored in same `.env`, set to real 32-byte value before `APP_ENV=production`
+  3. Third-party integration secrets (Zendesk, Jira, Slack): Encrypted in Home Lab Postgres, never logged
+  4. Rotation: JWT rotated via deployment script, API keys rotated every 90 days
+- **Consequences**:
+  - ✅ No secrets in code/image
+  - ✅ Production validation prevents insecure startups
+  - ❌ Manual JWT rotation step (automate post-MVP)
+- **Rhasspy Hermes Pattern Reference**: Aligns with minimal secret exposure in Hermes skill configurations.
+- **Infrastructure Alignment**: Secrets stored on VPS (edge) and Home Lab (core) per sensitivity; VPS proxy never receives plaintext integration secrets.
+
+## ADR 3.5: PII/Security Compliance
+- **Status**: Draft
+- **Category**: 3 - Authentication & Security
+- **Context**: Need GDPR/CCPA compliance for EU/CA users, SOC2 Type II post-MVP, and minimal PII exposure. Existing fixes: auth logs only email, no raw password logging.
+- **Decision**:
+  1. GDPR/CCPA: Encrypt all PII (emails, integration tokens) at rest with AES-256 in Postgres; minimize PII logging (only non-PII metadata)
+  2. SOC2 Type II: Implement audit logs for all auth events, access reviews post-MVP
+  3. Production safeguards: Enforce production secret validation (already deployed), zero PII stored in Redis (only session IDs, workflow states)
+- **Consequences**:
+  - ✅ Regulatory compliance
+  - ✅ Reduced PII exposure risk
+  - ❌ Post-MVP audit overhead for SOC2
+- **Rhasspy Hermes Pattern Reference**: Aligns with Hermes minimal data logging for session/context data.
+- **Infrastructure Alignment**: PII encrypted on Home Lab Postgres (encrypted volumes); VPS logs only non-PII metadata; Redis stores no PII.
+
+## ADR 3.6: Cross-System Auth
+- **Status**: Draft
+- **Category**: 3 - Authentication & Security
+- **Context**: Need to authenticate with Zendesk, Jira, Slack for context reconstruction. Existing integrations lack secure credential management.
+- **Decision**:
+  1. User-provided OAuth tokens for Zendesk/Jira/Slack stored encrypted in Postgres
+  2. Tokens scoped to read-only access for context reconstruction
+  3. No long-lived tokens: refresh tokens rotated every 30 days
+  4. All cross-system requests logged for audit
+- **Consequences**:
+  - ✅ Secure cross-system access
+  - ✅ Audit trail for external data access
+  - ❌ Token rotation overhead for users
+- **Rhasspy Hermes Pattern Reference**: Maps to Hermes cross-system context via `custom_data`, where external system tokens are referenced (not stored) in Hermes session data.
+- **Infrastructure Alignment**: Tokens stored on Home Lab Postgres; VPS proxy forwards context reconstruction requests to Home Lab backend; no external tokens on VPS.
+
+---
+
