@@ -307,3 +307,89 @@ Consequences:
 
 ### ADR 4.2: Containerization & Orchestration
 D
+## Category 5: Performance & Scaling
+Following Phase 3 Step 4 workflow, all 6 ADRs aligned with NFRs and previous ADRs.
+
+### ADR 5.1: Performance Optimization
+Date: 2026-04-27
+Status: Approved (Party Mode Sign-off Complete)
+Context: Flowmanner must meet NFRs: <500ms recovery API latency, <1s proxy chain latency, 99.5% cross-system handoff success rate, 80%+ stalled workflows recovered within 5 minutes. Hybrid topology (ADR 4.1) introduces proxy chain latency (VPS → Home Lab) that must be optimized.
+Decision: Implement per-service latency budgets, optimize proxy chain (VPS Traefik → VPS backend → Home Lab) with connection pooling and keep-alive. Use async processing for non-critical paths (e.g., workflow state snapshots to Redis), profile hot paths with Python cProfile (backend) and Chrome DevTools (frontend).
+Consequences:
+✅ Meets NFR latency targets for 90% of requests
+🚀 Proxy chain optimization reduces latency by ~150ms
+⚠️ Complex GPU missions may exceed <1s target, trigger auto-failover to Home Lab (ADR 5.2)
+References: ADR 4.1 (Infrastructure Topology), PRD NFRs
+
+### ADR 5.2: Scaling Strategy
+Date: 2026-04-27
+Status: Approved (Party Mode Sign-off Complete)
+Context: VPS has hard 16GB RAM limit (ADR 4.1), Home Lab has 4x RTX GPU for resource-intensive missions. Need adaptive resource management to avoid VPS overload while maximizing Home Lab GPU utilization.
+Decision: Adopt tiered scaling:
+- VPS handles lightweight tasks (chat, simple workflows) within 16GB RAM limit
+- Home Lab handles GPU-intensive missions (image generation, large model inference)
+- Auto-failover triggered when VPS RAM >80% or mission requires GPU
+- Adaptive resource guard monitors VPS metrics (RAM, CPU) via Prometheus
+Consequences:
+🌱 Cost-effective: only VPS edge services incur hosting costs
+🚀 GPU tasks offloaded to Home Lab, avoids VPS RAM exhaustion
+🚀 Failover adds ~200ms latency but ensures 99.9% VPS uptime SLA
+References: ADR 4.1 (Hybrid Topology), Redis 7.2 (workflow state storage), Postgres 16 (workflow data persistence)
+
+### ADR 5.3: Caching Layers
+Date: 2026-04-27
+Status: Approved (Party Mode Sign-off Complete)
+Context: Frequent API requests and workflow state lookups introduce unnecessary latency. Redis 7.2 is already selected for state storage (ADR 4.1), and Next.js 16 frontend serves static assets.
+Decision: Implement multi-level caching:
+- Redis 7.2: API response caching (1min TTL), workflow state snapshots (30s TTL per NFR), user sessions (24h TTL)
+- Cloudflare CDN: Frontend static assets (Next.js builds), cache TTL 7 days
+- Cache invalidation via webhooks on data updates (e.g., workflow status change)
+Consequences:
+🚀 Reduces API latency by ~300ms for cached responses
+🚀 CDN reduces frontend initial load time by ~1s
+⚠️ Cache invalidation complexity for real-time workflow updates
+References: ADR 4.1 (Redis 7.2), NFR <500ms latency, Next.js 16 (frontend)
+
+### ADR 5.4: Load Balancing
+Date: 2026-04-27
+Status: Approved (Party Mode Sign-off Complete)
+Context: Traefik v3.6.14 is deployed on VPS (ADR 4.1) to route traffic. Home Lab runs single backend node (no load balancer needed).
+Decision:
+- VPS: Traefik v3.6.14 handles load balancing for frontend and VPS backend using round-robin, health checks every 30s (per NFR)
+- Home Lab: No load balancer (single backend node), health checks via Traefik pass-through
+- Automatic traffic shifting to healthy nodes, 3 retries for failed requests
+Consequences:
+✅ Simple, lightweight LB for VPS edge services
+✅ Meets 99.9% VPS uptime SLA via health checks
+⚠️ No LB redundancy for Home Lab (single node, mitigated by auto-failover to VPS for lightweight tasks)
+References: ADR 4.1 (Traefik v3.6.14), NFR 99.9% uptime
+
+### ADR 5.5: Home Lab GPU Scaling
+Date: 2026-04-27
+Status: Approved (Party Mode Sign-off Complete)
+Context: Home Lab has 4x RTX GPU for ComfyUI image generation and large model inference. Mission priority tiers (High/Medium/Low) defined in Category 1 DDD aggregates require differentiated resource allocation.
+Decision:
+- GPU nodes managed via Docker Compose (ADR 4.2), on-demand ComfyUI containers
+- Mission priority tiers: High (GPU, <1min execution), Medium (GPU, <5min), Low (CPU, <10min)
+- Auto-scaling of GPU containers based on queue length (scale out when >5 pending GPU missions)
+- Idle GPU containers terminated after 10min inactivity
+Consequences:
+🚀 Efficient GPU utilization, reduces idle cost
+🚀 Priority-based mission execution aligns with DDD aggregates
+⚠️ Container spin-up adds ~10s latency for on-demand ComfyUI
+References: ADR 4.2 (Containerization), Category 1 DDD Aggregates (Mission Tiers)
+
+### ADR 5.6: Monitoring & Alerts
+Date: 2026-04-27
+Status: Approved (Party Mode Sign-off Complete)
+Context: Need to meet 99.9% VPS uptime SLA, track latency, throughput, and cross-system handoff success rates (99.5% NFR).
+Decision:
+- Metrics: Prometheus + Grafana for latency, throughput, RAM/CPU usage, queue lengths
+- Alerts: VPS RAM >80%, proxy chain latency >1s, handoff success rate <99.5%, workflow recovery rate <80% in 5min
+- Error tracking: Sentry for backend/frontend exceptions
+- Monitoring covers VPS and Home Lab via WireGuard VPN
+Consequences:
+✅ Proactive issue detection, meets 99.9% uptime SLA
+🚀 Alerts enable <5min mean time to recovery (MTTR)
+⚠️ Additional monitoring overhead (~200MB RAM on VPS)
+References: ADR 4.1 (Hybrid Topology), NFR 99.9% uptime, 99.5% handoff success
